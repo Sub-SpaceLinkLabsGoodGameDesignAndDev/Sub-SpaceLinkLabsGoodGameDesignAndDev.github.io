@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Link to your official XML sitemap
+Sitemap: https://sub-spacelinklabsgoodgamedesignanddev.github.io/
