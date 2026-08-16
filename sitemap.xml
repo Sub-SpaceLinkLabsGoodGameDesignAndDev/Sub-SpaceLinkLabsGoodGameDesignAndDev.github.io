@@ -1,12 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://sitemaps.org">
+   <!-- 1. Master Command Hub (Home Page) -->
+   <url>
+      <loc>https://sub-spacelinklabsgoodgamedesignanddev.github.io/</loc>
+      <lastmod>2026-08-16</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>1.0</priority>
+   </url>
+   
+   <!-- 2. Godot Engine WASM Sandbox -->
+   <url>
+      <loc>https://github.io</loc>
+      <lastmod>2026-08-16</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8</priority>
+   </url>
 
-  <!-- Main Homepage -->
-  <url>
-    <loc>https://sub-spacelinklabsgoodgamedesignanddev.github.io/</loc>
-    <lastmod>2026-08-16</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
+   <!-- 3. Open-Source Retro Arcade Cabinet Node -->
+   <url>
+      <loc>https://github.io</loc>
+      <lastmod>2026-08-16</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8</priority>
+   </url>
 
+   <!-- 4. Active Server Telemetry Relay Matrix -->
+   <url>
+      <loc>https://github.io</loc>
+      <lastmod>2026-08-16</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
 </urlset>
