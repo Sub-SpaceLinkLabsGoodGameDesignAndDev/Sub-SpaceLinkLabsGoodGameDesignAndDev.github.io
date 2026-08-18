@@ -1,1 +1,289 @@
-///placeholder///
+/* ==========================================================================
+   SUBSPACELINKLABS - CORE STYLING MATRIX
+   ========================================================================== */
+
+
+/* --- SYSTEM GLOBAL CORE --- */
+html {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	/* Seamless fallback mesh style while your local background file rests on your PC */
+	background: radial-gradient(circle at center, #12121f 0%, #0b0b10 100%);
+	color: #e2e2e8;
+	font-size: 18px; 
+	scrollbar-color: #232334 #0b0b10;
+	scrollbar-width: thin;
+}
+body {
+	margin: 0;
+	padding: 0;
+}
+
+/* --- INTERACTIVE CANVAS GRAPHICS --- */
+#animatedCanvas {
+	display: block;
+	margin: 0 auto;
+	background-color: #000000;
+	border-bottom: 2px solid #232334;
+	width: 100%;
+}
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+}
+
+/* --- UNIVERSAL CARD COMPONENT MATRIX --- */
+.shell-container {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	box-sizing: border-box;
+}
+
+/* Standardized Studio Drag-and-Drop Card Layout */
+.studio-card {
+	background: #12121c;
+	border: 1px solid #232334;
+	border-radius: 8px;
+	padding: 24px;
+	box-sizing: border-box;
+	transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+	cursor: grab;
+}
+.studio-card:active {
+	cursor: grabbing;
+}
+.studio-card:hover {
+	border-color: #29abe2;
+	transform: translateY(-3px);
+	box-shadow: 0 8px 24px rgba(41, 171, 226, 0.12);
+}
+
+/* Card Typography Core */
+.studio-card h2, .studio-card h3, .studio-card h4 {
+	margin: 0 0 12px 0;
+	color: #ffffff;
+	letter-spacing: 0.5px;
+}
+.studio-card p {
+	margin: 0 0 16px 0;
+	color: #a0a0b0;
+	font-size: 15px;
+	line-height: 1.6;
+}
+
+/* --- FLEXIBLE INTERNAL CARD NAVIGATION GRID --- */
+.nav-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	margin-top: 15px;
+	width: 100%;
+}
+.nav-card {
+	background: #1a1a26;
+	border: 1px solid #2d2d44;
+	border-radius: 6px;
+	padding: 20px;
+	flex: 1 1 calc(25% - 15px);
+	min-width: 220px;
+	box-sizing: border-box;
+	text-align: left;
+	transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.nav-card:hover {
+	border-color: #29abe2;
+	transform: scale(1.02);
+}
+.card-icon {
+	font-size: 26px;
+	margin-bottom: 8px;
+}
+.card-link {
+	display: block;
+	text-align: center;
+	background: #232334;
+	color: #ffffff;
+	text-decoration: none;
+	padding: 10px 12px;
+	font-size: 13px;
+	border-radius: 4px;
+	font-weight: bold;
+	transition: background 0.2s ease;
+}
+.card-link:hover {
+	background: #29abe2;
+}
+.placeholder-card {
+	border: 2px dashed #34344a;
+	background: rgba(26, 26, 38, 0.4);
+}
+.card-link.broken {
+	background: #12121c;
+	color: #575775;
+	cursor: not-allowed;
+}
+
+/* --- INTERACTIVE ACTION PACK INTERFACES --- */
+.action-btn {
+	display: inline-block;
+	background: #232334;
+	color: #ffffff;
+	padding: 12px 24px;
+	text-decoration: none;
+	border-radius: 4px;
+	font-weight: bold;
+	border: none;
+	font-size: 15px;
+	cursor: pointer;
+	transition: background 0.2s ease, transform 0.1s ease;
+}
+.action-btn:hover {
+	background: #29abe2;
+}
+.action-btn:active {
+	transform: scale(0.98);
+}
+.launch-matrix-btn {
+	background: linear-gradient(135deg, #ff416c, #ff4b2b);
+	width: 100%;
+	font-size: 18px;
+	padding: 16px;
+	border-radius: 6px;
+}
+.launch-matrix-btn:hover {
+	background: linear-gradient(135deg, #ff4b2b, #ff416c);
+	box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
+} 
+	/* --- BLENDER SHOWCASE MATRIX LAYOUTS --- */
+.gallery-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	margin-top: 10px;
+	width: 100%;
+}
+.gallery-item {
+	flex: 1 1 calc(33.333% - 15px);
+	min-width: 250px;
+	background: #1a1a26;
+	border: 1px solid #2d2d44;
+	border-radius: 6px;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+.gallery-img {
+	width: 100%;
+	height: 180px;
+	object-fit: cover; /* Prevents image squeezing or stretching */
+	display: block;
+	transition: transform 0.3s ease;
+}
+.gallery-item:hover .gallery-img {
+	transform: scale(1.04); /* Subtle interactive magnification zoom */
+}
+.gallery-caption {
+	padding: 12px;
+	font-size: 13px;
+	color: #a0a0b0;
+	text-align: center;
+	border-top: 1px solid #2d2d44;
+	font-weight: bold;
+	background: #12121c;
+}
+
+/* Mobile responsive fallback layout adjustments */
+@media (max-width: 768px) {
+	.gallery-item { flex: 1 1 calc(50% - 15px); }
+}
+@media (max-width: 480px) {
+	.gallery-item { flex: 1 1 100%; }
+}
+
+/* --- LEGAL MATRIX INFO SLEEVES --- */
+.credit-box {
+	background-color: #0b0b10;
+	border: 1px dashed #232334;
+	border-radius: 6px;
+	padding: 15px;
+	margin-bottom: 12px;
+}
+.credit-box:last-child {
+	margin-bottom: 0;
+}
+.credit-text {
+	font-size: 13px;
+	color: #8a8a9e;
+	margin: 0;
+	line-height: 1.5;
+}
+
+/* --- FOOTER COMPONENT MATRIX --- */ 
+.lab-footer {
+	background-color: #0b0b10;
+	color: #707080;
+	padding: 30px 20px;
+	font-size: 13px;
+	text-align: center;
+	border-top: 1px solid #12121c;
+	margin-top: 40px;
+}
+.legal-text {
+	margin: 0 0 12px 0;
+}
+.legal-links {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.legal-links li {
+	display: inline-block;
+}
+.legal-links a {
+	color: #43435c;
+	text-decoration: none;
+	margin: 0 10px;
+	transition: color 0.2s ease;
+}
+.legal-links a:hover {
+	color: #29abe2;
+}
+
+/* Custom Webkit Scrollbars */
+/* Webkit search optimizations */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0b0b10; }
+::-webkit-scrollbar-thumb { background: #232334; border-radius: 5px; border: 2px solid #0b0b10; }
+::-webkit-scrollbar-thumb:hover { background: #29abe2; }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+	.nav-card { flex: 1 1 calc(50% - 15px); }
+}
+@media (max-width: 480px) {
+	.nav-card { flex: 1 1 100%; }
+	.studio-card { padding: 16px; }
+}
+/* --- INTERACTIVE 3D VIEWPORT LAYOUTS --- */
+.threed-viewport-container {
+	width: 100%;
+	height: 400px;
+	background: radial-gradient(circle, #1a1a26 0%, #050508 100%);
+	border: 1px dashed #29abe2;
+	border-radius: 6px;
+	overflow: hidden; 
+}
+model-viewer {
+	width: 100%;
+	height: 100%;
+	outline: none;
+	--poster-color: transparent;
+}
