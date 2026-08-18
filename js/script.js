@@ -86,7 +86,7 @@ function renderEngineFrame() {
   ctx.letterSpacing = '1px';
   
   // Responsive text wrapping call
-  wrapText(ctx, "SSLLGGD&D // SYSTEM INITIALIZATION MATRIX", canvas.width / 2, canvas.height / 2, canvas.width - 40, 28);
+  wrapText(ctx, "******SubSpaceLinkLabs****** System Initialization Matrix", canvas.width / 2, canvas.height / 2, canvas.width - 40, 28);
 
   // Request next display re-draw synchronization frame
   requestAnimationFrame(renderEngineFrame);
