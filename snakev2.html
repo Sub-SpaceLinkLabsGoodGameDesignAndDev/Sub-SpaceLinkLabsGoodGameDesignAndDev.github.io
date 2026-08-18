@@ -1,1 +1,459 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>Cyber-Snake Matrix Terminal | SSLLGGD&D</title>
+	<style>
+		/* --- SYSTEM GLOBAL HUB --- */
+		html, body {
+			background: #0b0b10;
+			color: #ffffff;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-between;
+			overflow: hidden;
+			box-sizing: border-box;
+		}
+
+		/* --- HEADER NAV CONSOLE BAR --- */
+		.arcade-nav-bar {
+			width: 100%;
+			background: #12121c;
+			border-bottom: 2px solid #232334;
+			padding: 12px 20px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			box-sizing: border-box;
+			z-index: 10;
+		}
+		.nav-title {
+			font-size: 14px;
+			font-weight: bold;
+			letter-spacing: 1px;
+			color: #ffffff;
+		}
+		.nav-title span { color: #ff416c; }
+		
+		.back-btn {
+			background: #232334;
+			color: #ffffff;
+			text-decoration: none;
+			padding: 8px 16px;
+			font-size: 13px;
+			border-radius: 4px;
+			font-weight: bold;
+			border: 1px solid #34344a;
+			transition: background 0.2s;
+		}
+		.back-btn:hover { background: #ff416c; }
+
+		/* --- SYSTEM DATA TELEMETRY HEADER --- */
+		.telemetry-header {
+			display: flex;
+			gap: 20px;
+			background: #12121c;
+			border: 1px solid #232334;
+			padding: 8px 16px;
+			border-radius: 6px;
+			font-family: monospace;
+			font-size: 12px;
+			margin-top: 10px;
+			width: calc(100% - 40px);
+			max-width: 960px;
+			justify-content: space-around;
+			box-sizing: border-box;
+		}
+		.tel-node { color: #a0a0b0; }
+		.tel-node span { font-weight: bold; }
+		#tel-hp { color: #ff416c; }
+		#tel-timer { color: #ffb703; }
+		#scoreBoard { color: #00f5d4; }
+
+		/* --- LAYOUT MATRIX SLOTS --- */
+		.main-layout {
+			flex-grow: 1;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 20px;
+			width: 100%;
+			max-width: 1000px;
+			padding: 15px;
+			box-sizing: border-box;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.game-viewport {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			min-width: 300px;
+			flex: 1;
+		}
+		canvas {
+			background: #12121c;
+			border: 2px solid #232334;
+			border-radius: 8px;
+			box-shadow: 0 0 25px rgba(0, 245, 212, 0.15);
+			width: 300px;
+			height: 200px;
+			display: block;
+		}
+
+		/* --- CYBER LEADERBOARD CARD COMPONENT --- */
+		.leaderboard-card {
+			background: #12121c;
+			border: 1px dashed #232334;
+			border-radius: 8px;
+			padding: 15px;
+			width: 100%;
+			max-width: 280px;
+			box-sizing: border-box;
+			height: 220px;
+			overflow-y: auto;
+			animation: pinkPulse 3s infinite ease-in-out;
+		}
+		.leaderboard-card h3 {
+			margin: 0 0 10px 0;
+			color: #ff416c;
+			font-size: 14px;
+			letter-spacing: 1px;
+			text-align: center;
+			border-bottom: 1px solid #232334;
+			padding-bottom: 6px;
+		}
+		.score-row {
+			display: flex;
+			justify-content: space-between;
+			font-family: monospace;
+			font-size: 13px;
+			color: #a0a0b0;
+			padding: 4px 0;
+			border-bottom: 1px solid rgba(35, 35, 52, 0.4);
+		}
+		.score-row.top-slot {
+			color: #00f5d4;
+			font-weight: bold;
+		}
+
+		/* --- MOBILE CONTROL DECK (TRUE VISUAL UNIFORMITY) --- */
+		.control-deck {
+			width: 100%;
+			background: #12121c;
+			border-top: 2px solid #232334;
+			padding: 15px 10px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			box-sizing: border-box;
+		}
+		.dpad-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 65px);
+			grid-template-rows: repeat(2, 55px);
+			gap: 8px;
+		}
+		.dbtn {
+			background: #232334;
+			border: 1px solid #34344a;
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			user-select: none;
+			-webkit-user-select: none;
+			cursor: pointer;
+			width: 100%;
+			height: 100%;
+		}
+		.dbtn:active { 
+			background: #00f5d4; 
+		}
+		
+		/* Layout Grid Component Mapping */
+		.up { grid-column: 2; }
+		.left { grid-column: 1; grid-row: 2; }
+		.down { grid-column: 2; grid-row: 2; }
+		.right { grid-column: 3; grid-row: 2; }
+
+		/* --- PURE CSS UNIFORM ARROW SHAPE DRAWINGS --- */
+		.arrow-icon {
+			display: inline-block;
+			width: 0;
+			height: 0;
+			border-style: solid;
+			transition: border-color 0.1s;
+		}
+		
+		/* Default uniform styling: crisp white triangles */
+		.arrow-up {
+			border-width: 0 8px 12px 8px;
+			border-color: transparent transparent #ffffff transparent;
+		}
+		.arrow-down {
+			border-width: 12px 8px 0 8px;
+			border-color: #ffffff transparent transparent transparent;
+		}
+		.arrow-left {
+			border-width: 8px 12px 8px 0;
+			border-color: transparent #ffffff transparent transparent;
+		}
+		.arrow-right {
+			border-width: 8px 0 8px 12px;
+			border-color: transparent transparent transparent #ffffff;
+		}
+
+		/* Interactive Active Press Feedbacks: Invert arrow paint to dark slate on active touch tap */
+		.dbtn:active .arrow-up    { border-bottom-color: #0b0b10; }
+		.dbtn:active .arrow-down  { border-top-color: #0b0b10; }
+		.dbtn:active .arrow-left  { border-right-color: #0b0b10; }
+		.dbtn:active .arrow-right { border-left-color: #0b0b10; }
+
+		@keyframes pinkPulse {
+			0% { border-color: #232334; box-shadow: 0 0 5px rgba(255, 65, 108, 0.1); }
+			50% { border-color: #ff416c; box-shadow: 0 0 15px rgba(255, 65, 108, 0.3); }
+			100% { border-color: #232334; box-shadow: 0 0 5px rgba(255, 65, 108, 0.1); }
+		}
+
+		@media (max-width: 650px) {
+			.main-layout { flex-direction: column; }
+			.leaderboard-card { max-width: 340px; height: 140px; }
+		}
+	</style>
+</head>
+<body>
+
+	<!-- SYSTEM NAV HEADER -->
+	<header class="arcade-nav-bar">
+		<div class="nav-title">ARCADE // CABINET_SLOT_01.<span>EXE</span></div>
+		<a href="arcade.html" class="back-btn">◀ Return to Arcade Main</a>
+	</header>
+
+	<!-- MASTER TELEMETRY REAL-TIME DATA RIBBON -->
+	<div class="telemetry-header">
+		<div class="tel-node" id="scoreBoard">CORE_SCORE: <span id="score">000</span></div>
+		<div class="tel-node" id="tel-hp">HP_MATRIX: <span id="hpUnits">███</span></div>
+		<div class="tel-node" id="tel-timer">TIME_LIMIT: <span id="timeClock">03:00</span></div>
+	</div>
+
+	<!-- DISPLAY RENDERING WINDOW CORES -->
+	<main class="main-layout">
+		<div class="game-viewport">
+			<canvas id="gameCanvas" width="300" height="200"></canvas>
+		</div>
+
+		<div class="leaderboard-card">
+			<h3>🏆 GLOBAL TOP 10</h3>
+			<div id="leaderboardList"></div>
+		</div>
+	</main>
+
+	<!-- SYMMETRICAL ICON-DECK INPUT MATRIX -->
+	<footer class="control-deck">
+		<div class="dpad-grid">
+			<div class="dbtn up" onclick="changeDir('UP')"><span class="arrow-icon arrow-up"></span></div>
+			<div class="dbtn left" onclick="changeDir('LEFT')"><span class="arrow-icon arrow-left"></span></div>
+			<div class="dbtn down" onclick="changeDir('DOWN')"><span class="arrow-icon arrow-down"></span></div>
+			<div class="dbtn right" onclick="changeDir('RIGHT')"><span class="arrow-icon arrow-right"></span></div>
+		</div>
+	</footer>
+
+	<script>
+		const canvas = document.getElementById("gameCanvas");
+		const ctx = canvas.getContext("2d");
+		const scoreTxt = document.getElementById("score");
+		const hpTxt = document.getElementById("hpUnits");
+		const timerTxt = document.getElementById("timeClock");
+		const leaderboardList = document.getElementById("leaderboardList");
+
+		const grid = 10;
+		// Initialized with 3 distinct segment nodes so self-collisions can trigger instantly
+		let snake = [{x: 150, y: 100}, {x: 140, y: 100}, {x: 130, y: 100}]; 
+		let food = {x: 50, y: 50};
+		let poison = {x: 200, y: 50};
+		let dx = grid, dy = 0;
+		let score = 0;
+		let hp = 3;
+		let totalSeconds = 180; // 3-Minute Master Matrix Clock
+		let gameInterval;
+		let clockInterval;
+		let isGameOver = false;
+
+		// Local baseline rankings metrics data array
+		let scoresData = JSON.parse(localStorage.getItem("ssllggd_snake_scores")) || [
+			{name: "SLK", score: 500},
+			{name: "LAB", score: 400},
+			{name: "DEV", score: 250},
+			{name: "IGL", score: 150},
+			{name: "WAD", score: 100}
+		];
+
+		function saveAndRenderScores() {
+			scoresData.sort((a, b) => b.score - a.score);
+			scoresData = scoresData.slice(0, 10);
+			localStorage.setItem("ssllggd_snake_scores", JSON.stringify(scoresData));
+
+			leaderboardList.innerHTML = "";
+			scoresData.forEach((entry, index) => {
+				const isTop = index === 0 ? "top-slot" : "";
+				leaderboardList.innerHTML += `
+					<div class="score-row ${isTop}">
+						<span>${index + 1}. ${entry.name}</span>
+						<span>${String(entry.score).padStart(3, '0')}</span>
+					</div>`;
+			});
+		}
+
+		function spawnItem(item) {
+			item.x = Math.floor(Math.random() * (canvas.width / grid)) * grid;
+			item.y = Math.floor(Math.random() * (canvas.height / grid)) * grid;
+		}
+
+		function updateHPMeter() {
+			hpTxt.innerText = "█".repeat(Math.max(0, hp)) || "CRIT_ERR";
+		}
+
+		function runClock() {
+			if (isGameOver) return;
+			totalSeconds--;
+			
+			const mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+			const secs = String(totalSeconds % 60).padStart(2, '0');
+			timerTxt.innerText = `${mins}:${secs}`;
+
+			if (totalSeconds <= 0) {
+				handleTermination(true); // Victory win state trigger
+			}
+		}
+
+		function changeDir(dir) {
+			if (isGameOver) return;
+			if (dir === 'LEFT' && dx === 0) { dx = -grid; dy = 0; }
+			if (dir === 'RIGHT' && dx === 0) { dx = grid; dy = 0; }
+			if (dir === 'UP' && dy === 0) { dx = 0; dy = -grid; }
+			if (dir === 'DOWN' && dy === 0) { dx = 0; dy = grid; }
+		}
+
+		window.addEventListener("keydown", e => {
+			if (e.key === "ArrowLeft") changeDir('LEFT');
+			if (e.key === "ArrowRight") changeDir('RIGHT');
+			if (e.key === "ArrowUp") changeDir('UP');
+			if (e.key === "ArrowDown") changeDir('DOWN');
+		});
+
+		function handleTermination(isWinState) {
+			clearInterval(gameInterval);
+			clearInterval(clockInterval);
+			isGameOver = true;
+
+			const minimumScore = scoresData.length < 10 ? 0 : scoresData[scoresData.length - 1].score;
+			const endMessage = isWinState ? "SYSTEM SURVIVAL COMPLETE! VICTORY MATRIX LOADED." : "MATRIX DISSOLVED. CORE HP CRASHED.";
+			
+			setTimeout(() => {
+				alert(endMessage);
+				if (score > minimumScore || scoresData.length < 10) {
+					let initials = prompt(`NEW HIGHSCORE UNLOCKED (${score} PTS)! ENTER RECRUIT INITIALS (3 CHARS):`);
+					initials = (initials || "REC").substring(0, 3).toUpperCase();
+					scoresData.push({name: initials, score: score});
+					saveAndRenderScores();
+				}
+				resetSimulation();
+			}, 100);
+		}
+
+		function resetSimulation() {
+			snake = [{x: 150, y: 100}, {x: 140, y: 100}, {x: 130, y: 100}];
+			dx = grid; dy = 0; score = 0; hp = 3; totalSeconds = 180;
+			scoreTxt.innerText = "000";
+			timerTxt.innerText = "03:00";
+			isGameOver = false;
+			updateHPMeter();
+			spawnItem(food);
+			spawnItem(poison);
+			clearInterval(gameInterval);
+			clearInterval(clockInterval);
+			gameInterval = setInterval(mainLoop, 100);
+			clockInterval = setInterval(runClock, 1000);
+		}
+
+		function mainLoop() {
+			if (isGameOver) return;
+			
+			// --- SYSTEM REALIGNMENT REPAIR POINT CODE ---
+			const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+			
+			// Screen boundary edge warping tracking loops
+			if (head.x < 0) head.x = canvas.width - grid;
+			if (head.x >= canvas.width) head.x = 0;
+			if (head.y < 0) head.y = canvas.height - grid;
+			if (head.y >= canvas.height) head.y = 0;
+
+			// Self impact collision check calculations
+			for (let i = 0; i < snake.length; i++) {
+				if (snake[i].x === head.x && snake[i].y === head.y) {
+					hp--;
+					updateHPMeter();
+					if (hp <= 0) { handleTermination(false); return; }
+				}
+			}
+
+			snake.unshift(head);
+
+			// Consumption collision hit registration vectors
+			if (head.x === food.x && head.y === food.y) {
+				score += 25;
+				scoreTxt.innerText = String(score).padStart(3, '0');
+				spawnItem(food);
+				if (Math.random() > 0.4) spawnItem(poison);
+			} else if (head.x === poison.x && head.y === poison.y) {
+				hp--;
+				updateHPMeter();
+				score = Math.max(0, score - 50); // Deduct systemic data score metrics
+				scoreTxt.innerText = String(score).padStart(3, '0');
+				spawnItem(poison);
+				
+				// Slice snake data length array segments
+				if (snake.length > 2) snake.pop();
+				snake.pop(); 
+				
+				if (hp <= 0) { handleTermination(false); return; }
+			} else {
+				snake.pop();
+			}
+
+			// Render cycle graphics pipeline execution
+			ctx.fillStyle = "#12121c";
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+			// Draw standard point module asset
+			ctx.fillStyle = "#00f5d4";
+			ctx.fillRect(food.x, food.y, grid, grid);
+
+			// Draw hazard tracking point module asset
+			ctx.fillStyle = "#ffb703"; // Warning orange poison node
+			ctx.fillRect(poison.x, poison.y, grid, grid);
+
+			// Draw snake engine segment paths
+			snake.forEach((part, index) => {
+				ctx.fillStyle = index === 0 ? "#ffffff" : "#ff416c"; // White head block element, pink links body array
+				ctx.fillRect(part.x, part.y, grid, grid);
+			});
+		}
+
+		saveAndRenderScores();
+		updateHPMeter();
+		spawnItem(food);
+		spawnItem(poison);
+		gameInterval = setInterval(mainLoop, 100);
+		clockInterval = setInterval(runClock, 1000);
+	</script>
+
+</html>
