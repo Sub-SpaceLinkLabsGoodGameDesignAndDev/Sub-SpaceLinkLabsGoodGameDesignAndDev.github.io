@@ -160,7 +160,7 @@ async function checkActualServerStatus() {
 
     try {
         // This combines the core API address string with your tunnel address safely
-        const apiUrl = "https://mcstatus.io" + tunnelAddress;
+       const apiUrl = "https://mcstatus.io" + tunnelAddress;
         const response = await fetch(apiUrl);
         const data = await response.json();
 
