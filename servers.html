@@ -160,7 +160,7 @@
 
 			try {
 				// Requests are processed cleanly in production with standard server domain headers
-				const response = await fetch(`https://mcstatus.io{tunnelAddress}`);
+				const response = await fetch(`https://mcstatus.io{tunnelAddress}`); 
 				const data = await response.json();
 
 				if (data.online === true) {
