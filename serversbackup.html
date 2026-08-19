@@ -1,1 +1,213 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Server Telemetry | SSLLGGD&D</title>
+	<!-- Put this in your <head> for your external subfolder styles -->
+<link rel="stylesheet" href="./css/style.css">
 
+<!-- Put this right before </body> for your external subfolder scripts -->
+<script src="./js/navigation.js"></script>
+	<style>
+		html { background-color: #0b0b10; color: #e2e2e8; font-family: sans-serif; font-size: 18px; }
+		body { margin: 0; padding: 0; }
+		.shell-container { max-width: 1100px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box; }
+		.server-header-card { background: #12121c; border: 1px solid #232334; border-left: 4px solid #00f5d4; border-radius: 8px; padding: 24px; box-sizing: border-box; }
+		.server-header-card h2 { margin: 0 0 10px 0; color: #ffffff; letter-spacing: 0.5px; }
+		.telemetry-banner { display: flex; justify-content: space-between; background: #12121c; border: 1px solid #232334; padding: 12px 15px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #a0a0b0; }
+		.server-rack-grid { display: flex; flex-direction: column; gap: 15px; width: 100%; }
+		.server-node-card { background: #12121c; border: 1px solid #232334; border-radius: 8px; padding: 20px; display: flex; align-items: center; justify-content: space-between; gap: 20px; box-sizing: border-box; transition: transform 0.2s, border-color 0.2s; }
+		.server-node-card.online-glow { border-color: rgba(0, 245, 212, 0.4); }
+		.server-node-card.offline-glow { border-color: rgba(255, 65, 108, 0.4); }
+		.node-identity { display: flex; align-items: center; gap: 15px; }
+		.node-status-icon { font-size: 28px; position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+		.pulse-indicator { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background-color: #00f5d4; border-radius: 50%; box-shadow: 0 0 10px #00f5d4; }
+		.pulse-indicator.checking { background-color: #ffb703; box-shadow: 0 0 10px #ffb703; animation: netPulse 0.4s infinite alternate ease-in-out; }
+		.pulse-indicator.offline { background-color: #ff416c; box-shadow: 0 0 10px #ff416c; animation: netPulse 1.5s infinite alternate ease-in-out; }
+		@keyframes netPulse { 0% { opacity: 0.4; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
+		.node-details h3 { margin: 0 0 4px 0; color: #ffffff; font-size: 18px; }
+		.node-details p { margin: 0; font-size: 13px; color: #a0a0b0; line-height: 1.4; }
+		.action-btn { display: inline-block; background: #232334; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; text-align: center; border: 1px solid #34344a; white-space: nowrap; cursor: pointer; }
+		.action-btn:hover:not(:disabled) { background: #00f5d4; color: #0b0b10; border-color: #00f5d4; }
+		.action-btn:disabled { background: #151522; color: #43435c; border-color: #232334; cursor: not-allowed; }
+		.scan-btn { background: #1a1a26; border-color: #34344a; color: #00f5d4; }
+		@media (max-width: 680px) { .server-node-card { flex-direction: column; align-items: flex-start; gap: 15px; } .action-btn { width: 100%; box-sizing: border-box; } .telemetry-banner { flex-direction: column; gap: 5px; text-align: center; } }
+	</style>
+</head>
+<body>
+
+	<main class="shell-container">
+		
+		<!-- HEADER DASHBOARD MODULE -->
+		<section class="server-header-card">
+			<h2>Active Server Relay Matrix</h2>
+			<p style="color: #a0a0b0; font-size: 15px; margin: 0;">
+				Live connectivity tracking and endpoint gateways for active multiplayer test servers and tunnel protocols.
+			</p>
+		</section>
+
+		<!-- REAL-TIME TELEMETRY MONITOR CLOCK BANNER -->
+		<div class="telemetry-banner">
+			<div>NETWORK_PING_RADAR: <span id="radarStatus" style="font-weight: bold; color: #ffb703;">SCANNING_PING...</span></div>
+			<div>SYS_TIMESTAMP: <span id="telemetryClock" style="color: #ffffff; font-weight: bold;">00:00:00 AM</span></div>
+		</div>
+
+		<!-- SERVER NODE LIST RACK -->
+		<div class="server-rack-grid">
+			
+			<!-- NODE 1: THE LABS MINECRAFT SERVER -->
+			<div class="server-node-card" id="node1-card">
+				<div class="node-status-icon">
+					⛏️ <div id="node1-pulse" class="pulse-indicator checking"></div>
+				</div>
+				<div class="node-details">
+					<h3>The Labs Minecraft Server</h3>
+					<p><strong>Tunnel Endpoint:</strong> <span style="font-family: monospace; color: #00f5d4;">reminded-modal.tun.ply.gg</span></p>
+					<p style="color: #ffb703; margin-top: 4px; font-weight: 500;" id="node1-statusText">Querying playit.gg network relay node telemetry...</p>
+				</div>
+				<!-- Grid Controls Layer Pack -->
+				<div style="display: flex; gap: 10px; flex-wrap: wrap; width: auto; margin-top: 10px;">
+					<button class="action-btn scan-btn" onclick="checkActualServerStatus()">Re-Scan Grid</button>
+					<button class="action-btn" id="node1-connectBtn" onclick="copyAddressToClipboard('reminded-modal.tun.ply.gg')" disabled>Connect Relay</button>
+				</div>
+			</div>
+
+			<!-- NODE 2: FUTURE BEDROCK CROSSPLAY LINK (Locked Template Slot) -->
+			<div class="server-node-card" id="node2-card" style="opacity: 0.5;">
+				<div class="node-status-icon">
+					📱 <div class="pulse-indicator offline"></div>
+				</div>
+				<div class="node-details">
+					<h3>Bedrock Companion Link</h3>
+					<p><strong>Tunnel Endpoint:</strong> <span style="font-family: monospace; color: #6c757d;">awaiting-allocation.tun.ply.gg</span></p>
+					<p style="color: #6c757d; margin-top: 4px;">PORT_ALLOCATION_OFFLINE // Standby for cross-play mobile configurations.</p>
+				</div>
+				<div style="display: flex; gap: 10px; flex-wrap: wrap; width: auto; margin-top: 10px;">
+					<button class="action-btn scan-btn" style="opacity: 0.5; cursor: not-allowed;" disabled>Grid Sealed</button>
+					<button class="action-btn" disabled>Connect Relay</button>
+				</div>
+			</div>
+
+			<!-- NODE 3: FUTURE STEAM / PALWORLD SERVER (Locked Template Slot) -->
+			<div class="server-node-card" id="node3-card" style="opacity: 0.5;">
+				<div class="node-status-icon">
+					🐾 <div class="pulse-indicator offline"></div>
+				</div>
+				<div class="node-details">
+					<h3>Steam Dedicated Relay</h3>
+					<p><strong>Tunnel Endpoint:</strong> <span style="font-family: monospace; color: #6c757d;">awaiting-allocation.tun.ply.gg</span></p>
+					<p style="color: #6c757d; margin-top: 4px;">PORT_ALLOCATION_OFFLINE // Reserved for secure sandbox matrix.</p>
+				</div>
+				<div style="display: flex; gap: 10px; flex-wrap: wrap; width: auto; margin-top: 10px;">
+					<button class="action-btn scan-btn" style="opacity: 0.5; cursor: not-allowed;" disabled>Grid Sealed</button>
+					<button class="action-btn" disabled>Connect Relay</button>
+				</div>
+			</div>
+
+			<!-- NODE 4: ISOLATED EXPERIMENTAL MODULE SLOT -->
+			<div class="server-node-card" style="opacity: 0.3;">
+				<div class="node-status-icon">
+					🕹️ <div class="pulse-indicator offline"></div>
+				</div>
+				<div class="node-details">
+					<h3>WASM Engine Sandbox Server</h3>
+					<p><strong>Status:</strong> PORT_ALLOCATION_OFFLINE (Awaiting Build Packet)</p>
+					<p style="color: #6c757d; margin-top: 4px;">Reserved route for isolated multi-client Godot test pipelines.</p>
+				</div>
+				<button class="action-btn" style="margin-top: 10px;" disabled>Port Sealed</button>
+			</div>
+
+		</div>
+
+		<!-- MASTER PRODUCTION HUB EXIT RELAY LINK --> 
+		<a href="https://sub-spacelinklabsgoodgamedesignanddev.github.io//sub-spacelinklabsgoodgamedesignanddev.github.io" class="action-btn" style="background: #12121c; border: 1px solid #232334; margin-top: 10px;">🔙Return to Main Command Hub</a>
+
+	</main>
+
+	<!-- REAL-TIME TELEMETRY SYSTEM CORE ENGINE SCRIPT -->
+	<script>
+		// --- TIMESTAMPS AUTOMATION RETRIEVAL CLOCK LOOP ---
+		function updateTelemetryClock() {
+			const now = new Date();
+			let hours = now.getHours();
+			const minutes = String(now.getMinutes()).padStart(2, '0');
+			const seconds = String(now.getSeconds()).padStart(2, '0');
+			const ampm = hours >= 12 ? 'PM' : 'AM';
+			
+			hours = hours % 12;
+			hours = hours ? hours : 12;
+			const formattedHours = String(hours).padStart(2, '0');
+
+			document.getElementById('telemetryClock').innerText = `${formattedHours}:${minutes}:${seconds} ${ampm}`;
+		}
+
+		// --- LIVE MINECRAFT STATUS API HOOKS MATRIX ---
+		async function checkActualServerStatus() {
+			const card = document.getElementById('node1-card');
+			const pulse = document.getElementById('node1-pulse');
+			const statusText = document.getElementById('node1-statusText');
+			const connectBtn = document.getElementById('node1-connectBtn');
+			const radarStatus = document.getElementById('radarStatus');
+			const tunnelAddress = "reminded-modal.tun.ply.gg";
+
+			radarStatus.innerText = "SCANNING_GRID...";
+			radarStatus.style.color = "#ffb703";
+			pulse.className = "pulse-indicator checking";
+			card.classList.remove('online-glow', 'offline-glow');
+			statusText.innerText = "Querying live tunnel infrastructure socket strings...";
+			statusText.style.color = "#ffb703";
+
+			try {
+				// Requests are processed cleanly in production with standard server domain headers
+				const response = await fetch("https://api.mcstatus.io/v2/status/java/" + tunnelAddress);
+				const data = await response.json();
+
+				if (data.online === true) {
+					pulse.className = "pulse-indicator"; 
+					card.classList.add('online-glow');
+					radarStatus.innerText = "GRID_SECURE_ONLINE";
+					radarStatus.style.color = "#00f5d4";
+					
+					const currentPlayers = data.players.online;
+					const maxPlayers = data.players.max;
+					const versionString = data.version ? data.version.name_clean : "Java Edition";
+					
+					statusText.innerText = `● SERVER ONLINE // Active Connections: [${currentPlayers}/${maxPlayers}] // Version: ${versionString}`;
+					statusText.style.color = "#00f5d4";
+					
+					connectBtn.disabled = false; 
+				} else {
+					executeOfflineUI();
+				}
+			} catch (error) {
+				console.error("Telemetry query failed:", error);
+				executeOfflineUI();
+			}
+
+			function executeOfflineUI() {
+				pulse.className = "pulse-indicator offline"; 
+				card.classList.add('offline-glow');
+				radarStatus.innerText = "LINK_TIMEOUT_OFFLINE";
+				radarStatus.style.color = "#ff416c";
+				
+				statusText.innerText = "✖ SERVER OFFLINE // The playit.gg client tunnel relay is disconnected or your local server instance is closed.";
+				statusText.style.color = "#ff416c";
+				
+				connectBtn.disabled = true; 
+			}
+		}
+
+		// --- USER CLIPBOARD EXTENSION COPIER ---
+		function copyAddressToClipboard(addressString) {
+			navigator.clipboard.writeText(addressString)
+				.then(() => alert(`Address copied to matrix clipboard:\n${addressString}`))
+				.catch(err => console.error("Hardware denied clipboard matrix hook:", err));
+		}
+
+		setInterval(updateTelemetryClock, 1000);
+		updateTelemetryClock();
+		checkActualServerStatus();
+	</script>
+</body>
+</html>
