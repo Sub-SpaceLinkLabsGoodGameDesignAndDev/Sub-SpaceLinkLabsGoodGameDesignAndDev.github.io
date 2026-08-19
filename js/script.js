@@ -87,7 +87,7 @@ function renderEngineFrame() {
   
   // Responsive text wrapping call
   wrapText(ctx, "******SubSpaceLinkLabs****** System Initialization Matrix", canvas.width / 2, canvas.height / 2, canvas.width - 40, 28);
-
+}
   // Request next display re-draw synchronization frame
   requestAnimationFrame(renderEngineFrame);
 }
