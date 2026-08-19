@@ -1,10 +1,6 @@
 /* ==========================================================================
    SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP
    ========================================================================== */
-
-// Scope our canvas variables so they initialize only after HTML structural loads match
-let canvas;
-let ctx;
 let dots = []; 
 const maxDots = 45; 
 const connectionDistance = 110; 
@@ -24,7 +20,7 @@ class TelemetryNode {
         if (this.x < 0 || this.x > w) this.vx *= -1; 
         if (this.y < 0 || this.y > h) this.vy *= -1; 
     } 
-    draw() { 
+    draw(ctx) { 
         ctx.beginPath(); 
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
         ctx.fillStyle = 'rgba(41, 171, 226, 0.7)'; 
@@ -32,17 +28,30 @@ class TelemetryNode {
     } 
 } 
 
+// Populate vector arrays using the exact window widths
 function initTelemetry() { 
     dots = []; 
     for (let i = 0; i < maxDots; i++) { 
-        dots.push(new TelemetryNode(canvas.width, canvas.height)); 
+        dots.push(new TelemetryNode(window.innerWidth, window.innerHeight)); 
     } 
 } 
 
+// Master rendering loop sequence
 function renderEngineFrame() { 
+    const canvas = document.getElementById('animatedCanvas');
+    if (!canvas) {
+        requestAnimationFrame(renderEngineFrame);
+        return;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Clear background void space
     ctx.fillStyle = 'rgba(11, 11, 16, 0.2)'; 
     ctx.fillRect(0, 0, canvas.width, canvas.height); 
 
+    // 1. Render data wireframe grid paths
     for (let i = 0; i < dots.length; i++) { 
         for (let n = i + 1; n < dots.length; n++) { 
             const dx = dots[i].x - dots[n].x; 
@@ -60,31 +69,30 @@ function renderEngineFrame() {
         } 
     } 
 
+    // 2. Draw moving vector node particles
     dots.forEach(node => { 
         node.update(canvas.width, canvas.height); 
-        node.draw(); 
+        node.draw(ctx); 
     }); 
 
     requestAnimationFrame(renderEngineFrame); 
 } 
 
+// Synchronize dimensions dynamically
 function resizeCanvas() { 
+    const canvas = document.getElementById('animatedCanvas'); 
     if (!canvas) return;
+    
     canvas.width = window.innerWidth; 
     canvas.height = window.innerHeight; 
-    initTelemetry(); 
 } 
 
-// CRITICAL SAFE BOOT: Safe check to guarantee HTML elements exist before reading context
-window.addEventListener('DOMContentLoaded', () => {
-    canvas = document.getElementById('animatedCanvas'); 
-    
-    if (canvas) {
-        ctx = canvas.getContext('2d'); 
-        window.addEventListener('resize', resizeCanvas); 
-        resizeCanvas(); 
-        requestAnimationFrame(renderEngineFrame);
-    } else {
-        console.error("Matrix Core Link Error: Element with ID 'animatedCanvas' not found in document layout.");
-    }
-});
+// Immediate background environment bootstrap execution
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    initTelemetry();
+}); 
+
+resizeCanvas(); 
+initTelemetry(); 
+requestAnimationFrame(renderEngineFrame);
