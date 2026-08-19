@@ -143,61 +143,58 @@
 		}
 
 		// --- LIVE MINECRAFT STATUS API HOOKS MATRIX ---
-		async function checkActualServerStatus() {
-			const card = document.getElementById('node1-card');
-			const pulse = document.getElementById('node1-pulse');
-			const statusText = document.getElementById('node1-statusText');
-			const connectBtn = document.getElementById('node1-connectBtn');
-			const radarStatus = document.getElementById('radarStatus');
-			const tunnelAddress = "reminded-modal.tun.ply.gg";
+async function checkActualServerStatus() {
+    const card = document.getElementById('node1-card');
+    const pulse = document.getElementById('node1-pulse');
+    const statusText = document.getElementById('node1-statusText');
+    const connectBtn = document.getElementById('node1-connectBtn');
+    const radarStatus = document.getElementById('radarStatus');
+    const tunnelAddress = "reminded-modal.tun.ply.gg";
 
-			radarStatus.innerText = "SCANNING_GRID...";
-			radarStatus.style.color = "#ffb703";
-			pulse.className = "pulse-indicator checking";
-			card.classList.remove('online-glow', 'offline-glow');
-			statusText.innerText = "Querying live tunnel infrastructure socket strings...";
-			statusText.style.color = "#ffb703";
+    radarStatus.innerText = "SCANNING_GRID...";
+    radarStatus.style.color = "#ffb703";
+    pulse.className = "pulse-indicator checking";
+    card.classList.remove('online-glow', 'offline-glow');
+    statusText.innerText = "Querying live tunnel infrastructure socket strings...";
+    statusText.style.color = "#ffb703";
 
-			try {
-				// Requests are processed cleanly in production with standard server domain headers
-				const response = await fetch("https://api.mcstatus.io/v2/status/java/" + tunnelAddress);
-				const data = await response.json();
+    try {
+        // This combines the core API address string with your tunnel address safely
+        const apiUrl = "https://mcstatus.io" + tunnelAddress;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
 
-				if (data.online === true) {
-					pulse.className = "pulse-indicator"; 
-					card.classList.add('online-glow');
-					radarStatus.innerText = "GRID_SECURE_ONLINE";
-					radarStatus.style.color = "#00f5d4";
-					
-					const currentPlayers = data.players.online;
-					const maxPlayers = data.players.max;
-					const versionString = data.version ? data.version.name_clean : "Java Edition";
-					
-					statusText.innerText = `● SERVER ONLINE // Active Connections: [${currentPlayers}/${maxPlayers}] // Version: ${versionString}`;
-					statusText.style.color = "#00f5d4";
-					
-					connectBtn.disabled = false; 
-				} else {
-					executeOfflineUI();
-				}
-			} catch (error) {
-				console.error("Telemetry query failed:", error);
-				executeOfflineUI();
-			}
+        if (data.online === true) {
+            pulse.className = "pulse-indicator";
+            card.classList.add('online-glow');
+            radarStatus.innerText = "GRID_SECURE_ONLINE";
+            radarStatus.style.color = "#00f5d4";
+            
+            const currentPlayers = data.players.online;
+            const maxPlayers = data.players.max;
+            const versionString = data.version ? data.version.name_clean : "Java Edition";
+            
+            statusText.innerText = `● SERVER ONLINE // Active Connections: [${currentPlayers}/${maxPlayers}] // Version: ${versionString}`;
+            statusText.style.color = "#00f5d4";
+            connectBtn.disabled = false;
+        } else {
+            executeOfflineUI();
+        }
+    } catch (error) {
+        console.error("Telemetry query failed:", error);
+        executeOfflineUI();
+    }
 
-			function executeOfflineUI() {
-				pulse.className = "pulse-indicator offline"; 
-				card.classList.add('offline-glow');
-				radarStatus.innerText = "LINK_TIMEOUT_OFFLINE";
-				radarStatus.style.color = "#ff416c";
-				
-				statusText.innerText = "✖ SERVER OFFLINE // The playit.gg client tunnel relay is disconnected or your local server instance is closed.";
-				statusText.style.color = "#ff416c";
-				
-				connectBtn.disabled = true; 
-			}
-		}
-
+    function executeOfflineUI() {
+        pulse.className = "pulse-indicator offline";
+        card.classList.add('offline-glow');
+        radarStatus.innerText = "LINK_TIMEOUT_OFFLINE";
+        radarStatus.style.color = "#ff416c";
+        statusText.innerText = "✖ SERVER OFFLINE // The playit.gg client tunnel relay is disconnected or your local server instance is closed.";
+        statusText.style.color = "#ff416c";
+        connectBtn.disabled = true;
+    }
+}
 		// --- USER CLIPBOARD EXTENSION COPIER ---
 		function copyAddressToClipboard(addressString) {
 			navigator.clipboard.writeText(addressString)
