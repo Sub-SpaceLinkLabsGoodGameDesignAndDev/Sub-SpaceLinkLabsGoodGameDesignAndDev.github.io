@@ -121,9 +121,12 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
 
 // Adaptive mobile layout resolution adjustment handler
 function resizeCanvas() {
+    // Syncs the internal rendering resolution coordinates to the browser frame
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight; // 🔥 CHANGE THIS LINE TO MATCH THIS
+    canvas.height = window.innerHeight;
     initTelemetry();
+}
+
 }
 
 // Bind lifecycle listeners
