@@ -7,20 +7,36 @@
 	<!-- Put this in your <head> for your external subfolder styles -->
     <link rel="stylesheet" href="./css/style.css">
 	<style>
-		html { background-color: #0b0b10; color: #e2e2e8; font-family: sans-serif; font-size: 18px; }
-		body { 
-                 margin: 0; 
-   				 padding: 0; 
-    		     background: transparent !important; /* Forces out any external css tinting */
-     }
-		.shell-container { max-width: 1100px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box; }
-		.server-header-card { background: #12121c; border: 1px solid #232334; border-left: 4px solid #00f5d4; border-radius: 8px; padding: 24px; box-sizing: border-box; }
-		.server-header-card h2 { margin: 0 0 10px 0; color: #ffffff; letter-spacing: 0.5px; }
-		.telemetry-banner { display: flex; justify-content: space-between; background: #12121c; border: 1px solid #232334; padding: 12px 15px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #a0a0b0; }
-		.server-rack-grid { display: flex; flex-direction: column; gap: 15px; width: 100%; }
-		.server-node-card { 
-    background: #12121c; 
-    border: 1px solid #2a2a3f; /* Slightly brighten the edge frame line */
+		html { 
+    /* Pure pitch black backdrop gives the cards a floor to sit on */
+    background-color: #050508 !important; 
+    color: #e2e2e8; 
+    font-family: sans-serif; 
+    font-size: 18px; 
+}
+
+body { 
+    margin: 0; 
+    padding: 0; 
+    background: transparent !important; 
+}
+
+.server-header-card { 
+    /* Lightened from #12121c to #161626 for a clear visual lift */
+    background: #161626; 
+    border: 1px solid #2d2d44; 
+    border-left: 4px solid #00f5d4; 
+    border-radius: 8px; 
+    padding: 24px; 
+    box-sizing: border-box; 
+    /* Slight glow effect adds high-tech elevation */
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5); 
+}
+
+.server-node-card { 
+    /* Lightened card baseline color for stronger panel contrast */
+    background: #161626; 
+    border: 1px solid #2d2d44; 
     border-radius: 8px; 
     padding: 20px; 
     display: flex; 
@@ -28,8 +44,9 @@
     justify-content: space-between; 
     gap: 20px; 
     box-sizing: border-box; 
-    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; 
-    /* Adds a crisp, high-tech neon depth anchor behind the cards */
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    
+    /* Adds depth so it pops off the background screen */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6); 
 }
 		.server-node-card.offline-glow { border-color: rgba(255, 65, 108, 0.4); }
