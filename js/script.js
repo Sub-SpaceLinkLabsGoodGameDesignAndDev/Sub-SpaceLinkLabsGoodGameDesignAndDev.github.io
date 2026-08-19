@@ -121,9 +121,9 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
 
 // Adaptive mobile layout resolution adjustment handler
 function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = canvas.width < 600 ? 160 : 120; // Taller text frame padding box for phones
-  initTelemetry();
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight; // 🔥 CHANGE THIS LINE TO MATCH THIS
+    initTelemetry();
 }
 
 // Bind lifecycle listeners
