@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en-US">
 <head>
 	<meta charset="utf-8" />
@@ -15,10 +15,26 @@
     font-size: 18px; 
 }
 
-body { 
-    margin: 0; 
-    padding: 0; 
+html, body {
+    margin: 0;
+    padding: 0;
+    /* Keeps a fallback base color but lets background canvas show */
+    background-color: #050508; 
+    min-height: 100vh;
+}
+
+.shell-container {
+    /* Critical: Ensures the content area does not hide the canvas */
     background: transparent !important; 
+    position: relative;
+    z-index: 2; /* Floats your cards high above the canvas mesh */
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
 }
 
 .server-header-card { 
@@ -66,7 +82,8 @@ body {
 	</style>
 </head>
 <body>
-
+<canvas id="animatedcanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;"></canvas>
+	
 	<main class="shell-container">
 		
 		<!-- HEADER DASHBOARD MODULE -->
@@ -244,6 +261,9 @@ async function checkActualServerStatus() {
 		updateTelemetryClock();
 		checkActualServerStatus();
 	</script>
+	
+  <script src="js/script.js"></script>
+	
 </body>
 </html>
 	
