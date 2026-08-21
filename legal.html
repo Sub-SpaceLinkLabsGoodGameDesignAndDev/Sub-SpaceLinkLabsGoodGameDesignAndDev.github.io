@@ -4,11 +4,10 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Legal &amp; Trademark Insulation | SSLLGGD&D</title>
+	<title>Legal, Terms &amp; Privacy Policy | SSLLGGD&D</title>
 	
-	<!-- Re-use your master external studio styles -->
-	<!-- Put this in your <head> for your external subfolder styles -->
-<link rel="stylesheet" href="./css/style.css">
+	<!-- Re-use master external studio styles -->
+	<link rel="stylesheet" href="./css/style.css">
 	
 	<style>
 		/* Custom style overrides for a clean, formal document display */
@@ -24,28 +23,58 @@
 			padding-bottom: 12px;
 			margin-bottom: 20px;
 			color: #ffffff;
+			letter-spacing: 0.5px;
 		}
 		.legal-section-block {
 			background: #0b0b10;
 			border: 1px dashed #34344a;
 			border-radius: 6px;
-			padding: 20px;
-			margin-bottom: 20px;
+			padding: 22px;
+			margin-bottom: 22px;
 		}
 		.legal-section-block h3 {
 			color: #29abe2;
 			margin-top: 0;
+			margin-bottom: 12px;
 			font-size: 16px;
 			letter-spacing: 0.5px;
 		}
 		.legal-section-block p {
 			font-size: 14px;
 			color: #a0a0b0;
-			line-height: 1.6;
-			margin: 0;
+			line-height: 1.65;
+			margin: 0 0 12px 0;
+		}
+		.legal-section-block p:last-child {
+			margin-bottom: 0;
+		}
+		.legal-section-block ul {
+			margin: 8px 0 12px 0;
+			padding-left: 22px;
+			font-size: 14px;
+			color: #a0a0b0;
+			line-height: 1.65;
+		}
+		.legal-section-block li {
+			margin-bottom: 6px;
 		}
 		.legal-section-block strong {
 			color: #ffffff;
+		}
+		.trademark-list {
+			list-style-type: square;
+		}
+		.trademark-list li strong {
+			color: #00f5d4;
+		}
+		.notice-callout {
+			background: #161626;
+			border-left: 3px solid #ffb703;
+			padding: 12px 16px;
+			margin: 12px 0;
+			border-radius: 0 4px 4px 0;
+			font-size: 13px;
+			color: #c0c0d0;
 		}
 	</style>
 </head>
@@ -60,61 +89,188 @@
 		
 		<!-- CENTRAL LEGAL COMPONENT BLOCK -->
 		<section class="legal-document-card">
-			<h2>Studio Legal &amp; Trademark Insulation Matrix</h2>
+			<h2>Studio Legal, Terms of Service &amp; Privacy Policy Matrix</h2>
 			<p style="color: #8a8a9e; font-size: 14px; margin-bottom: 25px;">
-				Official legal frameworks, structural ownership rights, and nominative fair use reference notices for Sub-Space Link Labs.
+				Comprehensive terms of use, privacy declarations, structural ownership rights, open-source software attributions, and nominative fair use notices for Sub-Space Link Labs Good Game Design &amp; Devlogs.
 			</p>
 
 			<!-- MATRIX NODE 1: BRAND IDENTITY & LEGAL MATRIX -->
 			<div class="legal-section-block">
-				<h3>[1] Brand Identity &amp; Studio Legal Framing</h3>
+				<h3>[1] Studio Identity &amp; Terms of Service</h3>
 				<p>
-					<strong>Sub-Space Link Labs Good Game Design &amp; Devlogs</strong> (stylized on this interface as <strong>SSLLGGD&D™</strong>) operates strictly as a Solo Indie Studio and individual hobbyist development framework. For all regulatory and compliance structures, this entity is legally configured as a <strong>Sole Proprietorship</strong> under the direct management of sole proprietor <strong>Josh Wade</strong>.
+					<strong>Sub-Space Link Labs Good Game Design &amp; Devlogs</strong> (stylized on this interface as <strong>SSLLGGD&D™</strong>) operates as an independent solo indie game development lab, experimental web showcase, and devlog archive.
+				</p>
+				<p>
+					For all regulatory, compliance, and governance frameworks, this entity operates as a <strong>Sole Proprietorship</strong> under the sole management of proprietor and creator <strong>Josh Wade</strong>.
+				</p>
+				<p>
+					<strong>Terms of Access:</strong> By accessing or using this website, its interactive arcade nodes, or server telemetry interfaces, you agree to comply with these terms, standard internet conduct regulations, and applicable local laws. If you do not agree with these terms, you should discontinue use of the site.
 				</p>
 			</div>
 
-			<!-- MATRIX NODE 2: INTELLECTUAL PROPERTY & AUTOMATIC COPYRIGHTS -->
+			<!-- MATRIX NODE 2: PRIVACY POLICY & DATA STORAGE -->
 			<div class="legal-section-block">
-				<h3>[2] Ownership Rights &amp; Automated Copyright Framework</h3>
+				<h3>[2] Privacy Policy &amp; Client-Side Data Transparency</h3>
 				<p>
-					All original source files, layout graphics, game concepts, custom design binaries, and media logs published to this environment are the property of the studio creator. Copyright protections are active automatically upon public staging and deployment to this unalterable, time-stamped GitHub Pages platform pipeline under international intellectual property guidelines.
+					Sub-Space Link Labs is committed to user privacy, minimalist data architecture, and full operational transparency:
+				</p>
+				<ul>
+					<li>
+						<strong>No Tracking, Profiling, or Advertising Cookies:</strong> This website does not deploy advertising trackers, third-party analytics pixels, tracking cookies, or user fingerprinting scripts.
+					</li>
+					<li>
+						<strong>Local Storage (Client-Side Only):</strong> Interactive arcade cabinets (such as Cyber-Snake v1 and v2) utilize your browser's local storage (<code>localStorage</code>) strictly to preserve high scores and game initials on your individual device. This data is never transmitted to, collected by, or stored on external servers.
+					</li>
+					<li>
+						<strong>Third-Party Telemetry API Requests:</strong> The Server Telemetry interface initiates an anonymous, client-side HTTP request to the public <code>api.mcstatus.io</code> service to query Minecraft test server status. No personally identifiable information (PII), credentials, or user-specific payloads are transmitted during this query.
+					</li>
+					<li>
+						<strong>Hosting &amp; Server Logs:</strong> Standard web server connection logs (such as IP address and user-agent) may be processed transiently by our cloud hosting infrastructure (Netlify / GitHub Pages) solely for network security, DDoS mitigation, and reliable content delivery.
+					</li>
+				</ul>
+			</div>
+
+			<!-- MATRIX NODE 3: INTELLECTUAL PROPERTY & AUTOMATIC COPYRIGHTS -->
+			<div class="legal-section-block">
+				<h3>[3] Original Intellectual Property &amp; Automated Copyrights</h3>
+				<p>
+					All original source files, interactive game concepts (including the <em>Project IGLI</em> game blueprint, mechanics, and design specifications), proprietary artwork, layout graphics, UI animations, styling binaries, 3D render mockups, audio assets, and technical devlogs published across this domain are the exclusive intellectual property of the studio creator, <strong>Josh Wade</strong>.
+				</p>
+				<p>
+					Automatic copyright protections are active upon creation, staging, and deployment to the public repository pipeline and web hosting infrastructure under the Berne Convention and international intellectual property treaties. All rights are reserved unless explicitly licensed under a permissive open-source license file in a dedicated source module.
 				</p>
 			</div>
 
-			<!-- MATRIX NODE 3: OPEN-SOURCE DISCLAIMERS -->
+			<!-- MATRIX NODE 4: GAME ENGINES & GRAPHICS LIBRARIES -->
 			<div class="legal-section-block">
-				<h3>[3] Development Framework Credits &amp; Sourcing Disclaimers</h3>
+				<h3>[4] Game Engines, 3D Viewports &amp; Client-Side Frameworks</h3>
 				<p>
-					<strong>Open-Source Sourcing Disclaimer:</strong> Specific open-source game module names, individual developer attributions, and license details (including MIT, Apache, and Creative Commons structures) will be added to this technical ledger node dynamically as individual mini-games are staged, compiled, and developed within the live arcade pipeline.
+					Sub-Space Link Labs utilizes industry-standard open-source tools and libraries to test and execute interactive web builds:
+				</p>
+				<ul>
+					<li>
+						<strong>Godot Engine 4:</strong> Interactive WebAssembly (WASM) and WebGL game exports deployed within the Engine Sandbox run on the Godot Engine, &copy; 2007-present Juan Linietsky, Ariel Manzur, and the Godot Engine contributors. Godot is distributed freely under the terms of the <a href="https://godotengine.org/license" target="_blank" rel="noopener noreferrer" style="color: #29abe2;">MIT License</a>.
+					</li>
+					<li>
+						<strong>Three.js:</strong> 3D rendering modules utilize or reference the Three.js 3D library, &copy; 2010-present Ricardo Cabello (mrdoob) and Three.js contributors, distributed under the <a href="https://github.com/mrdoob/three.js/blob/dev/LICENSE" target="_blank" rel="noopener noreferrer" style="color: #29abe2;">MIT License</a>.
+					</li>
+					<li>
+						<strong>Google &lt;model-viewer&gt;:</strong> The interactive 3D engine mesh viewport component is powered by Google's <code>&lt;model-viewer&gt;</code> web component library, &copy; Google LLC, distributed under the <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer" style="color: #29abe2;">Apache License 2.0</a>.
+					</li>
+					<li>
+						<strong>WebAssembly (WASM) &amp; WebGL / WebGPU:</strong> Built on open standards developed and governed by the World Wide Web Consortium (W3C) and the Khronos Group.
+					</li>
+				</ul>
+			</div>
+
+			<!-- MATRIX NODE 5: DEDICATED SERVERS & MINECRAFT ECOSYSTEM -->
+			<div class="legal-section-block">
+				<h3>[5] Dedicated Game Servers, Spigot, PaperMC &amp; Multiplayer Infrastructure</h3>
+				<p>
+					The Server Telemetry hub monitors connectivity, tunnel relays, and multiplayer testing endpoints for various sandbox environments:
+				</p>
+				<ul>
+					<li>
+						<strong>Spigot / SpigotMC:</strong> Test server instances and plugin pipelines utilize server software and APIs provided by the <strong>SpigotMC Project</strong>. Spigot is a high-performance, customized Minecraft server implementation built upon the Bukkit API, developed and maintained by the SpigotMC open-source community under the GNU General Public License (GPL) and Lesser General Public License (LGPL). SpigotMC is an independent open-source project and is not affiliated with Mojang AB or Microsoft Corporation.
+					</li>
+					<li>
+						<strong>PaperMC:</strong> High-performance server binaries and forks developed by the PaperMC Project, licensed under the GNU GPL.
+					</li>
+					<li>
+						<strong>Minecraft &amp; Mojang Synergies AB:</strong> Minecraft is a registered trademark of Mojang Synergies AB / Microsoft Corporation.
+					</li>
+					<li>
+						<strong>playit.gg Tunnel Relays:</strong> Server network endpoints and port allocation tunnels (including <code>.ply.gg</code> hostnames) are routed through the independent <strong>playit.gg</strong> tunneling service. Sub-Space Link Labs is not affiliated with playit.gg.
+					</li>
+					<li>
+						<strong>mcstatus.io API:</strong> Real-time server ping telemetry, player count statistics, and online status checks are retrieved via the public API service provided by <strong>mcstatus.io</strong>.
+					</li>
+					<li>
+						<strong>Dedicated Server &amp; Crossplay Protocols:</strong> Planned integration slots for Steam Dedicated Server (Valve Corporation) and Palworld (Pocketpair, Inc.) are non-commercial technical references for compatibility testing.
+					</li>
+				</ul>
+				<div class="notice-callout">
+					<strong>MINECRAFT COMPLIANCE NOTICE:</strong><br>
+					NOT AN OFFICIAL MINECRAFT PRODUCT OR SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT. Reference to Minecraft, Java Edition, and Bedrock Edition is strictly for technical connectivity configuration and multiplayer server compatibility identification.
+				</div>
+			</div>
+
+			<!-- MATRIX NODE 6: 3D MODELING & CREATIVE TOOLSETS -->
+			<div class="legal-section-block">
+				<h3>[6] 3D Modeling, Tooling &amp; Creative Asset Pipeline</h3>
+				<p>
+					Visual assets and staging models displayed across this environment are authored and processed using specialized open-source and third-party software:
+				</p>
+				<ul>
+					<li>
+						<strong>Blender:</strong> 3D spaceship models, topological mesh testing assets (including <code>lab-test-model.glb</code>), and devlog renders are created using <strong>Blender</strong>, the open-source 3D creation suite &copy; Blender Foundation, licensed under the GNU GPL.
+					</li>
+					<li>
+						<strong>glTF / GLB Format:</strong> 3D transmission asset formats are based on the open standard specified by the <strong>Khronos Group</strong>.
+					</li>
+					<li>
+						<strong>Development &amp; Prototyping Editors:</strong> Interface layouts and rapid prototypes may reference or utilize developer tools such as Koder (iKoder), GrapesJS (Artf), and CodeSandbox (CodeSandbox B.V.).
+					</li>
+					<li>
+						<strong>Content Delivery &amp; Placeholder Utilities:</strong> Remote assets and placeholder mockups utilize public utility networks including unpkg.com, jsDelivr, and placehold.co.
+					</li>
+				</ul>
+			</div>
+
+			<!-- MATRIX NODE 7: MOBILE LAUNCHERS & HOSTING CHANNELS -->
+			<div class="legal-section-block">
+				<h3>[7] Mobile Protocols, Deep Linking &amp; Hosting Architecture</h3>
+				<p>
+					<strong>Custom App Protocol Relays:</strong> The experimental mobile app connector utilizes the custom URI protocol scheme <code>subspacelinklabs://</code> to attempt local mobile application launching on iOS, iPadOS, and compatible mobile operating systems.
+				</p>
+				<p>
+					<strong>Deployment Pipeline:</strong> This static web environment is hosted and deployed via modern cloud deployment platforms including <strong>Netlify</strong> and <strong>GitHub Pages</strong> (GitHub, Inc. / Microsoft Corporation).
 				</p>
 			</div>
 
-			<!-- MATRIX NODE 4: GODOT ENGINE ACKNOWLEDGMENT -->
+			<!-- MATRIX NODE 8: CONSOLIDATED THIRD-PARTY TRADEMARK INSULATION -->
 			<div class="legal-section-block">
-				<h3>[4] Engine Integration Disclaimers</h3>
+				<h3>[8] Consolidated Third-Party Trademark Matrix &amp; Nominative Fair Use</h3>
 				<p>
-					This test environment is configured to deploy builds created using the <strong>Godot Engine 4</strong>. Godot is an open-source community project distributed freely under the permissive MIT License. Full engine copyright holder notices, developer attributions, and software liability protections are transparently documented within our core public project repository.
+					All third-party trademarks, service marks, trade names, product names, and brand logos cited on this website are the property of their respective owners:
+				</p>
+				<ul class="trademark-list">
+					<li><strong>Apple, iOS, iPadOS, and Safari</strong> are registered trademarks of Apple Inc.</li>
+					<li><strong>Blender</strong> is a registered trademark of the Blender Foundation.</li>
+					<li><strong>CodeSandbox</strong> is a trademark of CodeSandbox B.V.</li>
+					<li><strong>GitHub and GitHub Pages</strong> are registered trademarks of GitHub, Inc. / Microsoft Corporation.</li>
+					<li><strong>Godot and Godot Engine</strong> are registered trademarks of Juan Linietsky and Ariel Manzur.</li>
+					<li><strong>GrapesJS</strong> is a trademark of Artur Arseniev (Artf).</li>
+					<li><strong>Google and &lt;model-viewer&gt;</strong> are trademarks of Google LLC.</li>
+					<li><strong>Koder</strong> is a trademark of its respective developers.</li>
+					<li><strong>Minecraft, Mojang, and Bukkit</strong> are registered trademarks of Mojang Synergies AB / Microsoft Corporation.</li>
+					<li><strong>Netlify</strong> is a registered trademark of Netlify, Inc.</li>
+					<li><strong>Palworld</strong> is a trademark of Pocketpair, Inc.</li>
+					<li><strong>PaperMC</strong> is an independent trademark of the PaperMC Project.</li>
+					<li><strong>playit.gg</strong> is a trademark of its respective network operators.</li>
+					<li><strong>Spigot and SpigotMC</strong> are trademarks of the SpigotMC Project.</li>
+					<li><strong>Steam and the Steam logo</strong> are registered trademarks of Valve Corporation.</li>
+					<li><strong>Three.js</strong> is a trademark / open-source project of Ricardo Cabello and contributors.</li>
+				</ul>
+				<p style="margin-top: 15px;">
+					<strong>NOMINATIVE FAIR USE &amp; NON-AFFILIATION STATEMENT:</strong><br>
+					All third-party brand names, engine titles, server binary references, and toolkits cited across this website are used strictly for <em>nominative, descriptive, non-commercial identification, technical compatibility tracking, and devlog documentation</em> under Fair Use guidelines. Sub-Space Link Labs Good Game Design &amp; Devlogs (SSLLGGD&D™) and Josh Wade operate completely independently and maintain no direct corporate affiliation, endorsement, sponsorship, partnership, or official validation with any of the trademark holders listed above.
 				</p>
 			</div>
 
-			<!-- MATRIX NODE 5: THIRD-PARTY TRADEMARK INSULATION -->
+			<!-- MATRIX NODE 9: DISCLAIMER OF WARRANTIES -->
 			<div class="legal-section-block">
-				<h3>[5] Consolidated Third-Party Trademark Insulation</h3>
+				<h3>[9] Disclaimer of Warranties &amp; Limitation of Liability</h3>
 				<p>
-					<strong>LEGAL &amp; TRADEMARK NOTICES:</strong><br>
-					• "Godot" and "Godot Engine" are registered trademarks of Juan Linietsky and Ariel Manzur.<br>
-					• "Blender" is a registered trademark of the Blender Foundation.<br>
-					• "Minecraft" is a registered trademark of Mojang Synergies AB / Microsoft Corporation.<br>
-					• "PaperMC" and its core server binaries are independent trademarks of the PaperMC Project.<br>
-					• "playit.gg" is a trademark of its respective network operators.<br>
-					• "iOS" and "iPadOS" are registered trademarks of Apple Inc.<br>
-					• "GitHub Pages" is a registered trademark of GitHub, Inc.<br><br>
-					All other referenced product names, logos, code editors (Koder, GrapesJS, CodeSandbox), and developer brands are the sole property of their respective owners. Reference to these third-party platforms, hardware frameworks, development tools, and custom server binaries on this interface is strictly for nominative, non-commercial, technical tracking and operational environment documentation under Fair Use guidelines. This test environment operates completely independently and has no official endorsement, sponsorship, partnership, or corporate affiliation with any of the entities listed above.
+					All interactive builds, experimental arcade cabinets, engine sandboxes, telemetry relays, and devlog materials are provided strictly on an <strong>"AS-IS"</strong> and <strong>"AS-AVAILABLE"</strong> basis for testing, hobbyist showcase, and developmental evaluation purposes, without warranties of any kind, either express or implied.
+				</p>
+				<p>
+					In no event shall the studio owner, Josh Wade, or Sub-Space Link Labs be liable for any direct, indirect, incidental, or consequential damages arising from the use, inability to use, or execution of client-side scripts, local browser storage data, canvas graphics, or external network server tunnel links provided on this site.
 				</p>
 			</div>
 
 			<!-- MASTER ABSOLUTE PRODUCTION RETURN COMMAND RELAY -->
-<a href="./index.html" class="action-btn" style="background: #12121c; border: 1px solid #232334; margin-top: 10px; display: inline-block; text-decoration: none; text-align: center;">🔙 Return to Main Command Hub</a>
+			<a href="./index.html" class="action-btn" style="background: #12121c; border: 1px solid #232334; margin-top: 10px; display: inline-block; text-decoration: none; text-align: center;">🔙 Return to Main Command Hub</a>
 		</section>
 
 	</main>
@@ -122,8 +278,13 @@
 	<!-- MASTER FOOTER BLOCK -->
 	<footer class="lab-footer">
 		<p class="legal-text">
-			&copy; 2026 <strong>Josh Wade</strong> / <strong>Sub-Space Link Labs Good Game Design & Devlogs</strong>. All Rights Reserved.
+			&copy; 2026 <strong>Josh Wade</strong> / <strong>Sub-Space Link Labs Good Game Design &amp; Devlogs</strong>. All Rights Reserved.
 		</p>
+		<ul class="legal-links">
+			<li><a href="legal.html">Legal, Terms &amp; Privacy</a></li>
+			<li>|</li>
+			<li><a href="./index.html">Main Command Hub</a></li>
+		</ul>
 	</footer>
 
 </body>
