@@ -55,6 +55,7 @@
       <button id="preview-page" type="button">Preview</button>
       <button id="undo" type="button" title="Undo last change">Undo</button>
       <button id="redo" type="button" title="Redo last change">Redo</button>
+      <button id="close-editor" type="button">Close Editor</button>
       <span class="spacer"></span>
       <span id="editor-status" class="editor-status">Local edits only</span>
       <button id="export-html" type="button">Export HTML</button>
@@ -163,6 +164,7 @@
     });
     document.getElementById('undo').addEventListener('click', () => editor.runCommand('core:undo'));
     document.getElementById('redo').addEventListener('click', () => editor.runCommand('core:redo'));
+    document.getElementById('close-editor').addEventListener('click', () => window.close());
     document.getElementById('export-html').addEventListener('click', () => download(pageSelect.value, editor.getHtml({ cleanId: true }), 'text/html'));
     document.getElementById('export-css').addEventListener('click', () => download(pageSelect.value.replace('.html', '.css'), editor.getCss(), 'text/css'));
 
