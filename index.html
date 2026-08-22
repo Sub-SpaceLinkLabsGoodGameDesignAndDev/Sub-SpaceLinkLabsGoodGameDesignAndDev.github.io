@@ -17,8 +17,6 @@
 <link rel="stylesheet" href="./css/style.css">
 	
 	<!-- Embedded Multi-Platform 3D Mesh Rendering Engine Matrix -->
-	
-<script type="module" src="https://unpkg.com/three@0.174.0/build/three.module.min.js"></script>
 </head>
 	
 <body>
@@ -120,15 +118,20 @@
 			<h3>Interactive Engine Mesh Viewport</h3>
 			<p>Direct vector topology interaction layout node. Click and drag or swipe on your phone screen to orbit and inspect the test asset topology.</p>
 			
-			<div class="threed-viewport-container">
-				<!-- High-performance open-source testing model -->
-				<model-viewer 
-					src="./img/lab-test-model.glb" 
-					alt="Sub-Space Lab Interactive Test Asset Mesh" 
-					auto-rotate 
-					camera-controls 
-					touch-action="pan-y">
-				</model-viewer>
+			<div class="threed-viewer-toolbar">
+				<span class="threed-viewer-label">3D Ship Viewer</span>
+				<div class="threed-viewer-controls">
+					<label class="threed-viewer-select-wrap" for="model-selector">
+						<span>Model</span>
+						<select id="model-selector" aria-label="Choose 3D model">
+							<option value="lab-test-model">Pirate Ship</option>
+						</select>
+					</label>
+					<button id="three-viewer-fullscreen" class="full-screen-btn" type="button" aria-label="Toggle fullscreen 3D model viewer">Full Screen</button>
+				</div>
+			</div>
+			<div id="three-viewport-shell" class="threed-viewport-container">
+				<div id="three-viewer" aria-label="Interactive 3D model viewer"></div>
 			</div>
 		</section>
 
@@ -147,13 +150,13 @@
 
 				<!-- Mock Render 2 -->
 				<div class="gallery-item" data-gjs-draggable="true" data-gjs-name="Gallery Image Slot 2">
-					<img src="https://placehold.co" alt="Blender Model Render Staging" class="gallery-img">
+					<img src="./img/IGLIbackground1.png" alt="Blender Model Render Staging" class="gallery-img">
 					<div class="gallery-caption">Model Asset Node Beta</div>
 				</div>
 
 				<!-- Mock Render 3 -->
 				<div class="gallery-item" data-gjs-draggable="true" data-gjs-name="Gallery Image Slot 3">
-					<img src="https://placehold.co" alt="Blender Model Render Staging" class="gallery-img">
+					<img src="./img/IGLIship.png" alt="Blender Model Render Staging" class="gallery-img">
 					<div class="gallery-caption">Model Asset Node Gamma</div>
 				</div>
 
@@ -198,6 +201,391 @@
 		});
  </script>
 
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.174.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.174.0/examples/jsm/"
+    }
+  }
+</script>
 <script src="./js/script.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const container = document.getElementById('three-viewer');
+const viewportShell = document.getElementById('three-viewport-shell');
+const fullscreenBtn = document.getElementById('three-viewer-fullscreen');
+
+if (!container) {
+  console.warn('3D viewer container not found.');
+} else {
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x020812);
+  scene.fog = new THREE.Fog(0x020812, 20, 110);
+
+  const camera = new THREE.PerspectiveCamera(30, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.position.set(0, 5, 26);
+  camera.lookAt(0, 0, 0);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(container.clientWidth || 600, container.clientHeight || 420);
+  renderer.setClearColor(0x020812, 1);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.9;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.domElement.style.display = 'block';
+  renderer.domElement.style.width = '100%';
+  renderer.domElement.style.height = '100%';
+  renderer.domElement.style.maxWidth = '100%';
+  container.appendChild(renderer.domElement);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.enablePan = true;
+  controls.enableZoom = true;
+  controls.autoRotate = false;
+  controls.minDistance = 1.6;
+  controls.maxDistance = 35;
+  controls.zoomToCursor = true;
+  controls.target.set(0, 0, 0);
+  controls.mouseButtons = {
+    LEFT: THREE.MOUSE.ROTATE,
+    MIDDLE: THREE.MOUSE.DOLLY,
+    RIGHT: THREE.MOUSE.PAN
+  };
+  controls.touches = {
+    ONE: THREE.TOUCH.ROTATE,
+    TWO: THREE.TOUCH.DOLLY_PAN
+  };
+  controls.screenSpacePanning = true;
+  renderer.domElement.style.touchAction = 'none';
+
+  const woodTexture = (() => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 512;
+    canvas.height = 512;
+
+    ctx.fillStyle = '#6b3518';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let y = 0; y < canvas.height; y += 8) {
+      const wave = 12 + ((y / canvas.height) * 18);
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      for (let x = 0; x <= canvas.width; x += 8) {
+        const offset = Math.sin((x * 0.18) + (y * 0.12)) * wave;
+        ctx.lineTo(x, y + offset);
+      }
+      ctx.strokeStyle = 'rgba(28, 12, 4, 0.38)';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    }
+
+    for (let x = 0; x < canvas.width; x += 28) {
+      ctx.fillStyle = 'rgba(255, 218, 150, 0.14)';
+      ctx.fillRect(x, 0, 3, canvas.height);
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(2.3, 1.6);
+    texture.needsUpdate = true;
+    return texture;
+  })();
+
+  const hemi = new THREE.HemisphereLight(0xe8f7ff, 0x10140f, 2.8);
+  scene.add(hemi);
+
+  const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+  scene.add(ambientLight);
+
+  const keyLight = new THREE.DirectionalLight(0xffedc2, 5.2);
+  keyLight.position.set(14, 18, 12);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(2048, 2048);
+  scene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0x86bfff, 2.1);
+  fillLight.position.set(-18, 10, -8);
+  scene.add(fillLight);
+
+  const rimLight = new THREE.DirectionalLight(0xff7457, 3.4);
+  rimLight.position.set(-10, 6, 20);
+  scene.add(rimLight);
+
+  // Removed the circular base plane to avoid the ocean-disk look and keep the ship as the focus.
+
+  const loader = new GLTFLoader();
+  const viewerModels = [
+    { id: 'lab-test-model', label: 'Pirate Ship', path: './img/lab-test-model.glb' }
+  ];
+
+  const modelSelector = document.getElementById('model-selector');
+  if (modelSelector) {
+    const currentValue = modelSelector.value;
+    modelSelector.innerHTML = '';
+    viewerModels.forEach((model) => {
+      const option = document.createElement('option');
+      option.value = model.id;
+      option.textContent = model.label;
+      if (currentValue === model.id) option.selected = true;
+      modelSelector.appendChild(option);
+    });
+  }
+
+  function applyShipMaterials(object) {
+    object.traverse((child) => {
+      if (child.isLine || child.isLineSegments || child.isPoints) {
+        child.visible = false;
+        return;
+      }
+
+      if (!child.isMesh || !child.material) return;
+
+      const materialList = Array.isArray(child.material) ? child.material : [child.material];
+      const materialCopies = materialList.map((material) => material && material.clone ? material.clone() : material);
+      child.material = Array.isArray(child.material) ? materialCopies : materialCopies[0];
+      materialCopies.forEach((material) => {
+        if (!material) return;
+
+        const partNames = [];
+        let part = child;
+        while (part) {
+          if (part.name) partNames.push(part.name.toLowerCase());
+          part = part.parent;
+        }
+        const name = partNames.join(' ');
+        const woodBrown = new THREE.Color(0x9b5b2b);
+        const stairWood = new THREE.Color(0x8c4a22);
+        const sailBlack = new THREE.Color(0x0d1117);
+        const captainGold = new THREE.Color(0xffd34f);
+        const spindleMetal = new THREE.Color(0xffa8b8);
+
+        if (material.isMeshStandardMaterial) {
+          material.side = THREE.DoubleSide;
+          material.envMapIntensity = 1.25;
+          material.roughness = 0.68;
+          material.metalness = 0.14;
+
+          if (name.includes('sail')) {
+            material.color.copy(sailBlack);
+            material.emissive = new THREE.Color(0x10151b);
+            material.emissiveIntensity = 0.24;
+            material.map = null;
+          } else if (name.includes('captainsdoorhandles') || name.includes('captainsdoorhandles001')) {
+            material.color.copy(captainGold);
+            material.roughness = 0.16;
+            material.metalness = 0.92;
+            material.clearcoat = 0.6;
+            material.clearcoatRoughness = 0.12;
+            material.map = null;
+            material.emissive = new THREE.Color(0x2a1804);
+            material.emissiveIntensity = 0.04;
+          } else if (name.includes('stairdoor') || name.includes('stairhatch')) {
+            material.color.copy(stairWood);
+            material.roughness = 0.78;
+            material.metalness = 0.05;
+            material.map = woodTexture;
+          } else if (name.includes('circle')) {
+            material.color.copy(spindleMetal);
+            material.roughness = 0.18;
+            material.metalness = 0.9;
+            material.clearcoat = 0.55;
+            material.clearcoatRoughness = 0.14;
+            material.map = null;
+            material.emissive = new THREE.Color(0x2a0d16);
+            material.emissiveIntensity = 0.04;
+          } else {
+            material.color.copy(woodBrown);
+            material.emissive = new THREE.Color(0x1d120b);
+            material.emissiveIntensity = 0.1;
+            material.roughness = 0.8;
+            material.map = woodTexture;
+
+            if (name.includes('cylinder') || name.includes('mast') || name.includes('wheel') || name.includes('door')) {
+              material.color.offsetHSL(0.02, -0.06, 0.04);
+            }
+          }
+        }
+
+        if (material.isMeshBasicMaterial) {
+          material.transparent = true;
+          material.opacity = 1;
+        }
+      });
+
+      child.castShadow = true;
+      child.receiveShadow = true;
+    });
+  }
+
+  function fitModelToView(model) {
+    model.updateMatrixWorld(true);
+
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+
+    const maxDim = Math.max(size.x, size.y, size.z, 1);
+    const desiredScale = 10 / maxDim;
+    model.scale.setScalar(desiredScale);
+
+    model.rotation.x = 0.22;
+    model.rotation.y = Math.PI * 0.7;
+    model.rotation.z = 0.06;
+    model.position.set(-center.x, -center.y - 1.2, -center.z);
+  }
+
+  function loadShipModel(modelPath, modelLabel) {
+    return new Promise((resolve, reject) => {
+      loader.load(
+        modelPath,
+        (gltf) => {
+          const loadedScene = gltf && (gltf.scene || (gltf.scenes && gltf.scenes[0]) || gltf.root) || null;
+
+          if (!loadedScene || typeof loadedScene.traverse !== 'function') {
+            console.error('GLTF load succeeded but no valid scene hierarchy was returned.', gltf);
+            container.innerHTML = '<div class="viewer-error">Unable to load the 3D model. The asset did not expose a valid scene root.</div>';
+            reject(new Error('Invalid GLTF scene root'));
+            return;
+          }
+
+          const shipAnchor = loadedScene.getObjectByName('PirateShip') || loadedScene.getObjectByName('Pirate Ship') || loadedScene;
+          const shipRoot = shipAnchor.clone(true);
+          shipRoot.name = modelLabel || 'PirateShipRoot';
+
+          if (shipRoot.children.length === 0) {
+            console.error('No ship meshes were found in the loaded model.');
+            reject(new Error('No meshes found in GLTF model'));
+            return;
+          }
+
+          fitModelToView(shipRoot);
+          applyShipMaterials(shipRoot);
+
+          const existingModel = scene.children.find((child) => child.userData && child.userData.isViewerModel);
+          if (existingModel) {
+            scene.remove(existingModel);
+          }
+
+          shipRoot.userData.isViewerModel = true;
+          scene.add(shipRoot);
+
+          try {
+            window.__ssllggdThreeViewer = {
+              scene,
+              camera,
+              renderer,
+              shipRoot,
+              modelName: shipRoot.name || 'loaded-scene'
+            };
+          } catch (error) {
+            console.warn('Viewer debug hook failed:', error);
+          }
+
+          console.log('Viewer loaded model:', modelLabel || modelPath);
+          resolve(shipRoot);
+        },
+        (progressEvent) => {
+          if (progressEvent.total > 0) {
+            const loaded = (progressEvent.loaded / progressEvent.total) * 100;
+            console.log(`Model load progress: ${loaded.toFixed(0)}%`);
+          }
+        },
+        (error) => {
+          console.error('Failed to load GLB model:', error);
+          container.innerHTML = '<div class="viewer-error">Unable to load the 3D model. Check that ./img/lab-test-model.glb exists.</div>';
+          reject(error);
+        }
+      );
+    });
+  }
+
+  const defaultModel = viewerModels[0];
+  if (modelSelector) {
+    modelSelector.addEventListener('change', async (event) => {
+      const selected = viewerModels.find((model) => model.id === event.target.value);
+      if (!selected) return;
+      try {
+        await loadShipModel(selected.path, selected.label);
+      } catch (error) {
+        console.warn('Model switch failed:', error);
+      }
+    });
+  }
+
+  loadShipModel(defaultModel.path, defaultModel.label).catch((error) => {
+    console.warn('Initial model load failed:', error);
+  });
+
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  animate();
+
+  const resizeObserver = new ResizeObserver(() => {
+    const width = container.clientWidth || 600;
+    const height = container.clientHeight || 420;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  });
+
+  resizeObserver.observe(container);
+
+  const syncFullscreenState = () => {
+    const isFullscreen = document.fullscreenElement === viewportShell;
+    viewportShell.classList.toggle('is-fullscreen', isFullscreen);
+    if (fullscreenBtn) {
+      fullscreenBtn.textContent = isFullscreen ? 'Exit Full Screen' : 'Full Screen';
+    }
+
+    if (viewportShell) {
+      const width = isFullscreen ? window.innerWidth : container.clientWidth || 600;
+      const height = isFullscreen ? window.innerHeight : container.clientHeight || 420;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    }
+  };
+
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener('click', async () => {
+      try {
+        if (!document.fullscreenElement) {
+          await viewportShell.requestFullscreen();
+        } else {
+          await document.exitFullscreen();
+        }
+      } catch (error) {
+        console.warn('Fullscreen toggle failed:', error);
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && document.fullscreenElement === viewportShell) {
+      document.exitFullscreen().catch(() => {});
+    }
+  });
+
+  document.addEventListener('fullscreenchange', syncFullscreenState);
+
+  if (renderer.domElement) {
+    renderer.domElement.style.background = '#020812';
+  }
+}
+</script>
 
 </html>
