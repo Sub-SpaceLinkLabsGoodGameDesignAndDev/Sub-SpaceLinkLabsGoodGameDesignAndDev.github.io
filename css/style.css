@@ -435,6 +435,23 @@ body {
 .legal-links a:hover {
 	color: #29abe2;
 }
+.editor-toggle {
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	line-height: 28px;
+	margin-left: 4px;
+	border: 1px solid transparent;
+	border-radius: 50%;
+	font-size: 16px;
+	text-align: center;
+}
+.editor-toggle:hover,
+.editor-toggle:focus-visible {
+	border-color: #29abe2;
+	background: #12121c;
+	outline: none;
+}
 
 /* Custom Webkit Scrollbars */
 /* Webkit search optimizations */
