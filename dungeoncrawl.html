@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Retro Dungeon Crawler</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #eee;
+            font-family: monospace;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        #game-container {
+            display: inline-block;
+            position: relative;
+            border: 4px solid #444;
+            background: #000;
+        }
+        canvas {
+            display: block;
+            background: #222;
+        }
+        #ui {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
 
+<div id="game-container">
+    <canvas id="screen" width="320" height="200"></canvas>
+</div>
+<div id="ui">Use W, A, S, D or Arrow Keys to Move/Turn</div>
+
+<script>
+const canvas = document.getElementById("screen");
+const ctx = canvas.getContext("2d");
+
+const map = [,
+ ,
+ ,
+ ,
+ ,
+ ,
+ ,
+    [1,1,1,1,1,1,1,1]
+];
+// let classes = {
+    fighter: 
+    }
+  //  let classcoice = {   }
+let player = {
+    name: ""
+    x: 2.5,
+    y: 2.5,
+    dir: 0, // angle
+    fov: Math.PI / 3
+    hp: 100,
+    maxHp: 100,
+    experience 0,
+    level: 1,
+    gold: 0,
+    inventory: []
+    equipment: []
+};
+//  let party = {
+//  playername:
+//  players choice npc party member here:
+//  players choice npc party member here:  
+//  gold: 0,
+//  inventory: []
+// }; 
