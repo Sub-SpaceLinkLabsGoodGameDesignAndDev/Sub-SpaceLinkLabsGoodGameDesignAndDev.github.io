@@ -153,6 +153,9 @@
     document.getElementById('load-page').addEventListener('click', () => loadPage(pageSelect.value).catch((error) => {
       status.textContent = error.message;
     }));
+    pageSelect.addEventListener('change', () => loadPage(pageSelect.value).catch((error) => {
+      status.textContent = error.message;
+    }));
     document.getElementById('preview-page').addEventListener('click', () => {
       const preview = window.open('', '_blank');
       preview.document.write(editor.getHtml({ cleanId: true }) + '<style>' + editor.getCss() + '</style>');
