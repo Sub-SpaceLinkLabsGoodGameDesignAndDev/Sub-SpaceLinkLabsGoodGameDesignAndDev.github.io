@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local Site Editor | SSLLGGD&D</title>
+  <link rel="stylesheet" href="https://unpkg.com/grapesjs@0.22.8/dist/css/grapes.min.css">
+  <style>
+    :root {
+      color-scheme: dark;
+      --editor-bg: #111820;
+      --panel-bg: #1b2630;
+      --border: #33434d;
+      --text: #e7eef2;
+      --muted: #9aacb5;
+      --accent: #f0b84b;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; overflow: hidden; background: var(--editor-bg); color: var(--text); font: 14px system-ui, sans-serif; }
+    .editor-shell { display: grid; grid-template-rows: 58px 1fr; height: 100%; }
+    .editor-toolbar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); background: #0d1319; }
+    .editor-toolbar h1 { margin: 0 12px 0 0; font-size: 16px; font-weight: 700; white-space: nowrap; }
+    .editor-toolbar select, .editor-toolbar button { min-height: 34px; border: 1px solid var(--border); border-radius: 4px; background: var(--panel-bg); color: var(--text); padding: 0 11px; }
+    .editor-toolbar button { cursor: pointer; }
+    .editor-toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+    .editor-toolbar .spacer { flex: 1; }
+    .editor-status { color: var(--muted); font-size: 12px; }
+    #gjs { min-height: 0; height: 100%; }
+    .gjs-one-bg { background-color: var(--panel-bg); }
+    .gjs-two-color { color: var(--text); }
+    .gjs-three-bg { background-color: #26343d; color: var(--text); }
+    .gjs-four-color, .gjs-four-color-h:hover { color: var(--accent); }
+    .gjs-pn-panels { font-family: system-ui, sans-serif; }
+    @media (max-width: 760px) {
+      .editor-toolbar h1 { display: none; }
+      .editor-status { display: none; }
+      .editor-toolbar { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="editor-shell">
+    <header class="editor-toolbar">
+      <h1>Local Site Editor</h1>
+      <label for="page-select">Page</label>
+      <select id="page-select" aria-label="Choose page">
+        <option value="index.html">Home</option>
+        <option value="servers.html">Servers</option>
+        <option value="game.html">Game</option>
+        <option value="arcade.html">Arcade</option>
+        <option value="legal.html">Legal</option>
+      </select>
+      <button id="load-page" type="button">Load</button>
+      <button id="preview-page" type="button">Preview</button>
+      <button id="undo" type="button" title="Undo last change">Undo</button>
+      <button id="redo" type="button" title="Redo last change">Redo</button>
+      <span class="spacer"></span>
+      <span id="editor-status" class="editor-status">Local edits only</span>
+      <button id="export-html" type="button">Export HTML</button>
+      <button id="export-css" type="button">Export CSS</button>
+    </header>
+    <main id="gjs" aria-label="Drag and drop website editor"></main>
+  </div>
+
+  <script src="https://unpkg.com/grapesjs@0.22.8/dist/grapes.min.js"></script>
+  <script>
+    const pageSelect = document.getElementById('page-select');
+    const status = document.getElementById('editor-status');
+    const pageCache = new Map();
+
+    const editor = grapesjs.init({
+      container: '#gjs',
+      height: '100%',
+      fromElement: false,
+      storageManager: false,
+      selectorManager: { componentFirst: true },
+      deviceManager: {
+        devices: [
+          { id: 'desktop', name: 'Desktop', width: '' },
+          { id: 'tablet', name: 'Tablet', width: '768px', widthMedia: '992px' },
+          { id: 'mobile', name: 'Mobile', width: '375px', widthMedia: '480px' }
+        ]
+      },
+      blockManager: {
+        blocks: [
+          { id: 'section', label: 'Section', category: 'Layout', content: '<section class="studio-card"><h2>New section</h2><p>Editable content</p></section>' },
+          { id: 'card', label: 'Card', category: 'Layout', content: '<article class="nav-card"><h3>New card</h3><p>Card description</p><a class="card-link" href="#">Open</a></article>' },
+          { id: 'heading', label: 'Heading', category: 'Basic', content: '<h2>New heading</h2>' },
+          { id: 'text', label: 'Text', category: 'Basic', content: '<p>New paragraph</p>' },
+          { id: 'button', label: 'Button', category: 'Basic', content: '<a class="card-link" href="#">Button</a>' },
+          { id: 'image', label: 'Image', category: 'Basic', content: { type: 'image' } }
+        ]
+      },
+      assetManager: { upload: false, embedAsBase64: true },
+      canvas: { styles: [] }
+    });
+
+    async function loadPage(pageName) {
+      status.textContent = 'Loading ' + pageName + '...';
+      let source = pageCache.get(pageName);
+      if (!source) {
+        const response = await fetch(pageName, { cache: 'no-store' });
+        if (!response.ok) throw new Error('Could not load ' + pageName);
+        source = await response.text();
+        pageCache.set(pageName, source);
+      }
+
+      const parsed = new DOMParser().parseFromString(source, 'text/html');
+      const body = parsed.body.cloneNode(true);
+      body.querySelectorAll('script, #gjs, .editor-shell').forEach((node) => node.remove());
+      body.querySelectorAll('[data-gjs-type="container"]').forEach((node) => node.removeAttribute('data-gjs-type'));
+      const externalStyles = Array.from(parsed.querySelectorAll('link[rel="stylesheet"]'))
+        .map((link) => link.getAttribute('href'))
+        .filter(Boolean);
+      const inlineStyles = Array.from(parsed.querySelectorAll('style')).map((style) => style.textContent).join('\n');
+      const externalCss = await Promise.all(externalStyles.map(async (href) => {
+        try {
+          const stylesheet = await fetch(new URL(href, window.location.href), { cache: 'no-store' });
+          return stylesheet.ok ? await stylesheet.text() : '';
+        } catch (error) {
+          return '';
+        }
+      }));
+      const canvasOverrides = `
+        html, body {
+          min-height: 100%;
+          background: radial-gradient(circle at center, #12121f 0%, #0b0b10 100%);
+          color: #e2e2e8;
+        }
+        body {
+          margin: 0;
+          padding: 0;
+        }
+      `;
+      const css = inlineStyles + '\n' + externalCss.join('\n') + '\n' + canvasOverrides;
+
+      editor.setComponents(body.innerHTML);
+      editor.setStyle(css);
+      status.textContent = pageName + ' loaded · local edits only';
+    }
+
+    function download(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('load-page').addEventListener('click', () => loadPage(pageSelect.value).catch((error) => {
+      status.textContent = error.message;
+    }));
+    document.getElementById('preview-page').addEventListener('click', () => {
+      const preview = window.open('', '_blank');
+      preview.document.write(editor.getHtml({ cleanId: true }) + '<style>' + editor.getCss() + '</style>');
+      preview.document.close();
+    });
+    document.getElementById('undo').addEventListener('click', () => editor.runCommand('core:undo'));
+    document.getElementById('redo').addEventListener('click', () => editor.runCommand('core:redo'));
+    document.getElementById('export-html').addEventListener('click', () => download(pageSelect.value, editor.getHtml({ cleanId: true }), 'text/html'));
+    document.getElementById('export-css').addEventListener('click', () => download(pageSelect.value.replace('.html', '.css'), editor.getCss(), 'text/css'));
+
+    loadPage(pageSelect.value).catch((error) => { status.textContent = error.message; });
+  </script>
+</body>
+</html>

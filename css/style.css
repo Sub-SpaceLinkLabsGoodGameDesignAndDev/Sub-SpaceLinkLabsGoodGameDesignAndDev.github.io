@@ -126,6 +126,67 @@ body {
 	border: 2px dashed #34344a;
 	background: rgba(26, 26, 38, 0.4);
 }
+.content-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 15px;
+	width: 100%;
+}
+.universal-card {
+	background: #12121c;
+	border: 1px solid #232334;
+	border-radius: 6px;
+	padding: 20px;
+	box-sizing: border-box;
+}
+.studio-card,
+.server-header-card,
+.server-node-card,
+.engine-card,
+.arcade-header-card,
+.cabinet-card,
+.legal-document-card {
+	box-sizing: border-box;
+}
+.card-slot-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 20px;
+	width: 100%;
+}
+.card-slot-grid > * {
+	min-width: 0;
+}
+.universal-card h3,
+.universal-card h4 {
+	margin: 0 0 10px;
+	color: #ffffff;
+}
+.universal-card p {
+	margin: 0 0 14px;
+	color: #a0a0b0;
+	font-size: 14px;
+	line-height: 1.5;
+}
+.placeholder-card {
+	min-height: 150px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	box-shadow: inset 0 0 0 1px rgba(41, 171, 226, 0.08);
+}
+.placeholder-card .placeholder-label {
+	margin: 0 0 8px;
+	color: #29abe2;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+.placeholder-card p:last-child {
+	margin-bottom: 0;
+}
 .card-link.broken {
 	background: #12121c;
 	color: #575775;
