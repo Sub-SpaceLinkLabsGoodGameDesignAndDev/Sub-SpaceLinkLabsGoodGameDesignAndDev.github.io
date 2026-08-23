@@ -32,14 +32,32 @@
 
 <div id="game-container">
     <canvas id="screen" width="320" height="200"></canvas>
+
+
+<div id="selectclass">
+    <canvas id="selectclass" width="320" height="200"></canvas>
 </div>
+
+    
 <div id="ui">Use W, A, S, D or Arrow Keys to Move/Turn</div>
 
 <script>
 const canvas = document.getElementById("screen");
 const ctx = canvas.getContext("2d");
 
-const map = [,
+
+    
+const selectclass = canvas.selectclass("Choose a class.")
+    archmage:, // uses summoned constructs as servants and direct impact damaging spells with damage types depending on type of summonned construct.
+    cleric:,  // uses divination spells to heal single or whole group.over time heals and hp buffs. cures and revives party members.
+    doppleganger:, // uses mimicing skills to have any one surronding entity's abilities as their own ability.one entity per battle possibly able to memorize skill sets.
+    enchanter:,  // uses telepathy, telekenises, and persuasion to manipulate minds and surroundings.
+    fighter:,  // tough melee fighter also proficient with archery. has skills like repost double attack etc. maneuver abilities like protect and counter attack.
+    geomancer:,  // manipulates surrounding elements, able to use vines/plants to an extent to grab and strangle.can call on elements to move shift and slam.          
+    ); 
+    
+
+  const testmap = [,
  ,
  ,
  ,
@@ -47,17 +65,29 @@ const map = [,
  ,
  ,
     [1,1,1,1,1,1,1,1]
-];
-// let classes = {
-    fighter: 
-    }
-  //  let classcoice = {   }
+];  
+
+
+    
+let gameover: = {false}    
+    
+let classchoice = {false}  
+    
+funct () chooseclass
+    if classchoice = false
+        do show canvas.selectclass
+
+            ;   
+let player.name = {""} 
+  
+
 let player = {
-    name: ""
     x: 2.5,
     y: 2.5,
     dir: 0, // angle
     fov: Math.PI / 3
+    classchoice:,     
+    name: ,
     hp: 100,
     maxHp: 100,
     experience 0,
@@ -66,10 +96,12 @@ let player = {
     inventory: []
     equipment: []
 };
-//  let party = {
-//  playername:
-//  players choice npc party member here:
-//  players choice npc party member here:  
-//  gold: 0,
-//  inventory: []
-// }; 
+  let party = {
+  player:,
+  players choice npc party member here:
+  players choice npc party member here:  
+  gold: 0,
+  inventory: []
+ }; 
+
+   
