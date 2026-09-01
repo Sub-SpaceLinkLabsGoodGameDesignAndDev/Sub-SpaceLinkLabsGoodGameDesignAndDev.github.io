@@ -1,0 +1,188 @@
+/* File: css/dungeon-spellparticles.css
+   Description: CSS for spell particle animations in the dungeon game.
+ */
+
+/* ==========================================================
+   SHARED CORE SPRITE LAYER BOUNDARIES
+   ========================================================== */
+.spell-sprite {
+  position: absolute; /* Allows layout to layer directly on top of viewport slice */
+  width: 32px;        /* FIXED: Changed from 60px to your new uniform 32px sprite baseline */
+  height: 32px;       /* FIXED: Changed from 60px to your new uniform 32px sprite baseline */
+  background-repeat: no-repeat;
+  pointer-events: none; /* Prevents animations from block-clicking canvas items */
+  z-index: 10; /* Keeps layout above ground and sky rendering slices */
+  display: inline-block;
+}
+
+/* ==========================================================
+   ARCHMAGE SPELLS
+   ========================================================== */
+.spell-sprite.vectordistortion {
+  background-image: url('../dungeon-img/sprite-PsychicAttack1.png'); 
+  animation: castSpellVectorDistortion 0.5s steps(6) infinite;
+}
+@keyframes castSpellVectorDistortion {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.arcanesurge {
+  background-image: url('../dungeon-img/sprite-PsychicAttack1.png');
+  animation: castSpellArcaneSurge 0.5s steps(6) infinite;
+}   
+/* Added missing keyframes mapping block for surge action loop */
+@keyframes castSpellArcaneSurge {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.meteorite {
+  background-image: url('../dungeon-img/Sprite-Meteorite1-sheet.png');
+  animation: castSpellMeteorite 0.5s steps(6) infinite;
+}
+@keyframes castSpellMeteorite {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.fireconstruct {
+  background-image: url('../dungeon-img/Sprite-Fireball-sheet.png');
+  animation: castSpellFireConstruct 0.5s steps(6) infinite;
+}
+@keyframes castSpellFireConstruct {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.iceconstruct {
+  background-image: url('../dungeon-img/Sprite-Fireball-sheet.png');
+  animation: castSpellIceConstruct 0.5s steps(6) infinite;
+}
+@keyframes castSpellIceConstruct {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.lightningconstruct {
+  background-image: url('../dungeon-img/Sprite-Fireball-sheet.png');
+  animation: castSpellLightningConstruct 0.5s steps(6) infinite;
+}
+@keyframes castSpellLightningConstruct {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.earthconstruct {
+  background-image: url('../dungeon-img/Sprite-Fireball-sheet.png');
+    animation: castSpellEarthConstruct 0.5s steps(6) infinite; 
+}
+@keyframes castSpellEarthConstruct {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.ironconstruct {
+  background-image: url('../dungeon-img/Sprite-Fireball-sheet.png');
+    animation: castSpellIronConstruct 0.5s steps(6) infinite;   
+}
+@keyframes castSpellIronConstruct {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.windconstruct {
+  background-image: url('../dungeon-img/Sprite-Fireball-sheet.png');
+    animation: castSpellWindConstruct 0.5s steps(6) infinite;
+    
+}
+@keyframes castSpellWindConstruct {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.waterconstruct {
+  background-image: url('../dungeon-img/Sprite-Fireball-sheet.png');
+    animation: castSpellWaterConstruct 0.5s steps(6) infinite;
+}
+@keyframes castSpellWaterConstruct {
+  from { background-position: 0px 0px; }
+ to { background-position: -192px 0px; }
+}
+
+.spell-sprite.vineconstruct {
+  background-image: url('../dungeon-img/Sprite-Fireball-sheet.png');
+    animation: castSpellVineConstruct 0.5s steps(6) infinite;   
+}
+@keyframes castSpellVineConstruct {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+/* ==========================================================
+   CLERIC SPELLS
+   ========================================================== */
+.spell-sprite.heal {
+  background-image: url('../dungeon-img/Sprite-Heal1-sheet.png');
+  animation: castSpellHeal 0.5s steps(6) infinite;
+}
+@keyframes castSpellHeal {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.revive {
+  background-image: url('../dungeon-img/Sprite-Heal1-sheet.png');
+    animation: castSpellRevive 0.5s steps(6) infinite; 
+}
+@keyframes castSpellRevive {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.cure {
+  background-image: url('../dungeon-img/Sprite-Heal1-sheet.png');
+    animation: castSpellCure 0.5s steps(6) infinite;  
+}
+@keyframes castSpellCure {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.regeneration {
+  background-image: url('../dungeon-img/Sprite-Heal1-sheet.png');
+    animation: castSpellRegeneration 0.5s steps(6) infinite;  
+}
+@keyframes castSpellRegeneration {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+/* ==========================================================
+   ADDITIONAL CLERIC SPELLS
+   ========================================================== */
+.spell-sprite.devineprotection {
+  background-image: url('../dungeon-img/Sprite-Heal1-sheet.png');
+    animation: castSpellDevineProtection 0.5s steps(6) infinite; 
+}
+@keyframes castSpellDevineProtection {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.holywater {
+  background-image: url('../dungeon-img/Sprite-Heal1-sheet.png');
+    animation: castSpellHolyWater 0.5s steps(6) infinite; 
+}
+@keyframes castSpellHolyWater {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
+
+.spell-sprite.devinelight {
+  background-image: url('../dungeon-img/Sprite-Heal1-sheet.png');
+    animation: castSpellDevineLight 0.5s steps(6) infinite; 
+}
+@keyframes castSpellDevineLight {
+  from { background-position: 0px 0px; }
+  to { background-position: -192px 0px; }
+}
