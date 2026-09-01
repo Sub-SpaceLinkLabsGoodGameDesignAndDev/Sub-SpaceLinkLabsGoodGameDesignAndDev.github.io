@@ -1,0 +1,238 @@
+<!-- Dungeon crawl game interface. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Project IGLI | Dungeon Arcade Node</title>
+    <link rel="stylesheet" href="css/dungeon.css">
+    <link rel="stylesheet" href="css/dungeon-spellparticles.css">
+</head>
+<body>
+
+<div id="arcade-shell">
+    <!-- TOP ADMINISTRATIVE UTILITY BAR -->
+    <div class="control-header">
+        <span class="system-status">⚡ ARCADE NODE ACTIVE</span>
+        <div class="header-actions">
+            <button id="reset-btn" class="action-btn" type="button">↻ RESTART</button>
+            <button id="fullscreen-btn" class="action-btn">📺 FULLSCREEN</button>
+        </div>
+    </div>
+
+    <!-- MAIN APP LAYOUT VIEWPORT MATRIX -->
+    <div class="viewport-matrix">
+        <!-- RENDER DEVICE VIEWBOX -->
+        <div class="screen-box">
+            <canvas id="screen" width="320" height="200"></canvas>
+        </div>
+
+        <!-- RIGHT PANEL CONTEXT CONSOLE -->
+        <div class="console-hud">
+            <div class="tab-menu">
+                <button class="tab-link active" onclick="switchTab('stats')">STATS</button>
+                <button class="tab-link" onclick="switchTab('inventory')">INVENTORY</button>
+                <button class="tab-link" onclick="switchTab('spells')">MAGIC</button>
+            </div>
+            
+            <div id="tab-stats" class="tab-content">
+                <div class="stat-row"><span>VIT:</span><span id="stat-vit">100/100</span></div>
+                <div class="stat-row"><span>LVL:</span><span id="stat-lvl">1</span></div>
+                <div class="stat-row"><span>XP:</span><span id="stat-xp">0</span></div>
+                <div class="stat-row"><span>GOLD:</span><span id="stat-gold">0</span></div>
+            </div>
+            
+            <div id="tab-inventory" class="tab-content">
+                <ul class="item-list">
+                    <li>⚔️ Rusted Spatha</li>
+                    <li>🛡️ Iron Buckler</li>
+                    <li>🎒 Empty Provision Bag</li>
+                </ul>
+            </div>
+            
+            <div id="tab-spells" class="tab-content active-content">
+                <ul class="item-list">
+                    <li>🌀 Vector Distortion</li>
+                    <li>🔥 Construct Ignite</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+       <!-- PERSISTENT REVENUE & TEAM DASHBOARD HUD -->
+    <div class="dashboard-hud">
+        <button class="party-slot leader" data-party-index="0" type="button">
+            <img id="hud-img-p0" class="party-portrait" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACAA==" alt="">
+            <div class="slot-info">
+                <div class="slot-name" id="hud-name">Hero Name</div>
+                <div class="hp-track"><div id="hp-bar-p0" class="hp-fill" style="width: 100%;"></div></div>
+            </div>
+        </button>
+        <button class="party-slot" data-party-index="1" type="button">
+            <img id="hud-img-p1" class="party-portrait" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACAA==" alt="">
+            <div class="slot-info">
+                <div class="slot-name" id="hud-npc1">Slot 2</div>
+                <div class="hp-track"><div id="hp-bar-p1" class="hp-fill" style="width: 100%;"></div></div>
+            </div>
+        </button>
+        <button class="party-slot" data-party-index="2" type="button">
+            <img id="hud-img-p2" class="party-portrait" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACAA==" alt="">
+            <div class="slot-info">
+                <div class="slot-name" id="hud-npc2">Slot 3</div>
+                <div class="hp-track"><div id="hp-bar-p2" class="hp-fill" style="width: 100%;"></div></div>
+            </div>
+        </button>
+        <button class="party-slot" data-party-index="3" type="button">
+            <img id="hud-img-p3" class="party-portrait" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACAA==" alt="">
+            <div class="slot-info">
+                <div class="slot-name" id="hud-npc3">Slot 4</div>
+                <div class="hp-track"><div id="hp-bar-p3" class="hp-fill" style="width: 100%;"></div></div>
+            </div>
+        </button>
+    </div>
+
+    <section class="party-detail-panel" aria-live="polite" hidden>
+        <button id="close-detail-btn" class="panel-close-btn" type="button">CLOSE</button>
+        <div>
+            <strong id="party-detail-name">Select a party member</strong>
+            <span id="party-detail-class">Individual stats and abilities</span>
+        </div>
+        <div id="party-detail-stats" class="party-detail-stats"></div>
+        <div id="party-detail-abilities" class="party-detail-abilities"></div>
+        <div id="party-detail-equipment" class="equipment-map"></div>
+        <div id="shared-inventory" class="shared-inventory"></div>
+    </section>
+
+    <section class="event-log-panel" aria-live="polite">
+        <strong>EVENT LOG</strong>
+        <div id="event-log">Explore the town and investigate marked locations.</div>
+    </section>
+
+    <div class="utility-actions">
+        <button id="stats-btn" class="combat-btn" type="button">STATS</button>
+        <button id="inventory-btn" class="combat-btn" type="button">INVENTORY</button>
+    </div>
+        <section id="recruit-panel" class="recruit-panel" hidden>
+            <strong>PARTY SETUP</strong>
+            <span>Choose each companion's class and gender before embarking.</span>
+            <div class="recruit-row"><label for="recruit-1-class">COMPANION 1</label><select id="recruit-1-class"></select><select id="recruit-1-gender"><option value="male">MALE</option><option value="female">FEMALE</option></select></div>
+            <div class="recruit-row"><label for="recruit-2-class">COMPANION 2</label><select id="recruit-2-class"></select><select id="recruit-2-gender"><option value="male">MALE</option><option value="female">FEMALE</option></select></div>
+            <div class="recruit-row"><label for="recruit-3-class">COMPANION 3</label><select id="recruit-3-class"></select><select id="recruit-3-gender"><option value="male">MALE</option><option value="female">FEMALE</option></select></div>
+        </section>
+
+    <!-- MOBILE CONTROL INTERACTION OVERLAY -->
+    <div class="mobile-pad-container">
+        <div class="d-pad">
+            <button class="pad-btn btn-up" id="touch-w" aria-label="Move forward">▲</button>
+            <button class="pad-btn btn-left" id="touch-a" aria-label="Strafe left">◀</button>
+            <button class="pad-btn btn-right" id="touch-d" aria-label="Strafe right">▶</button>
+            <button class="pad-btn btn-down" id="touch-s" aria-label="Move backward">▼</button>
+            <button class="pad-btn btn-turn-left" id="touch-turn-left" aria-label="Turn left 90 degrees">↶</button>
+            <button class="pad-btn btn-turn-right" id="touch-turn-right" aria-label="Turn right 90 degrees">↷</button>
+        </div>
+    </div>
+
+    <div id="combat-actions" class="combat-actions" hidden>
+        <button id="attack-btn" class="combat-btn" type="button">⚔ ATTACK</button>
+        <button id="spell-1-btn" class="combat-btn" type="button">1 SPELL</button>
+        <button id="spell-2-btn" class="combat-btn" type="button">2 SPELL</button>
+        <button id="spell-3-btn" class="combat-btn" type="button">3 SPELL</button>
+            <strong id="combat-turn-label">PARTY TURN</strong>
+        <button id="end-turn-btn" class="combat-btn" type="button">END TURN</button>
+        <button id="use-item-btn" class="combat-btn" type="button">USE ITEM</button>
+        <label class="auto-toggle"><input id="auto-fight-toggle" type="checkbox"> AUTO FIGHT SELECTED</label>
+    </div>
+
+    <div id="target-actions" class="target-actions" hidden>
+        <strong>TARGET</strong>
+        <div id="target-list"></div>
+    </div>
+
+    <div id="interaction-actions" class="interaction-actions" hidden>
+        <strong id="interaction-title">Interaction</strong>
+        <span id="interaction-message"></span>
+        <div>
+            <button id="interaction-talk" class="combat-btn" type="button">TALK</button>
+            <button id="interaction-buy" class="combat-btn" type="button">BUY</button>
+            <button id="interaction-sell" class="combat-btn" type="button">SELL</button>
+            <button id="interaction-exit" class="combat-btn" type="button">EXIT</button>
+        </div>
+    </div>
+</div>
+
+     <!-- SPELL EFFECTS SPRITE CONTAINERS -->
+<!-- <canvas id="spellCanvas"></canvas> --> <!-- spell effect option 2, currently not in use -->      
+<div class="spell-sprite" id="fire-sprite-1"></div>  <!-- choose to use spell-sprite or spellCanvas for spell effects, currently using spell-sprite for now -->
+<div class="spell-sprite" id="arcane-sprite-1"></div>
+<div class="spell-sprite" id="meteorite-sprite-1"></div>
+<div class="spell-sprite" id="ice-sprite-1"></div>
+<div class="spell-sprite" id="lightning-sprite-1"></div>
+<div class="spell-sprite" id="poison-sprite-1"></div>
+<div class="spell-sprite" id="heal-sprite-1"></div>
+<div class="spell-sprite" id="revive-sprite-1"></div>
+<div class="spell-sprite" id="cure-sprite-1"></div>
+<div class="spell-sprite" id="regeneration-sprite-1"></div>
+<div class="spell-sprite" id="holy-sprite-1"></div>
+<div class="spell-sprite" id="unholy-sprite-1"></div>
+<div class="spell-sprite" id="lifesap-sprite-1"></div>
+<div class="spell-sprite" id="mana-sap-sprite-1"></div>
+<div class="spell-sprite" id="control-sprite-1"></div>
+<div class="spell-sprite" id="dark-sprite-1"></div>
+<div class="spell-sprite" id="earth-sprite-1"></div>
+<div class="spell-sprite" id="wind-sprite-1"></div>
+<div class="spell-sprite" id="water-sprite-1"></div>
+<div class="spell-sprite" id="vine-sprite-1"></div>
+<div class="spell-sprite" id="shadow-sprite-1"></div>
+<div class="spell-sprite" id="light-sprite-1"></div>
+<div class="spell-sprite" id="thunder-sprite-1"></div>
+<div class="spell-sprite" id="psychic-sprite-1"></div>
+<div class="spell-sprite" id="plasma-sprite-1"></div>
+<div class="spell-sprite" id="nuclear-sprite-1"></div>
+<div class="spell-sprite" id="gravity-sprite-1"></div>
+<div class="spell-sprite" id="slow-sprite-1"></div>
+<div class="spell-sprite" id="haste-sprite-1"></div>
+<div class="spell-sprite" id="silence-sprite-1"></div>
+<div class="spell-sprite" id="confuse-sprite-1"></div>
+<div class="spell-sprite" id="fear-sprite-1"></div>
+<div class="spell-sprite" id="charm-sprite-1"></div>
+<div class="spell-sprite" id="sleep-sprite-1"></div>
+<div class="spell-sprite" id="curse-sprite-1"></div>
+<div class="spell-sprite" id="bleed-sprite-1"></div>
+<div class="spell-sprite" id="sporecloud-sprite-1"></div>
+<div class="spell-sprite" id="acidrain-sprite-1"></div>
+<div class="spell-sprite" id="sandstorm-sprite-1"></div>
+<div class="spell-sprite" id="sunray-sprite-1"></div>
+<div class="spell-sprite" id="moonbeam-sprite-1"></div>
+<div class="spell-sprite" id="starfall-sprite-1"></div>
+<div class="spell-sprite" id="explosion-sprite-1"></div>
+<div class="spell-sprite" id="shockwave-sprite-1"></div>
+<div class="spell-sprite" id="whirlwind-sprite-1"></div>
+<div class="spell-sprite" id="stun-sprite-1"></div>
+<div class="spell-sprite" id="slash-sprite-1"></div>
+<div class="spell-sprite" id="pierce-sprite-1"></div>
+<div class="spell-sprite" id="blunt-sprite-1"></div>
+<div class="spell-sprite" id="magic-sprite-1"></div>
+<div class="spell-sprite" id="physical-sprite-1"></div>
+<div class="spell-sprite" id="arrow-sprite-1"></div>
+<div class="spell-sprite" id="bolt-sprite-1"></div>
+<div class="spell-sprite" id="throwingdagger-sprite-1"></div>
+<div class="spell-sprite" id="blowdart-sprite-1"></div>
+<div class="spell-sprite" id="fireconstruct-sprite-1"></div>
+<div class="spell-sprite" id="iceconstruct-sprite-1"></div>
+<div class="spell-sprite" id="lightningconstruct-sprite-1"></div>
+<div class="spell-sprite" id="earthconstruct-sprite-1"></div>
+<div class="spell-sprite" id="windconstruct-sprite-1"></div>
+<div class="spell-sprite" id="waterconstruct-sprite-1"></div>
+<div class="spell-sprite" id="vineconstruct-sprite-1"></div>
+<div class="spell-sprite" id="ironconstruct-sprite-1"></div>
+<div class="spell-sprite" id="extraplanarconstruct-sprite-1"></div>
+<div class="spell-sprite" id="spell-effect" aria-hidden="true"></div>
+
+
+
+<!-- Load custom modular files in sequential order -->
+<script type="module" src="js/dungeon-core.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Open-Source Arcade | SSLLGGD&D</title>
+	
+	<!-- Put this in your <head> for your external subfolder styles -->
+<link rel="stylesheet" href="./css/style.css">
+
+	<style>
+	
+		/* --- SYSTEM GLOBAL CORE --- */
+		html {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background-color: #0b0b10;
+			color: #e2e2e8;
+			font-size: 18px;
+		}
+		body {
+			margin: 0;
+			padding: 0;
+		}
+
+		/* --- CORE CONTENT FRAMEWORK --- */
+		.shell-container {
+			max-width: 1100px;
+			margin: 0 auto;
+			padding: 20px;
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			box-sizing: border-box;
+		}
+
+		.arcade-header-card {
+			background: #12121c;
+			border: 1px solid #232334;
+			border-left: 4px solid #ff416c; /* Retro hot-pink accent trim */
+			border-radius: 8px;
+			padding: 24px;
+			box-sizing: border-box;
+		}
+
+		.arcade-header-card h2 {
+			margin: 0 0 10px 0;
+			color: #ffffff;
+			letter-spacing: 0.5px;
+		}
+
+		/* --- ARCADE CABINET STAGING GRID --- */
+		.arcade-cabinet-grid {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 20px;
+			width: 100%;
+		}
+
+		/* Individual Retro Cabinet Card Slot Structure */
+		.cabinet-card {
+			background: #12121c;
+			border: 1px solid #232334;
+			border-radius: 8px;
+			flex: 1 1 calc(50% - 20px);
+			min-width: 280px;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+			box-sizing: border-box;
+			transition: transform 0.2s ease, border-color 0.2s ease;
+		}
+		.cabinet-card:hover {
+			border-color: #ff416c;
+			transform: translateY(-4px);
+		}
+
+		/* Embedded Gameplay Cabinet Viewport Screen */
+		.cabinet-screen {
+			position: relative;
+			width: 100%;
+			height: 320px;
+			background: #000000;
+			border-bottom: 1px solid #232334;
+			overflow: hidden;
+		}
+
+		.cabinet-iframe {
+			width: 100%;
+			height: 100%;
+			border: none;
+			position: relative;
+			z-index: 2;
+		}
+
+		/* Retro Neon Offline Scanning Static UI Overlay */
+		.cabinet-offline-ui {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			color: #8a8a9e;
+			font-size: 15px;
+			z-index: 1;
+			background: radial-gradient(circle, #1a1a26 0%, #050508 100%);
+		}
+
+		.cabinet-meta {
+			padding: 20px;
+			display: flex;
+			flex-direction: column;
+			flex-grow: 1;
+		}
+		.cabinet-meta h3 {
+			margin: 0 0 8px 0;
+			color: #ffffff;
+		}
+		.cabinet-meta p {
+			margin: 0 0 15px 0;
+			font-size: 14px;
+			color: #a0a0b0;
+			line-height: 1.5;
+			flex-grow: 1;
+		}
+
+		/* --- INTERACTIVE ACTION BUTTON COMPONENT --- */
+		.action-btn {
+			display: inline-block;
+			background: #232334;
+			color: #ffffff;
+			padding: 12px 24px;
+			text-decoration: none;
+			border-radius: 4px;
+			font-weight: bold;
+			font-size: 15px;
+			text-align: center;
+			transition: background 0.2s ease, transform 0.1s ease;
+			border: none;
+			cursor: pointer;
+		}
+		.action-btn:hover {
+			background: #ff416c;
+		}
+		.action-btn:active {
+			transform: scale(0.98);
+		}
+
+		/* --- INTERACTIVE RETRO SCANLINES SCROLLING ANIMATION --- */
+		@keyframes retroScan {
+			0% { transform: translateY(-100%); }
+			100% { transform: translateY(100%); }
+		}
+		.cabinet-screen::after {
+			content: " ";
+			display: block;
+			position: absolute;
+			top: 0; left: 0; bottom: 0; right: 0;
+			background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+			z-index: 3;
+			background-size: 100% 4px, 6px 100%;
+			pointer-events: none;
+		}
+		.cabinet-offline-ui::before {
+			content: "";
+			position: absolute;
+			width: 100%;
+			height: 5px;
+			background: rgba(255, 65, 108, 0.15);
+			animation: retroScan 6s infinite linear;
+			z-index: 4;
+		}
+
+		/* Responsive Adjustments for Mobile Views */
+		@media (max-width: 768px) {
+			.cabinet-card { flex: 1 1 100%; }
+			.cabinet-screen { height: 260px; }
+		}
+	</style>
+</head>
+
+<body>
+
+	<main class="shell-container">
+		
+		<!-- HEADER DASHBOARD MODULE -->
+		<section class="arcade-header-card">
+			<h2>Open-Source Arcade Node</h2>
+			<p style="color: #a0a0b0; font-size: 15px; margin: 0;">
+				A modular deployment matrix for retro mini-games, design templates, and open-source experimental software layers.
+			</p>
+		</section>
+
+		<!-- CABINET ARCADE MATRIX -->
+		<div class="arcade-cabinet-grid card-slot-grid">
+			
+			<!-- Cabinet 1 Slot: Snake Matrix Edition Selector -->
+			<div class="cabinet-card" data-gjs-draggable="true" data-gjs-name="Snake Cabinet Box">
+				<div class="cabinet-screen">
+					<div class="cabinet-offline-ui" style="background: radial-gradient(circle, #ff416c10 0%, #050508 100%);">
+						<span style="font-size: 32px; margin-bottom: 8px;">🐍</span>
+						<strong style="color: #ff416c; letter-spacing: 0.5px; text-transform: uppercase;" id="cabinetDisplayTitle">CYBER-SNAKE V2 LOADED</strong>
+					</div>
+				</div>
+				<div class="cabinet-meta">
+					<h3>Snake Game System Matrix</h3>
+					<p style="margin-bottom: 12px;">Select your execution target package from the options node matrix below:</p>
+					
+					<!-- DYNAMIC VARIANT MATRIX TOGGLE SELECTOR -->
+					<div style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px;">
+						<label for="versionSelect" style="font-size: 11px; color: #6c757d; font-weight: bold; font-family: monospace;">CORE_SYSTEM_VERSION:</label>
+						<select id="versionSelect" onchange="toggleGameVersion(this.value)" style="width: 100%; background: #1a1a26; border: 1px solid #34344a; color: #ffffff; padding: 10px; border-radius: 4px; font-size: 14px; font-family: monospace; outline: none; cursor: pointer;">
+							<option value="snakev2.html">v2.0 // Enhanced Matrix (HP, Poison, Timer)</option>
+							<option value="snake.html">v1.0 // Legacy Sandbox (Classic Endless)</option>
+						</select>
+					</div>
+
+					<!-- MASTER DYNAMIC LAUNCH LINK LAYER -->
+					<a href="snakev2.html" id="launchGameBtn" class="action-btn" style="width: 100%; box-sizing: border-box; text-align: center;">Launch Fullscreen System</a>
+				</div>
+			</div>
+
+			<!-- Cabinet 2 Slot: 3D Raycasting RPG Crawler Engine -->
+			<div class="cabinet-card" data-gjs-draggable="true" data-gjs-name="Dungeon Crawler Cabinet Box">
+				<div class="cabinet-screen">
+					<div class="cabinet-offline-ui" style="background: radial-gradient(circle, #29abe220 0%, #050508 100%);">
+						<span style="font-size: 32px; margin-bottom: 8px;">⚔️</span>
+						<strong style="color: #29abe2; letter-spacing: 0.5px; text-transform: uppercase;">RAYCAST_RPG_CORE_ACTIVE</strong>
+					</div>
+				</div>
+				<div class="cabinet-meta">
+					<h3>3D Pseudo-Raycaster Dungeon</h3>
+					<p>An experimental Wolfenstein-style 3D navigation matrix built from scratch. Select custom character builds, field squads, and navigate real-time floor geometry tiles.</p>
+					
+					<a href="./dungeoncrawl.html" class="action-btn" style="width: 100%; box-sizing: border-box; text-align: center; margin-top: auto;">Enter Dungeon Matrix</a>
+				</div>
+			</div>
+
+			<!-- Cabinet 3 Slot: Reserved Future Game -->
+			<div class="cabinet-card placeholder-card" data-gjs-draggable="true" data-gjs-name="Future Arcade Cabinet">
+				<div class="cabinet-meta">
+					<div class="placeholder-label">Future cabinet slot</div>
+					<h3>New game cabinet</h3>
+					<p>Reserved for a future playable experiment.</p>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- DUAL-COMPATIBLE DISPATCH EXIT COMMAND RELAY -->
+		<a href="./index.html" class="action-btn" style="background: #12121c; border: 1px solid #232334; margin-top: 10px;">🔙 Return to Main Command Hub</a>
+
+	</main>
+
+	<!-- CYBER-SNAKE VERSION ROUTING TRACKER SCRIPT -->
+	<script>
+		function toggleGameVersion(selectedFile) {
+			const launchBtn = document.getElementById("launchGameBtn");
+			const displayTitle = document.getElementById("cabinetDisplayTitle");
+			
+			// Dynamically rewrite the destination link address path
+			launchBtn.setAttribute("href", selectedFile);
+			
+			// Update the terminal screen graphic to reflect the changes instantly
+			if (selectedFile === "snake.html") {
+				displayTitle.innerText = "CYBER-SNAKE V1 LOADED";
+				displayTitle.style.color = "#00f5d4"; // Shifts title text back to classic matrix cyan
+			} else {
+				displayTitle.innerText = "CYBER-SNAKE V2 LOADED";
+				displayTitle.style.color = "#ff416c"; // Returns title text to advanced mode hot pink
+			}
+		}
+	</script>
+
+</body>
+</html>
