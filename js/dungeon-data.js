@@ -528,7 +528,7 @@ export const CLASS_DATA = {
                 intensity: "high",
                 spawnAt: "target",
               },
-            }
+            },
           ],
         },
       },
