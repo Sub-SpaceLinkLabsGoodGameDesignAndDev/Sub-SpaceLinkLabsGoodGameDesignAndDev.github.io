@@ -15,15 +15,6 @@ import { CombatFormulas, entityFactory } from "./dungeon-combat.js";
 const canvas = document.getElementById("screen");
 const ctx = canvas.getContext("2d");
 
-// --- ADD THESE TWO LINES HERE ---
-const mobileInput = document.getElementById('mobile-keyboard-input');
-const keyboardBtn = document.getElementById('touch-keyboard');
-
-let gameState = "CLASS_SELECT";
-const keys = {};
-const canvas = document.getElementById("screen");
-const ctx = canvas.getContext("2d");
-
 let gameState = "CLASS_SELECT";
 const keys = {};
 
@@ -1130,8 +1121,10 @@ function renderEngine() {
 }
 
 // ==========================================================
-// 7. MOUSE BOUNDARY TRIGGERS
+// 7. MOUSE BOUNDARY TRIGGERS & MOBILE KEYBOARD PROXY
 // ==========================================================
+const proxyInput = document.getElementById("mobile-keyboard-proxy");
+
 function getMousePos(e) {
   let rect = canvas.getBoundingClientRect();
   return {
@@ -1163,6 +1156,17 @@ canvas.addEventListener("mousemove", (e) => {
 
 canvas.addEventListener("click", (e) => {
   let mouse = getMousePos(e);
+  
+  // NEW: Handle touch targeting inside the text entry phase
+  if (gameState === "NAME_INPUT" && proxyInput) {
+    // Canvas dimensions are 320x200. The rectangle is drawn at x=40, y=80, w=240, h=30
+    if (mouse.x >= 40 && mouse.x <= 280 && mouse.y >= 80 && mouse.y <= 110) {
+      proxyInput.value = player.name;
+      proxyInput.focus();
+    }
+    return;
+  }
+
   if (gameState === "CLASS_SELECT") {
     Object.keys(classLayouts).forEach((key) => {
       let b = classLayouts[key];
@@ -1259,81 +1263,27 @@ canvas.addEventListener("click", (e) => {
   }
 });
 
-renderEngine();
-
-// ==========================================================
-// 4. MOBILE SAFARI VIRTUAL KEYBOARD & D-PAD ROUTING ENGINE
-// ==========================================================
-
-// Function to synchronously activate input to appease iOS Safari rules
-function activateMobileKeyboard(e) {
-  if (e) e.preventDefault(); // Blocks zoom jitter / double-tap actions
-  mobileInput.focus();
-}
-
-// Bind both touch and click so Safari accepts the trusted user event hierarchy
-if (keyboardBtn) {
-  keyboardBtn.addEventListener('touchstart', activateMobileKeyboard, { passive: false });
-  keyboardBtn.addEventListener('click', activateMobileKeyboard);
-}
-
-// Tap inside the Canvas view box to also reveal mobile keyboard
-if (canvas) {
-  canvas.addEventListener('touchstart', activateMobileKeyboard, { passive: false });
-  canvas.addEventListener('click', activateMobileKeyboard);
-}
-
-// Intercept typed parameters and mirror them over to your main engine 'keys' state container
-if (mobileInput) {
-  mobileInput.addEventListener('input', (e) => {
-    const char = e.target.value.toLowerCase();
-    
-    if (char.length > 0) {
-      // Maps directly to your game's existing 'keys' matrix wrapper
-      keys[char] = true;
-      
-      // Simulate an instantaneous tap release cycle so actions don't loop endlessly
-      setTimeout(() => {
-        keys[char] = false;
-      }, 120);
+// NEW: Real-time event mirrors to bind the hidden mobile element to the engine
+if (proxyInput) {
+  proxyInput.addEventListener("input", (e) => {
+    if (gameState === "NAME_INPUT") {
+      // Clean non-alphanumeric and cut off at 12 characters max
+      let cleanInput = e.target.value.replace(/[^a-zA-Z0-9 ]/g, "");
+      if (cleanInput.length > 12) {
+        cleanInput = cleanInput.slice(0, 12);
+        proxyInput.value = cleanInput;
+      }
+      player.name = cleanInput;
     }
-    
-    // Wipe field clear so it can endlessly receive standalone keypress iterations
-    mobileInput.value = ''; 
+  });
+
+  proxyInput.addEventListener("keydown", (e) => {
+    if (gameState === "NAME_INPUT" && e.key === "Enter" && player.name.trim().length > 0) {
+      proxyInput.blur(); // Collapse keyboard layout
+      gameState = "PARTY_RECRUIT";
+      prepareRecruitPanel();
+    }
   });
 }
 
-// Map the physical D-Pad overlay button IDs directly into your 'keys' object engine loop
-const dPadMapping = {
-  'touch-w': 'w',
-  'touch-a': 'a',
-  'touch-s': 's',
-  'touch-d': 'd',
-  'touch-turn-left': 'q',   // Assigning rotational keys if your loop maps them
-  'touch-turn-right': 'e'
-};
-
-Object.entries(dPadMapping).forEach(([buttonId, gameKey]) => {
-  const btn = document.getElementById(buttonId);
-  if (!btn) return;
-
-  // Pressing down the D-pad button
-  const pressKey = (e) => {
-    e.preventDefault();
-    keys[gameKey] = true;
-  };
-
-  // Releasing the D-pad button
-  const releaseKey = (e) => {
-    e.preventDefault();
-    keys[gameKey] = false;
-  };
-
-  btn.addEventListener('touchstart', pressKey, { passive: false });
-  btn.addEventListener('touchend', releaseKey, { passive: false });
-  
-  // Desktop fallbacks for testing mouse clicks on mobile UI
-  btn.addEventListener('mousedown', pressKey);
-  btn.addEventListener('mouseup', releaseKey);
-  btn.addEventListener('mouseleave', releaseKey);
-});
+renderEngine();
