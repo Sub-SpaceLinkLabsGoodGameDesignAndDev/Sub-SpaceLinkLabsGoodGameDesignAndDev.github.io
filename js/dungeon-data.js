@@ -450,7 +450,7 @@ export const CLASS_DATA = {
       male: "dungeon-img/Sprite-NecromancerMaleStatusOK.png",
       female: "dungeon-img/Sprite-NecromancerFemaleStatusOK.png",
     },
-   abilities: ["cast spell", "defend", "melee attack", "meditate"],
+    abilities: ["cast spell", "defend", "melee attack", "meditate"],
     progression: {
       1: {
         basicAttack: {
@@ -475,7 +475,7 @@ export const CLASS_DATA = {
             description: "Summons a skeleton minion to fight for you.",
             targetType: "single",
             damageType: "necrotic",
-            damageSplit: { necrotic: 1, physical: 1},
+            damageSplit: { necrotic: 1, physical: 1 },
             resistances: { necrotic: true },
             basePower: 1,
             cost: 9,
@@ -489,52 +489,52 @@ export const CLASS_DATA = {
               spawnAt: "target",
             },
           },
-          {            
-              name: "Locate The Dead",
-              skillType: ["magic", "spell"],
-              description: "Reveals the location of nearby undead creatures or the resting place of the nearby deceased .",
-              targetType: null,
-              damageType: null,
-              damageSplit: null,
-              resistances: null,
-              basePower: null,
-              cost: 1,
-              costType: "mp",
-              isHeal: false,
-              effects: [{ name: "locate_dead", chance: 1.0, resistable: false, duration: 1 }],
-              particleAsset: {
-                id: "placeholder",
-                duration: 2,
-                intensity: "high",
-                spawnAt: "target",
-              },
+          {
+            name: "Locate The Dead",
+            skillType: ["magic", "spell"],
+            description: "Reveals the location of nearby undead creatures or the resting place of the nearby deceased .",
+            targetType: null,
+            damageType: null,
+            damageSplit: null,
+            resistances: null,
+            basePower: null,
+            cost: 1,
+            costType: "mp",
+            isHeal: false,
+            effects: [{ name: "locate_dead", chance: 1.0, resistable: false, duration: 1 }],
+            particleAsset: {
+              id: "placeholder",
+              duration: 2,
+              intensity: "high",
+              spawnAt: "target",
             },
-            {
-              name: "Life Siphon I",
-              skillType: ["magic", "spell"],
-              description: "Drains life from the target, dealing necrotic damage and healing the caster for a portion of the damage dealt.",
-              targetType: "single",
-              damageType: "necrotic",
-              damageSplit: { necrotic: 2, physical: 1 },
-              resistances: { necrotic: true },
-              basePower: 3,
-              cost: 5,
-              costType: "mp",
-              isHeal: false,
-              effects: [{ name: "life_siphon_I", chance: 1.0, resistable: true, duration: 3 }],
-              particleAsset: {
-                id: "placeholder",
-                duration: 2,
-                intensity: "high",
-                spawnAt: "target",
-              },
+          },
+          {
+            name: "Life Siphon I",
+            skillType: ["magic", "spell"],
+            description: "Drains life from the target, dealing necrotic damage and healing the caster for a portion of the damage dealt.",
+            targetType: "single",
+            damageType: "necrotic",
+            damageSplit: { necrotic: 2, physical: 1 },
+            resistances: { necrotic: true },
+            basePower: 3,
+            cost: 5,
+            costType: "mp",
+            isHeal: false,
+            effects: [{ name: "life_siphon_I", chance: 1.0, resistable: true, duration: 3 }],
+            particleAsset: {
+              id: "placeholder",
+              duration: 2,
+              intensity: "high",
+              spawnAt: "target",
             },
-          ],
-        },
+          },
+        ],
       },
     },
   },
 };
+
 // ==========================================================
 // 2. GRID ENVIRONMENT MAP DATA & TILE TARGETS
 // ==========================================================
@@ -552,8 +552,8 @@ export const TILE_TYPES = {
 
 export const town1Map = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],                                         
-  [1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],     
+  [1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 0, 1, 5, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 0, 1, 5, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -565,8 +565,8 @@ export const town1Map = [
   [1, 0, 0, 8, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], 
-  [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3], 
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
   [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -594,15 +594,16 @@ export const monsterCatalog = {
     classKey: "fighter",
     hp: 50,
     maxHp: 50,
-    stats: { 
-      str: 12, 
-      sta: 6, 
-      dex: 8, 
-      ac: 4, 
-      int: 5, 
-      wis: 5, 
-      agil: 6, 
-      char: 2 },
+    stats: {
+      str: 12,
+      sta: 6,
+      dex: 8,
+      ac: 4,
+      int: 5,
+      wis: 5,
+      agil: 6,
+      char: 2
+    },
   },
   rogue_construct: {
     name: "Rogue Sentry Construct",
@@ -625,14 +626,14 @@ export const monsterCatalog = {
     classKey: "fighter",
     hp: 30,
     maxHp: 30,
-    stats: { 
-      str: 8, 
+    stats: {
+      str: 8,
       sta: 4,
-      dex: 10, 
-      ac: 2, 
+      dex: 10,
+      ac: 2,
       int: 3,
-      wis: 4, 
-      agil: 8, 
+      wis: 4,
+      agil: 8,
       char: 1
     },
   },
@@ -641,9 +642,9 @@ export const monsterCatalog = {
     classKey: "enchanter",
     hp: 50,
     maxHp: 50,
-    stats: { 
-      str: 9, 
-      sta: 9, 
+    stats: {
+      str: 9,
+      sta: 9,
       dex: 6,
       ac: 3,
       int: 7,
@@ -666,9 +667,9 @@ export const WEAPON_CATALOG = {
     accuracy: 0.84,
     handsRequired: 1,
     statModifiers: { agil: 2, dex: 1 },
-    onHitEffects: [{name: "bleed", chance: 0.1, duration: 3}]
+    onHitEffects: [{ name: "bleed", chance: 0.1, duration: 3 }]
   },
-  rusty_rapier:{
+  rusty_rapier: {
     name: "Rusty Rapier",
     description: "A rusted rapier with a dull blade.",
     basePower: 7,
@@ -676,7 +677,7 @@ export const WEAPON_CATALOG = {
     accuracy: 0.88,
     handsRequired: 1,
     statModifiers: { agil: 2, dex: 1 },
-    onHitEffects: [{name: "tetinus", chance: 0.1, duration: 3}],
+    onHitEffects: [{ name: "tetinus", chance: 0.1, duration: 3 }],
     value: 5
   },
   dull_bastardsword: {
@@ -686,8 +687,8 @@ export const WEAPON_CATALOG = {
     damageType: "slashing",
     accuracy: 0.83,
     handsRequired: 2,
-    statModifiers: { str: 3, agil: -1 }, 
-    onHitEffects: [{name: "stun", chance: 0.1, duration: 2 }],
+    statModifiers: { str: 3, agil: -1 },
+    onHitEffects: [{ name: "stun", chance: 0.1, duration: 2 }],
     value: 7,
   },
   cracked_quarterstaff: {
