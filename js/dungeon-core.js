@@ -15,6 +15,15 @@ import { CombatFormulas, entityFactory } from "./dungeon-combat.js";
 const canvas = document.getElementById("screen");
 const ctx = canvas.getContext("2d");
 
+// --- ADD THESE TWO LINES HERE ---
+const mobileInput = document.getElementById('mobile-keyboard-input');
+const keyboardBtn = document.getElementById('touch-keyboard');
+
+let gameState = "CLASS_SELECT";
+const keys = {};
+const canvas = document.getElementById("screen");
+const ctx = canvas.getContext("2d");
+
 let gameState = "CLASS_SELECT";
 const keys = {};
 
@@ -1251,3 +1260,80 @@ canvas.addEventListener("click", (e) => {
 });
 
 renderEngine();
+
+// ==========================================================
+// 4. MOBILE SAFARI VIRTUAL KEYBOARD & D-PAD ROUTING ENGINE
+// ==========================================================
+
+// Function to synchronously activate input to appease iOS Safari rules
+function activateMobileKeyboard(e) {
+  if (e) e.preventDefault(); // Blocks zoom jitter / double-tap actions
+  mobileInput.focus();
+}
+
+// Bind both touch and click so Safari accepts the trusted user event hierarchy
+if (keyboardBtn) {
+  keyboardBtn.addEventListener('touchstart', activateMobileKeyboard, { passive: false });
+  keyboardBtn.addEventListener('click', activateMobileKeyboard);
+}
+
+// Tap inside the Canvas view box to also reveal mobile keyboard
+if (canvas) {
+  canvas.addEventListener('touchstart', activateMobileKeyboard, { passive: false });
+  canvas.addEventListener('click', activateMobileKeyboard);
+}
+
+// Intercept typed parameters and mirror them over to your main engine 'keys' state container
+if (mobileInput) {
+  mobileInput.addEventListener('input', (e) => {
+    const char = e.target.value.toLowerCase();
+    
+    if (char.length > 0) {
+      // Maps directly to your game's existing 'keys' matrix wrapper
+      keys[char] = true;
+      
+      // Simulate an instantaneous tap release cycle so actions don't loop endlessly
+      setTimeout(() => {
+        keys[char] = false;
+      }, 120);
+    }
+    
+    // Wipe field clear so it can endlessly receive standalone keypress iterations
+    mobileInput.value = ''; 
+  });
+}
+
+// Map the physical D-Pad overlay button IDs directly into your 'keys' object engine loop
+const dPadMapping = {
+  'touch-w': 'w',
+  'touch-a': 'a',
+  'touch-s': 's',
+  'touch-d': 'd',
+  'touch-turn-left': 'q',   // Assigning rotational keys if your loop maps them
+  'touch-turn-right': 'e'
+};
+
+Object.entries(dPadMapping).forEach(([buttonId, gameKey]) => {
+  const btn = document.getElementById(buttonId);
+  if (!btn) return;
+
+  // Pressing down the D-pad button
+  const pressKey = (e) => {
+    e.preventDefault();
+    keys[gameKey] = true;
+  };
+
+  // Releasing the D-pad button
+  const releaseKey = (e) => {
+    e.preventDefault();
+    keys[gameKey] = false;
+  };
+
+  btn.addEventListener('touchstart', pressKey, { passive: false });
+  btn.addEventListener('touchend', releaseKey, { passive: false });
+  
+  // Desktop fallbacks for testing mouse clicks on mobile UI
+  btn.addEventListener('mousedown', pressKey);
+  btn.addEventListener('mouseup', releaseKey);
+  btn.addEventListener('mouseleave', releaseKey);
+});
