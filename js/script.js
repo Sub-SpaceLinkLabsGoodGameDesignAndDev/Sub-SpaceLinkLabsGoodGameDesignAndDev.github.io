@@ -96,3 +96,35 @@ window.addEventListener('resize', () => {
 resizeCanvas(); 
 initTelemetry(); 
 requestAnimationFrame(renderEngineFrame);
+
+// ============================================================================
+// SUB-SPACE LINK LABS DEVLOG STREAM INTERACTIVE TAB TOGGLE
+// ============================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const btnHistorian = document.getElementById("btn-historian-stream");
+    const btnLedger = document.getElementById("btn-ledger-stream");
+    const panelHistorian = document.getElementById("panel-historian-stream");
+    const panelLedger = document.getElementById("panel-ledger-stream");
+
+    if (btnHistorian && btnLedger && panelHistorian && panelLedger) {
+        // ACTIVATE PUBLIC CHRONICLES VIEW
+        btnHistorian.addEventListener("click", () => {
+            panelHistorian.style.display = "block";
+            panelLedger.style.display = "none";
+            btnHistorian.style.color = "#fff";
+            btnHistorian.style.borderBottom = "2px solid rgb(206, 13, 13)";
+            btnLedger.style.color = "#666";
+            btnLedger.style.borderBottom = "none";
+        });
+
+        // ACTIVATE BEHIND-THE-SCENES LEDGER VIEW (LIGHTS UP IN MAGENTA)
+        btnLedger.addEventListener("click", () => {
+            panelHistorian.style.display = "none";
+            panelLedger.style.display = "block";
+            btnLedger.style.color = "#ff00ff";
+            btnLedger.style.borderBottom = "2px solid #ff00ff";
+            btnHistorian.style.color = "#666";
+            btnHistorian.style.borderBottom = "none";
+        });
+    }
+});
