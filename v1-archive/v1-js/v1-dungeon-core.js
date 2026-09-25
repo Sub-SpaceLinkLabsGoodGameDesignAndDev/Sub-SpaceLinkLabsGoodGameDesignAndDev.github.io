@@ -6,8 +6,8 @@ import {
   monsterCatalog,
   town1Map,
   TILE_TYPES,
-} from "./v1-dungeon-data.js";
-import { CombatFormulas, entityFactory } from "./v1-dungeon-combat.js";
+} from "/v1-archive/v1-dungeon-data.js";
+import { CombatFormulas, entityFactory } from "/v1-archive/v1-dungeon-combat.js";
 
 // ==========================================================
 // 2. CANVAS & STATE DEFINITIONS
