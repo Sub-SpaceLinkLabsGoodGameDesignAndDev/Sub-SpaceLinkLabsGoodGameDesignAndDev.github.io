@@ -1,4 +1,4 @@
-import { CLASS_DATA, WEAPON_CATALOG } from "./v1-dungeon-data.js";
+import { CLASS_DATA, WEAPON_CATALOG } from "/v1-archive/v1-dungeon-data.js";
 
 // ==========================================================
 // 1. DATA LOOKUPS & DICTIONARIES
