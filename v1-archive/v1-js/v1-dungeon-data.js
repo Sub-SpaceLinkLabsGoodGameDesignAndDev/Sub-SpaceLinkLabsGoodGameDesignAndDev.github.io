@@ -8,8 +8,8 @@ export const CLASS_DATA = {
     color: "rgb(226, 101, 43)",
     desc: "Summons elemental golem construct servants and direct impact damaging spells...",
     portraits: {
-      male: "dungeon-img/Sprite-ArchmageMaleStatusOK.png",
-      female: "dungeon-img/Sprite-ArchmageMaleStatusOK.png",
+      male: "./v1-dungeon-img/Sprite-ArchmageMaleStatusOK.png",
+      female: "./v1-dungeon-img/Sprite-ArchmageMaleStatusOK.png",
     },
     abilities: [
       "cast spell",
@@ -92,8 +92,8 @@ export const CLASS_DATA = {
     color: "hsl(64, 100%, 50%)",
     desc: "Uses divination spells to heal, cure, and revive part members. Can inflict high damage on undead beings...",
     portraits: {
-      male: "dungeon-img/Sprite-ArchmageMaleStatusOK.png",
-      female: "dungeon-img/Sprite-ArchmageMaleStatusOK.png",
+      male: "./v1-dungeon-img/Sprite-ArchmageMaleStatusOK.png",
+      female: "./v1-dungeon-img/Sprite-ArchmageMaleStatusOK.png",
     },
     abilities: [
       "cast spell",
@@ -151,8 +151,8 @@ export const CLASS_DATA = {
     color: "#35e512",
     desc: "Uses mimicking skills to have any one surrounding entity's abilities...",
     portraits: {
-      male: "dungeon-img/Sprite-DopplegangerFemaleStatusOK.png",
-      female: "dungeon-img/Sprite-DopplegangerFemaleStatusOK.png",
+      male: "./v1-dungeon-img/Sprite-DopplegangerFemaleStatusOK.png",
+      female: "./v1-dungeon-img/Sprite-DopplegangerFemaleStatusOK.png",
     },
     abilities: [
       "cast spell",
@@ -216,8 +216,8 @@ export const CLASS_DATA = {
     color: "#ff69b4",
     desc: "Uses telepathy, telekinesis, and persuasion to manipulate minds...",
     portraits: {
-      male: "dungeon-img/Sprite-EnchanterFemaleStatusOK.png",
-      female: "dungeon-img/Sprite-EnchanterFemaleStatusOK.png",
+      male: "./v1-dungeon-img/Sprite-EnchanterFemaleStatusOK.png",
+      female: "./v1-dungeon-img/Sprite-EnchanterFemaleStatusOK.png",
     },
     // FIXED: Updated camelCase tags to your clean lowercase spaced lookup formats
     abilities: [
@@ -274,8 +274,8 @@ export const CLASS_DATA = {
     color: "rgb(206, 13, 13)",
     desc: "Tough melee fighter also proficient with archery...",
     portraits: {
-      male: "dungeon-img/Sprite-FighterMaleStatusOK.png",
-      female: "dungeon-img/Sprite-FighterFemaleStatusOK.png",
+      male: "./v1-dungeon-img/Sprite-FighterMaleStatusOK.png",
+      female: "./v1-dungeon-img/Sprite-FighterFemaleStatusOK.png",
     },
     // FIXED: Updated camelCase tags to your clean lowercase spaced lookup formats
     abilities: [
@@ -355,8 +355,8 @@ export const CLASS_DATA = {
     color: "hsl(179, 75%, 47%)",
     desc: "Manipulates surrounding elements, able to control vines/plants...",
     portraits: {
-      male: "dungeon-img/Sprite-GeomancerMaleStatusOK.png",
-      female: "dungeon-img/Sprite-GeomancerMaleStatusOK.png",
+      male: "./v1-dungeon-img/Sprite-GeomancerMaleStatusOK.png",
+      female: "./v1-dungeon-img/Sprite-GeomancerMaleStatusOK.png",
     },
     // FIXED: Mapped camelCase strings to unified lowercase space-separated formats
     abilities: ["cast spell", "defend", "melee attack", "meditate"],
@@ -447,8 +447,8 @@ export const CLASS_DATA = {
     color: "hsl(170, 88%, 7%)",
     desc: "Uses dark magic to summon undead minions and inflict curses...",
     portraits: {
-      male: "dungeon-img/Sprite-NecromancerMaleStatusOK.png",
-      female: "dungeon-img/Sprite-NecromancerFemaleStatusOK.png",
+      male: "./v1-dungeon-img/Sprite-NecromancerMaleStatusOK.png",
+      female: "./v1-dungeon-img/Sprite-NecromancerFemaleStatusOK.png",
     },
     abilities: ["cast spell", "defend", "melee attack", "meditate"],
     progression: {
