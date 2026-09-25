@@ -693,14 +693,14 @@ function interactWithTile(tileX, tileY, tileValue) {
 }
 
 const mapEntitySprites = {
-  [TILE_TYPES.NPC]: "dungeon-img/Sprite-PossessedSkeleton-sheet.png",
-  [TILE_TYPES.MERCHANT]: "dungeon-img/Sprite-MushroomMan1-sheet.png",
+  [TILE_TYPES.NPC]: "./v1-dungeon-img//Sprite-PossessedSkeleton-sheet.png",
+  [TILE_TYPES.MERCHANT]: "./v1-dungeon-img//Sprite-MushroomMan1-sheet.png",
 };
 const loadedMapSprites = new Map();
 const effectSpritePaths = [
-  "dungeon-img/Sprite-Fireball-sheet.png",
-  "dungeon-img/Sprite-Meteorite1-sheet.png",
-  "dungeon-img/Sprite-Heal1-sheet.png",
+  "./v1-dungeon-img//Sprite-Fireball-sheet.png",
+  "./v1-dungeon-img//Sprite-Meteorite1-sheet.png",
+  "./v1-dungeon-img//Sprite-Heal1-sheet.png",
 ];
 
 function drawMapEntities() {
@@ -765,11 +765,11 @@ function drawCombatEffect() {
   while (angle < -Math.PI) angle += Math.PI * 2;
   if (Math.abs(angle) > player.fov / 2) return;
   const imagePath = activeEffect.actionName.toLowerCase().includes("meteorite")
-    ? "dungeon-img/Sprite-Meteorite1-sheet.png"
+    ? "./v1-dungeon-img//Sprite-Meteorite1-sheet.png"
     : activeEffect.actionName.toLowerCase().includes("heal")
-      ? "dungeon-img/Sprite-Heal1-sheet.png"
-      : "dungeon-img/Sprite-Fireball-sheet.png";
-  const image = loadedMapSprites.get(imagePath) || loadedMapSprites.get("dungeon-img/Sprite-Fireball-sheet.png");
+      ? "./v1-dungeon-img//Sprite-Heal1-sheet.png"
+      : "./v1-dungeon-img//Sprite-Fireball-sheet.png";
+  const image = loadedMapSprites.get(imagePath) || loadedMapSprites.get("./v1-dungeon-img//Sprite-Fireball-sheet.png");
   if (!image?.complete || !image.naturalWidth) return;
   const frame = Math.floor((performance.now() - activeEffect.startedAt) / 120) % Math.floor(image.naturalWidth / 32);
   const size = Math.min(150, canvas.height / Math.max(distance, 0.7));
