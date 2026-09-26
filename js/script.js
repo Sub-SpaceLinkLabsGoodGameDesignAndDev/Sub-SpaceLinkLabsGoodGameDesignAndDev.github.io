@@ -120,6 +120,20 @@ function renderEngineFrame() {
     requestAnimationFrame(renderEngineFrame); 
 }
     // ============================================================================
+// SYSTEM EVENT HOOKS MATRIX (RE-ADDED)
+// ============================================================================
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    initTelemetry();
+}); 
+
+// Master bootstrap loop
+window.addEventListener('load', () => {
+    resizeCanvas(); 
+    initTelemetry(); 
+    requestAnimationFrame(renderEngineFrame);
+
+    // ============================================================================
     // SUB-SPACE LINK LABS DEVLOG STREAM INTERACTIVE TAB TOGGLE
     // ============================================================================
     const btnHistorian = document.getElementById("btn-historian-stream");
