@@ -1,16 +1,16 @@
 /* ==========================================================================
-   SUBSPACESELINKLABS - CORE PROCEDURAL BACKGROUND WIPE ENGINE
+   SUBSPACESELINKLABS - PROCEDURAL MATRIX SCREEN CLEANER ENGINE (FIXED)
    ========================================================================== */
 let dots = []; 
-const maxDots = 90;              // Balanced density to maintain 60 FPS smoothly
-const connectionDistance = 135;   
+const maxDots = 75;               // Balanced density for fluid, elegant line coverage
+const connectionDistance = 140;   
 
-// Color themes matrix arrays to sweep through natively
+// Color configurations: We include a tiny, matching tint fader for each theme
 const matrixPalettes = [
-    { name: "Neon Blue", line: "rgba(41, 171, 226, ", dot: "rgba(41, 171, 226, 0.9)" },
-    { name: "Magenta Workbench", line: "rgba(255, 0, 255, ", dot: "rgba(255, 0, 255, 0.9)" },
-    { name: "Orange Alert", line: "rgba(230, 126, 34, ", dot: "rgba(230, 126, 34, 0.9)" },
-    { name: "Godot Matrix Green", line: "rgba(46, 204, 113, ", dot: "rgba(46, 204, 113, 0.9)" }
+    { name: "Neon Blue", line: "rgba(41, 171, 226, ", dot: "rgba(41, 171, 226, 0.9)", tint: "rgba(41, 171, 226, 0.003)", blank: "#020812" },
+    { name: "Magenta Workbench", line: "rgba(255, 0, 255, ", dot: "rgba(255, 0, 255, 0.9)", tint: "rgba(255, 0, 255, 0.003)", blank: "#07020d" },
+    { name: "Orange Alert", line: "rgba(230, 126, 34, ", dot: "rgba(230, 126, 34, 0.9)", tint: "rgba(230, 126, 34, 0.003)", blank: "#0d0702" },
+    { name: "Godot Matrix Green", line: "rgba(46, 204, 113, ", dot: "rgba(46, 204, 113, 0.9)", tint: "rgba(46, 204, 113, 0.003)", blank: "#020d06" }
 ];
 let currentPaletteIndex = 0;
 let frameCount = 0;
@@ -19,8 +19,8 @@ class TelemetryNode {
     constructor(w, h) { 
         this.x = Math.random() * w; 
         this.y = Math.random() * h; 
-        this.vx = (Math.random() - 0.5) * 1.2; // Boosted speed slightly for faster color sweeping
-        this.vy = (Math.random() - 0.5) * 1.2; 
+        this.vx = (Math.random() - 0.5) * 1.5; // Quick movement to draw smooth trails
+        this.vy = (Math.random() - 0.5) * 1.5; 
         this.radius = Math.random() * 2 + 1; 
     } 
     update(w, h) { 
@@ -71,15 +71,22 @@ function renderEngineFrame() {
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
 
-    // 🚀 MEMORY PROTECTION SAFETY SEALS:
-    // Reset our transforms on every single frame so the resolution scaling NEVER multiplies exponentially!
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.scale(dpr, dpr);
-
     const activeTheme = matrixPalettes[currentPaletteIndex];
 
-    // 🚀 INTERACTIVE BLOOM: Tell the GPU to stack color transparency paths natively.
-    // Instead of locking up path loops, this bleeds the lines color into the canvas layer beautifully.
+    // 🚀 1. SAFE MATRIX RESET: Keeps hardware transformations 1:1 on every frame loop
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    // 🚀 2. THE SECRET INGREDIENT (LIQUID ACCUMULATOR): Instead of clearing, we paint a tiny,
+    // nearly invisible amount of the current color. This forces the screen to gradually "wash" 
+    // and saturate completely into a solid colored background smoothly over 12 seconds with NO lag!
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = activeTheme.tint; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height); 
+
+    // Apply the high-DPI scaling matrix for crisp path placement
+    ctx.scale(dpr, dpr);
+
+    // Turn on blending so overlapping line vectors leave glowing neon streaks
     ctx.globalCompositeOperation = 'screen';
 
     // Render wireframe matrix paths
@@ -90,16 +97,14 @@ function renderEngineFrame() {
             const distance = Math.sqrt(dx * dx + dy * dy); 
             
             if (distance < connectionDistance) { 
-                // A subtle line opacity ensures the bleeding effect builds up gracefully over time
-                const alpha = (1 - distance / connectionDistance) * 0.015; 
+                const alpha = (1 - distance / connectionDistance) * 0.12; 
                 
-                // 🚀 PATH GUARD: Isolate line memory calculation states so browser memory never locks up
                 ctx.beginPath(); 
                 ctx.moveTo(dots[i].x, dots[i].y); 
                 ctx.lineTo(dots[n].x, dots[n].y); 
                 
                 ctx.strokeStyle = `${activeTheme.line}${alpha})`; 
-                ctx.lineWidth = 1.1; 
+                ctx.lineWidth = 1.2; 
                 ctx.stroke(); 
             } 
         } 
@@ -114,23 +119,28 @@ function renderEngineFrame() {
         ctx.fill();
     }); 
 
-    // 🚀 AUTOMATED SLATE WASH TRACKER
+    // 🚀 3. COLOR SWEEP SYSTEM RESET
     frameCount++;
     
-    // Every 900 frames (~15 seconds), cleanly flash erase the canvas and boot up the next terminal palette color
-    if (frameCount > 900) {
+    // After ~13 seconds (800 loops), the screen is completely painted solid.
+    // Flash-clean the canvas buffer and swap out to the next workspace palette!
+    if (frameCount > 800) {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.globalCompositeOperation = 'source-over';
         
-        // Drop a solid void black baseline layer to instantly flush out old pixel memory
-        ctx.fillStyle = '#020812'; 
+        // Find the next palette we are moving into
+        const nextPaletteIndex = (currentPaletteIndex + 1) % matrixPalettes.length;
+        const nextTheme = matrixPalettes[nextPaletteIndex];
+        
+        // Solid wipe using the incoming theme's dark blank color to clear out the canvas cleanly
+        ctx.fillStyle = nextTheme.blank; 
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Cycle cleanly into the next theme array address link
-        currentPaletteIndex = (currentPaletteIndex + 1) % matrixPalettes.length;
+        // Advance the loop pointer and reset clock variables
+        currentPaletteIndex = nextPaletteIndex;
         frameCount = 0;
         
-        // Scatter telemetry vectors to layout fresh pathways
+        // Re-scatter the data telemetry points to draw unique sweeping pathways
         initTelemetry();
     }
 
