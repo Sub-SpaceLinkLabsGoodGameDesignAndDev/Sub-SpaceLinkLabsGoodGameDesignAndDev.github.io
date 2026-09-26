@@ -1,26 +1,26 @@
 /* ==========================================================================
-   SUBSPACESELINKLABS - PROCEDURAL MATRIX SCREEN CLEANER ENGINE
+   SUBSPACESELINKLABS - CORE PROCEDURAL BACKGROUND WIPE ENGINE
    ========================================================================== */
 let dots = []; 
-const maxDots = 110;              
-const connectionDistance = 140;   
+const maxDots = 90;              // Balanced density to maintain 60 FPS smoothly
+const connectionDistance = 135;   
 
-// Color themes array to cycle through as the screen gets completely "cleaned"
+// Color themes matrix arrays to sweep through natively
 const matrixPalettes = [
-    { primary: 'rgba(41, 171, 226, ', trail: 'rgba(2, 8, 18, 0.04)' },   // Neon Blue Matrix
-    { primary: 'rgba(255, 0, 255, ', trail: 'rgba(7, 7, 15, 0.04)' },   // Magenta Hack Workbench
-    { primary: 'rgba(230, 126, 34, ', trail: 'rgba(15, 8, 2, 0.04)' },   // Orange Staging Alert
-    { primary: 'rgba(46, 204, 113, ', trail: 'rgba(2, 15, 7, 0.04)' }    // Godot Vector Green
+    { name: "Neon Blue", line: "rgba(41, 171, 226, ", dot: "rgba(41, 171, 226, 0.9)" },
+    { name: "Magenta Workbench", line: "rgba(255, 0, 255, ", dot: "rgba(255, 0, 255, 0.9)" },
+    { name: "Orange Alert", line: "rgba(230, 126, 34, ", dot: "rgba(230, 126, 34, 0.9)" },
+    { name: "Godot Matrix Green", line: "rgba(46, 204, 113, ", dot: "rgba(46, 204, 113, 0.9)" }
 ];
 let currentPaletteIndex = 0;
-let cleanCycleProgress = 0;
+let frameCount = 0;
 
 class TelemetryNode { 
     constructor(w, h) { 
         this.x = Math.random() * w; 
         this.y = Math.random() * h; 
-        this.vx = (Math.random() - 0.5) * 0.9; // Boosted speed slightly to sweep lines cleanly
-        this.vy = (Math.random() - 0.5) * 0.9; 
+        this.vx = (Math.random() - 0.5) * 1.2; // Boosted speed slightly for faster color sweeping
+        this.vy = (Math.random() - 0.5) * 1.2; 
         this.radius = Math.random() * 2 + 1; 
     } 
     update(w, h) { 
@@ -30,7 +30,7 @@ class TelemetryNode {
         if (this.x < 0 || this.x > w) this.vx *= -1; 
         if (this.y < 0 || this.y > h) this.vy *= -1; 
     } 
-    draw(ctx, colorString) { 
+    draw(ctx) { 
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
     } 
 } 
@@ -71,17 +71,18 @@ function renderEngineFrame() {
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
 
-    // Track active colors based on our theme cycle index
-    const activePalette = matrixPalettes[currentPaletteIndex];
-
-    // 🚀 THE SCREEN CLEANER ACCUMULATOR: Intentionally scales up the resolution matrix context
-    // This feeds the sub-pixel trailing bug to build up thick blooming color sweeps across the window!
+    // 🚀 MEMORY PROTECTION SAFETY SEALS:
+    // Reset our transforms on every single frame so the resolution scaling NEVER multiplies exponentially!
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
 
-    // Blends paths smoothly into glowing energy layers
+    const activeTheme = matrixPalettes[currentPaletteIndex];
+
+    // 🚀 INTERACTIVE BLOOM: Tell the GPU to stack color transparency paths natively.
+    // Instead of locking up path loops, this bleeds the lines color into the canvas layer beautifully.
     ctx.globalCompositeOperation = 'screen';
 
-    // Render wireframe grid lines
+    // Render wireframe matrix paths
     for (let i = 0; i < dots.length; i++) { 
         for (let n = i + 1; n < dots.length; n++) { 
             const dx = dots[i].x - dots[n].x; 
@@ -89,45 +90,47 @@ function renderEngineFrame() {
             const distance = Math.sqrt(dx * dx + dy * dy); 
             
             if (distance < connectionDistance) { 
-                const alpha = (1 - distance / connectionDistance) * 0.18; 
+                // A subtle line opacity ensures the bleeding effect builds up gracefully over time
+                const alpha = (1 - distance / connectionDistance) * 0.015; 
                 
-                // Draw vector paths continuously without running beginPath() on every sub-element
-                // This guarantees the paths compile together into massive expanding paint fields!
+                // 🚀 PATH GUARD: Isolate line memory calculation states so browser memory never locks up
+                ctx.beginPath(); 
                 ctx.moveTo(dots[i].x, dots[i].y); 
                 ctx.lineTo(dots[n].x, dots[n].y); 
                 
-                ctx.strokeStyle = `${activePalette.primary}${alpha})`; 
-                ctx.lineWidth = 1.4; 
+                ctx.strokeStyle = `${activeTheme.line}${alpha})`; 
+                ctx.lineWidth = 1.1; 
                 ctx.stroke(); 
             } 
         } 
     } 
 
-    // Draw moving vector node particles
+    // Draw vector tracking nodes
     dots.forEach(node => { 
         node.update(w, h);
+        ctx.beginPath(); 
         node.draw(ctx); 
-        ctx.fillStyle = `${activePalette.primary}0.85)`;
+        ctx.fillStyle = activeTheme.dot;
         ctx.fill();
     }); 
 
-    // 🚀 TIME TO CYLCLE WIPE: Track frames to reset the slate once it saturates
-    cleanCycleProgress++;
+    // 🚀 AUTOMATED SLATE WASH TRACKER
+    frameCount++;
     
-    // Roughly every 12-15 seconds (750 execution loops), sweep the screen and shift the palette color
-    if (cleanCycleProgress > 750) {
-        ctx.setTransform(1, 0, 0, 1, 0, 0); // Hard reset the scaling multiplier
+    // Every 900 frames (~15 seconds), cleanly flash erase the canvas and boot up the next terminal palette color
+    if (frameCount > 900) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.globalCompositeOperation = 'source-over';
         
-        // Solid wipe using the matching theme color block to flush away artifacting streaks cleanly
-        ctx.fillStyle = activePalette.trail.replace('0.04', '1'); 
+        // Drop a solid void black baseline layer to instantly flush out old pixel memory
+        ctx.fillStyle = '#020812'; 
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Increment theme array index loop pointer
+        // Cycle cleanly into the next theme array address link
         currentPaletteIndex = (currentPaletteIndex + 1) % matrixPalettes.length;
-        cleanCycleProgress = 0;
+        frameCount = 0;
         
-        // Re-scatter vector points to generate unique cleaning pathways for the next wave
+        // Scatter telemetry vectors to layout fresh pathways
         initTelemetry();
     }
 
