@@ -66,7 +66,7 @@ function renderEngineFrame() {
 
     // 🚀 2. CRISP TRAIL FADER: Draws a perfectly scaled box over raw pixel canvas dimensions
     ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(2, 8, 18, 0.08)'; 
+    ctx.fillStyle = 'rgba(2, 8, 18, 0.04)'; // 🚀 Lower value yields longer, glowing neon trails!
     ctx.fillRect(0, 0, canvas.width, canvas.height); 
 
     // 🚀 3. RESTORE THE HIGH-DPI LOOK: Safely apply scaling for your wireframe paths
