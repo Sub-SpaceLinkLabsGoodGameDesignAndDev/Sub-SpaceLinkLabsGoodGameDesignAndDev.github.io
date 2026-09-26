@@ -25,9 +25,13 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -1;       /* Places it safely behind the cards */
+    z-index: -1;
     display: block;
-    pointer-events: none; 
+    pointer-events: none;
+    background-color: #020812; /* Locks your clean 3D scene void color as the true page canvas */
+    
+    /* 🚀 SYSTEM HARDWARE GLOW: This filter gives your nodes a true, gorgeous neon bloom effect natively */
+    filter: drop-shadow(0 0 4px rgba(41, 171, 226, 0.4)) blur(0.3px);
 }
 
 .visually-hidden {
