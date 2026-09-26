@@ -1,16 +1,16 @@
 /* ==========================================================================
-   SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP (NEON TRAILS CONFIG)
+   SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP (NEON MATRIX FINAL STABLE)
    ========================================================================== */
 let dots = []; 
-const maxDots = 120;              
+const maxDots = 110;              
 const connectionDistance = 140;   
 
 class TelemetryNode { 
     constructor(w, h) { 
         this.x = Math.random() * w; 
         this.y = Math.random() * h; 
-        this.vx = (Math.random() - 0.5) * 0.8; 
-        this.vy = (Math.random() - 0.5) * 0.8; 
+        this.vx = (Math.random() - 0.5) * 0.7; 
+        this.vy = (Math.random() - 0.5) * 0.7; 
         this.radius = Math.random() * 2 + 1; 
     } 
     update(w, h) { 
@@ -45,11 +45,6 @@ function resizeCanvas() {
     
     canvas.width = rect.width * dpr; 
     canvas.height = rect.height * dpr; 
-    
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-        ctx.scale(dpr, dpr);
-    }
 } 
 
 function renderEngineFrame() { 
@@ -66,13 +61,18 @@ function renderEngineFrame() {
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
 
-    // 🚀 1. SMOOTH TRAIL GENERATOR: Instead of clearRect, we paint a faint transparent slate.
-    // A low alpha (0.12) makes old lines smoothly dissolve into fading neon tails!
+    // 🚀 1. TEMPORARILY RESET TRANSFORM MATRIX: Stops the trail box from stacking up and blurring!
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    // 🚀 2. CRISP TRAIL FADER: Draws a perfectly scaled box over raw pixel canvas dimensions
     ctx.globalCompositeOperation = 'source-over';
-ctx.fillStyle = 'rgba(2, 8, 18, 0.05)'; // 🚀 Lower alpha allows beautiful, long trails!
-ctx.fillRect(0, 0, w, h); 
-   
-    // 🚀 2. BLOOMING HUB EFFECTS: Intersecting lines illuminate into neon energy clusters
+    ctx.fillStyle = 'rgba(2, 8, 18, 0.08)'; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height); 
+
+    // 🚀 3. RESTORE THE HIGH-DPI LOOK: Safely apply scaling for your wireframe paths
+    ctx.scale(dpr, dpr);
+
+    // 🚀 4. BLOOMING CONTEXT APPLIED: Overlapping vectors now bloom bright like true neon hubs
     ctx.globalCompositeOperation = 'screen';
 
     // Render wireframe grid lines
@@ -83,31 +83,30 @@ ctx.fillRect(0, 0, w, h);
             const distance = Math.sqrt(dx * dx + dy * dy); 
             
             if (distance < connectionDistance) { 
-                const alpha = (1 - distance / connectionDistance) * 0.35; 
+                const alpha = (1 - distance / connectionDistance) * 0.4; 
                 
-                // 🚀 3. PATH RESET GUARD: Keeps your canvas memory completely clean of static patches!
+                // Clear the internal path array memory cache completely
                 ctx.beginPath(); 
                 ctx.moveTo(dots[i].x, dots[i].y); 
                 ctx.lineTo(dots[n].x, dots[n].y); 
                 
                 ctx.strokeStyle = `rgba(41, 171, 226, ${alpha})`; 
-                ctx.lineWidth = 1.3; 
+                ctx.lineWidth = 1.2; 
                 ctx.stroke(); 
             } 
         } 
     } 
 
-    // Draw vector particles
+    // Draw moving vector node particles
     dots.forEach(node => { 
         node.update(w, h);
         
         ctx.beginPath(); 
         node.draw(ctx); 
-        ctx.fillStyle = 'rgba(41, 171, 226, 0.85)';
+        ctx.fillStyle = 'rgba(41, 171, 226, 0.9)';
         ctx.fill();
     }); 
 
-    ctx.globalCompositeOperation = 'source-over';
     requestAnimationFrame(renderEngineFrame); 
 }
 
