@@ -1,29 +1,31 @@
 /* ==========================================================================
-   SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP
+   SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP (OPTIMIZED BACKGROUND MESH)
    ========================================================================== */
 let dots = []; 
-const maxDots = 45; 
-const connectionDistance = 110; 
+const maxDots = 85;               // 🚀 Increased from 45 to fill out the full background nicely
+const connectionDistance = 140;   // 🚀 Increased from 110 so nodes bridge together over longer distances
 
-// Initialize grid telemetry node vectors 
 class TelemetryNode { 
     constructor(w, h) { 
         this.x = Math.random() * w; 
         this.y = Math.random() * h; 
-        this.vx = (Math.random() - 0.5) * 0.4; 
-        this.vy = (Math.random() - 0.5) * 0.4; 
-        this.radius = Math.random() * 2 + 1; 
+        // 🚀 Increased speed slightly so trails don't puddle up into ugly static light patches
+        this.vx = (Math.random() - 0.5) * 0.9; 
+        this.vy = (Math.random() - 0.5) * 0.9; 
+        this.radius = Math.random() * 2.5 + 1.5; 
     } 
     update(w, h) { 
         this.x += this.vx; 
         this.y += this.vy; 
+        
+        // 🚀 Clean bounce physics to prevent nodes from gathering on screen edges
         if (this.x < 0 || this.x > w) this.vx *= -1; 
         if (this.y < 0 || this.y > h) this.vy *= -1; 
     } 
     draw(ctx) { 
         ctx.beginPath(); 
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
-        ctx.fillStyle = 'rgba(41, 171, 226, 0.7)'; 
+        ctx.fillStyle = 'rgba(41, 171, 226, 0.85)'; 
         ctx.fill(); 
     } 
 } 
@@ -47,8 +49,7 @@ function renderEngineFrame() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Clear background void space
-    ctx.fillStyle = 'rgba(11, 11, 16, 0.2)'; 
+    ctx.fillStyle = 'rgba(2, 8, 18, 0.35)'; 
     ctx.fillRect(0, 0, canvas.width, canvas.height); 
 
     // 1. Render data wireframe grid paths
