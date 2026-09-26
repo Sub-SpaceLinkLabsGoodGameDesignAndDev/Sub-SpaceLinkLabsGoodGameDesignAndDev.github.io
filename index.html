@@ -221,10 +221,12 @@
 <script type="importmap">
   {
     "imports": {
-      "three": "https://unpkg.com/three@0.174.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.174.0/examples/jsm/"
+      "three": "https://unpkg.com",
+      "three/addons/": "https://unpkg.com"
     }
   }
+</script>
+
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -490,39 +492,39 @@ if (!container) {
           shipRoot.name = modelLabel || 'PirateShipRoot';
 
           if (shipRoot.children.length === 0) {
-		  console.error('No ship meshes were found in the loaded model.');
-	      reject(new Error('No meshes found in GLTF model'));return;
-	      }
+            console.error('No ship meshes were found in the loaded model.');
+            reject(new Error('No meshes found in GLTF model'));
+            return;
+          }
 
           fitModelToView(shipRoot);
-	      applyShipMaterials(shipRoot);
+          applyShipMaterials(shipRoot);
 
-          const existingModel = scene.children.find((child) => child.userData &&
-		  child.userData.isViewerModel);
-		  if (existingModel) {scene.remove(existingModel);
-		  }
+          const existingModel = scene.children.find((child) => child.userData && child.userData.isViewerModel);
+          if (existingModel) {
+            scene.remove(existingModel);
+          }
 
           shipRoot.userData.isViewerModel = true;
-		  scene.add(shipRoot);
+          scene.add(shipRoot);
 
           try {
-		  window.__ssllggdThreeViewer = {
-		  scene,
-		  camera,
-		  renderer,
-		  shipRoot,
-		  modelName: shipRoot.name || 'loaded-scene'
-		  };
-		  } catch (error) {
-		  console.warn('Viewer debug hook failed:', error);
-		  }
+            window.__ssllggdThreeViewer = {
+              scene,
+              camera,
+              renderer,
+              shipRoot,
+              modelName: shipRoot.name || 'loaded-scene'
+            };
+          } catch (error) {
+            console.warn('Viewer debug hook failed:', error);
+          }
 
           console.log('Viewer loaded model:', modelLabel || modelPath);
-		  resolve(shipRoot);
-		  },
+          resolve(shipRoot);
+        },
 	
-          (progressEvent) => 
-		  {
+        (progressEvent) => {
           if (progressEvent.total > 0 && progressEvent.loaded <= progressEvent.total) {
             const loaded = (progressEvent.loaded / progressEvent.total) * 100;
             console.log(`Model load progress: ${loaded.toFixed(0)}%`);
@@ -530,7 +532,7 @@ if (!container) {
             const mbLoaded = (progressEvent.loaded / (1024 * 1024)).toFixed(2);
             console.log(`Downloaded: ${mbLoaded} MB (Total size unknown or compressed)`);
           }
-        }, // FIXED: Removed stray extra bracket line here
+        }, 
         (error) => {
           console.error('Failed to load GLB model:', error);
           container.innerHTML = '<div class="viewer-error">Unable to load the 3D model. Check that ./img/lab-test-model.phtml exists.</div>';
@@ -540,23 +542,8 @@ if (!container) {
     });
   }
 
-  // FIXED / ADDED: Trigger the initialization execution call to load the default ship on mount
-  loadShipModel(viewerModels[0].path, viewerModels[0].label)
-    .catch(err => console.error("Initial load failed:", err));
-Use code with caution.
+  // Trigger the initialization execution call to load the default ship on mount
   const defaultModel = viewerModels[0];
-  if (modelSelector) {
-    modelSelector.addEventListener('change', async (event) => {
-      const selected = viewerModels.find((model) => model.id === event.target.value);
-      if (!selected) return;
-      try {
-        await loadShipModel(selected.path, selected.label);
-      } catch (error) {
-        console.warn('Model switch failed:', error);
-      }
-    });
-  }
-
   loadShipModel(defaultModel.path, defaultModel.label).catch((error) => {
     console.warn('Initial model load failed:', error);
   });
