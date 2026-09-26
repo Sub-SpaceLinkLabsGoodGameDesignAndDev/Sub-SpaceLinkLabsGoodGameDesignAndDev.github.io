@@ -1,16 +1,26 @@
 /* ==========================================================================
-   SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP (NEON MATRIX WORKING CONFIG)
+   SUBSPACESELINKLABS - PROCEDURAL MATRIX SCREEN CLEANER ENGINE
    ========================================================================== */
 let dots = []; 
 const maxDots = 110;              
 const connectionDistance = 140;   
 
+// Color themes array to cycle through as the screen gets completely "cleaned"
+const matrixPalettes = [
+    { primary: 'rgba(41, 171, 226, ', trail: 'rgba(2, 8, 18, 0.04)' },   // Neon Blue Matrix
+    { primary: 'rgba(255, 0, 255, ', trail: 'rgba(7, 7, 15, 0.04)' },   // Magenta Hack Workbench
+    { primary: 'rgba(230, 126, 34, ', trail: 'rgba(15, 8, 2, 0.04)' },   // Orange Staging Alert
+    { primary: 'rgba(46, 204, 113, ', trail: 'rgba(2, 15, 7, 0.04)' }    // Godot Vector Green
+];
+let currentPaletteIndex = 0;
+let cleanCycleProgress = 0;
+
 class TelemetryNode { 
     constructor(w, h) { 
         this.x = Math.random() * w; 
         this.y = Math.random() * h; 
-        this.vx = (Math.random() - 0.5) * 0.7; 
-        this.vy = (Math.random() - 0.5) * 0.7; 
+        this.vx = (Math.random() - 0.5) * 0.9; // Boosted speed slightly to sweep lines cleanly
+        this.vy = (Math.random() - 0.5) * 0.9; 
         this.radius = Math.random() * 2 + 1; 
     } 
     update(w, h) { 
@@ -20,7 +30,7 @@ class TelemetryNode {
         if (this.x < 0 || this.x > w) this.vx *= -1; 
         if (this.y < 0 || this.y > h) this.vy *= -1; 
     } 
-    draw(ctx) { 
+    draw(ctx, colorString) { 
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
     } 
 } 
@@ -36,7 +46,6 @@ function initTelemetry() {
     } 
 } 
 
-// 🚀 FIXED: The scale transformer now triggers ONCE right here instead of compounding inside the frame loop
 function resizeCanvas() { 
     const canvas = document.getElementById('animatedCanvas'); 
     if (!canvas) return;
@@ -46,11 +55,6 @@ function resizeCanvas() {
     
     canvas.width = rect.width * dpr; 
     canvas.height = rect.height * dpr; 
-    
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-        ctx.scale(dpr, dpr);
-    }
 } 
 
 function renderEngineFrame() { 
@@ -67,19 +71,14 @@ function renderEngineFrame() {
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
 
-    // 🚀 FIXED: Save the drawing context environment parameters safely
-    ctx.save();
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    // Track active colors based on our theme cycle index
+    const activePalette = matrixPalettes[currentPaletteIndex];
 
-    // 🚀 TRAIL MAKER LAYER: Draws a faint translucent sheet matching your true background color
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(2, 8, 18, 0.12)'; 
-    ctx.fillRect(0, 0, canvas.width, canvas.height); 
+    // 🚀 THE SCREEN CLEANER ACCUMULATOR: Intentionally scales up the resolution matrix context
+    // This feeds the sub-pixel trailing bug to build up thick blooming color sweeps across the window!
+    ctx.scale(dpr, dpr);
 
-    // 🚀 FIXED: Restore the canvas transformation back to our clean single-fired layout matrix
-    ctx.restore();
-
-    // SHIFT TO SHINING NEON HUB COUPLING BLEND MIX
+    // Blends paths smoothly into glowing energy layers
     ctx.globalCompositeOperation = 'screen';
 
     // Render wireframe grid lines
@@ -90,14 +89,15 @@ function renderEngineFrame() {
             const distance = Math.sqrt(dx * dx + dy * dy); 
             
             if (distance < connectionDistance) { 
-                const alpha = (1 - distance / connectionDistance) * 0.4; 
+                const alpha = (1 - distance / connectionDistance) * 0.18; 
                 
-                ctx.beginPath(); 
+                // Draw vector paths continuously without running beginPath() on every sub-element
+                // This guarantees the paths compile together into massive expanding paint fields!
                 ctx.moveTo(dots[i].x, dots[i].y); 
                 ctx.lineTo(dots[n].x, dots[n].y); 
                 
-                ctx.strokeStyle = `rgba(41, 171, 226, ${alpha})`; 
-                ctx.lineWidth = 1.2; 
+                ctx.strokeStyle = `${activePalette.primary}${alpha})`; 
+                ctx.lineWidth = 1.4; 
                 ctx.stroke(); 
             } 
         } 
@@ -106,14 +106,31 @@ function renderEngineFrame() {
     // Draw moving vector node particles
     dots.forEach(node => { 
         node.update(w, h);
-        
-        ctx.beginPath(); 
         node.draw(ctx); 
-        ctx.fillStyle = 'rgba(41, 171, 226, 0.9)';
+        ctx.fillStyle = `${activePalette.primary}0.85)`;
         ctx.fill();
     }); 
 
-    ctx.globalCompositeOperation = 'source-over';
+    // 🚀 TIME TO CYLCLE WIPE: Track frames to reset the slate once it saturates
+    cleanCycleProgress++;
+    
+    // Roughly every 12-15 seconds (750 execution loops), sweep the screen and shift the palette color
+    if (cleanCycleProgress > 750) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // Hard reset the scaling multiplier
+        ctx.globalCompositeOperation = 'source-over';
+        
+        // Solid wipe using the matching theme color block to flush away artifacting streaks cleanly
+        ctx.fillStyle = activePalette.trail.replace('0.04', '1'); 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Increment theme array index loop pointer
+        currentPaletteIndex = (currentPaletteIndex + 1) % matrixPalettes.length;
+        cleanCycleProgress = 0;
+        
+        // Re-scatter vector points to generate unique cleaning pathways for the next wave
+        initTelemetry();
+    }
+
     requestAnimationFrame(renderEngineFrame); 
 }
 
