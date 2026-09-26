@@ -365,16 +365,9 @@ if (!container) {
     });
   }
 
-  function applyShipMaterials(object) {
-    object.traverse((child) => {
-      if (child.isLine || child.isLineSegments || child.isPoints) {
-        child.visible = false;
-        return;
-      }
-
-      if (!child.isMesh || !child.material) return;
-
-      // 1. Create your reusable shared materials ONCE outside the traverse loop to save GPU memory
+  // ============================================================================
+// SHARED MATERIALS (DEFINED ONCE OUTSIDE TO PREVENT GPU MEMORY CRASHES)
+// ============================================================================
 const sharedWoodMaterial = new THREE.MeshStandardMaterial({
   color: 0x9b5b2b,
   emissive: 0x1d120b,
@@ -382,7 +375,7 @@ const sharedWoodMaterial = new THREE.MeshStandardMaterial({
   roughness: 0.8,
   metalness: 0.14,
   side: THREE.DoubleSide,
-  map: woodTexture // Uses the custom canvas texture cleanly
+  map: woodTexture
 });
 
 const sharedStairWoodMaterial = new THREE.MeshStandardMaterial({
@@ -424,7 +417,9 @@ const sharedSpindleMetalMaterial = new THREE.MeshStandardMaterial({
   side: THREE.DoubleSide
 });
 
-// 2. The streamlined, memory-safe materials processing function
+// ============================================================================
+// CLEANED SUB-MESH TRAVERSAL LOOP
+// ============================================================================
 function applyShipMaterials(object) {
   object.traverse((child) => {
     if (child.isLine || child.isLineSegments || child.isPoints) {
@@ -434,7 +429,6 @@ function applyShipMaterials(object) {
 
     if (!child.isMesh) return;
 
-    // Build hierarchical part name string for targeting specific pieces
     const partNames = [];
     let part = child;
     while (part) {
@@ -443,7 +437,6 @@ function applyShipMaterials(object) {
     }
     const name = partNames.join(' ');
 
-    // Match meshes to the correct shared material instance
     if (name.includes('sail')) {
       child.material = sharedSailMaterial;
     } else if (name.includes('captainsdoorhandles') || name.includes('captainsdoorhandles001')) {
@@ -453,15 +446,13 @@ function applyShipMaterials(object) {
     } else if (name.includes('circle')) {
       child.material = sharedSpindleMetalMaterial;
     } else {
-      // Default fallback for everything else (masts, hull, decks, wheels)
       child.material = sharedWoodMaterial;
     }
 
     child.castShadow = true;
     child.receiveShadow = true;
   });
-}
-
+} 
 
   // Auto-center and fit-to-frame engine
   function fitModelToView(model) {
