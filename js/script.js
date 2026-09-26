@@ -93,9 +93,11 @@ window.addEventListener('resize', () => {
     initTelemetry();
 }); 
 
-resizeCanvas(); 
-initTelemetry(); 
-requestAnimationFrame(renderEngineFrame);
+document.addEventListener("DOMContentLoaded", () => {
+    resizeCanvas(); 
+    initTelemetry(); 
+    requestAnimationFrame(renderEngineFrame);
+});
 
 // ============================================================================
 // SUB-SPACE LINK LABS DEVLOG STREAM INTERACTIVE TAB TOGGLE
