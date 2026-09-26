@@ -28,12 +28,10 @@ body {
     z-index: -1;
     display: block;
     pointer-events: none;
-    background-color: #020812; /* Locks your clean 3D scene void color as the true page canvas */
     
-    /* 🚀 SYSTEM HARDWARE GLOW: This filter gives your nodes a true, gorgeous neon bloom effect natively */
-    filter: drop-shadow(0 0 4px rgba(41, 171, 226, 0.4)) blur(0.3px);
+    /* 🚀 MATCH THIS EXACTLY: Locks the background to match your script's trail generator color */
+    background-color: #020812; 
 }
-
 .visually-hidden {
 	position: absolute;
 	width: 1px;
