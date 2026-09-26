@@ -225,8 +225,6 @@
       "three/addons/": "https://unpkg.com/three@0.174.0/examples/jsm/"
     }
   }
-</script>
-<script src="./js/script.js"></script>
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -261,6 +259,13 @@ if (!container) {
   renderer.domElement.style.height = '100%';
   renderer.domElement.style.maxWidth = '100%';
   container.appendChild(renderer.domElement);
+
+  // SAFEGUARD: Gracefully alert the user if GitHub/Browser memory crashes the WebGL engine
+  renderer.domElement.addEventListener("webglcontextlost", (event) => {
+    event.preventDefault();
+    console.error("WebGL Context Lost! The Pirate Ship model is too heavy for memory.");
+    container.innerHTML = '<div class="viewer-error" style="color: #ff6b6b; padding: 20px; text-align: center; font-family: sans-serif;">WebGL Engine crashed. The 3D model footprint is too large for your browser\'s memory.</div>';
+  }, false);
 
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
@@ -338,8 +343,6 @@ if (!container) {
   rimLight.position.set(-10, 6, 20);
   scene.add(rimLight);
 
-  // Removed the circular base plane to avoid the ocean-disk look and keep the ship as the focus.
-
   const loader = new GLTFLoader();
   const viewerModels = [
     { id: 'lab-test-model', label: 'Pirate Ship', path: './img/lab-test-model.phtml' }
@@ -356,6 +359,12 @@ if (!container) {
       if (currentValue === model.id) option.selected = true;
       modelSelector.appendChild(option);
     });
+    
+    // Listen to model selector dropdown shifts if you add more models later
+    modelSelector.addEventListener('change', (e) => {
+      const selected = viewerModels.find(m => m.id === e.target.value);
+      if (selected) loadShipModel(selected.path, selected.label).catch(console.error);
+    });
   }
 
   function applyShipMaterials(object) {
@@ -369,7 +378,7 @@ if (!container) {
 
       const materialList = Array.isArray(child.material) ? child.material : [child.material];
       const materialCopies = materialList.map((material) => material && material.clone ? material.clone() : material);
-      child.material = Array.isArray(child.material) ? materialCopies : materialCopies[0];
+      child.material = Array.isArray(child.material) ? materialCopies : materialCopies;
       materialCopies.forEach((material) => {
         if (!material) return;
 
@@ -444,6 +453,7 @@ if (!container) {
     });
   }
 
+  // Auto-center and fit-to-frame engine
   function fitModelToView(model) {
     model.updateMatrixWorld(true);
 
@@ -480,50 +490,47 @@ if (!container) {
           shipRoot.name = modelLabel || 'PirateShipRoot';
 
           if (shipRoot.children.length === 0) {
-            console.error('No ship meshes were found in the loaded model.');
-            reject(new Error('No meshes found in GLTF model'));
-            return;
-          }
+		  console.error('No ship meshes were found in the loaded model.');
+	      reject(new Error('No meshes found in GLTF model'));return;
+	      }
 
           fitModelToView(shipRoot);
-          applyShipMaterials(shipRoot);
+	      applyShipMaterials(shipRoot);
 
-          const existingModel = scene.children.find((child) => child.userData && child.userData.isViewerModel);
-          if (existingModel) {
-            scene.remove(existingModel);
-          }
+          const existingModel = scene.children.find((child) => child.userData &&
+		  child.userData.isViewerModel);
+		  if (existingModel) {scene.remove(existingModel);
+		  }
 
           shipRoot.userData.isViewerModel = true;
-          scene.add(shipRoot);
+		  scene.add(shipRoot);
 
           try {
-            window.__ssllggdThreeViewer = {
-              scene,
-              camera,
-              renderer,
-              shipRoot,
-              modelName: shipRoot.name || 'loaded-scene'
-            };
-          } catch (error) {
-            console.warn('Viewer debug hook failed:', error);
-          }
+		  window.__ssllggdThreeViewer = {
+		  scene,
+		  camera,
+		  renderer,
+		  shipRoot,
+		  modelName: shipRoot.name || 'loaded-scene'
+		  };
+		  } catch (error) {
+		  console.warn('Viewer debug hook failed:', error);
+		  }
 
           console.log('Viewer loaded model:', modelLabel || modelPath);
-          resolve(shipRoot);
-        },
-        (progressEvent) => {
-    // If the server doesn't provide a reliable total, or it's compressed,
-    // total might be 0 or smaller than loaded.
-    if (progressEvent.total > 0 && progressEvent.loaded <= progressEvent.total) {
-        const loaded = (progressEvent.loaded / progressEvent.total) * 100;
-        console.log(`Model load progress: ${loaded.toFixed(0)}%`);
-    } else {
-        // Fallback: Just log the raw megabytes streaming in so it doesn't break
-        const mbLoaded = (progressEvent.loaded / (1024 * 1024)).toFixed(2);
-        console.log(`Downloaded: ${mbLoaded} MB (Total size unknown or compressed)`);
-    }
-}
-        },
+		  resolve(shipRoot);
+		  },
+	
+          (progressEvent) => 
+		  {
+          if (progressEvent.total > 0 && progressEvent.loaded <= progressEvent.total) {
+            const loaded = (progressEvent.loaded / progressEvent.total) * 100;
+            console.log(`Model load progress: ${loaded.toFixed(0)}%`);
+          } else {
+            const mbLoaded = (progressEvent.loaded / (1024 * 1024)).toFixed(2);
+            console.log(`Downloaded: ${mbLoaded} MB (Total size unknown or compressed)`);
+          }
+        }, // FIXED: Removed stray extra bracket line here
         (error) => {
           console.error('Failed to load GLB model:', error);
           container.innerHTML = '<div class="viewer-error">Unable to load the 3D model. Check that ./img/lab-test-model.phtml exists.</div>';
@@ -533,6 +540,10 @@ if (!container) {
     });
   }
 
+  // FIXED / ADDED: Trigger the initialization execution call to load the default ship on mount
+  loadShipModel(viewerModels[0].path, viewerModels[0].label)
+    .catch(err => console.error("Initial load failed:", err));
+Use code with caution.
   const defaultModel = viewerModels[0];
   if (modelSelector) {
     modelSelector.addEventListener('change', async (event) => {
