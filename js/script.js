@@ -38,7 +38,6 @@ function initTelemetry() {
     } 
 } 
 
-// Master rendering loop sequence
 function renderEngineFrame() { 
     const canvas = document.getElementById('animatedCanvas');
     if (!canvas) {
@@ -49,35 +48,33 @@ function renderEngineFrame() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    ctx.fillStyle = 'rgba(2, 8, 18, 0.35)'; 
-    ctx.fillRect(0, 0, canvas.width, canvas.height); 
+    // 1. HARD ERASE: Completely wipes out the sub-pixel artifacts causing the glitchy light patches
+    ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
-    // 1. Render data wireframe grid paths
+    // 2. COMPOSITE GLOW: Blends overlapping lines into bright, intentional neon hubs
+    ctx.globalCompositeOperation = 'screen';
+
+    // 3. Render data wireframe grid paths
     for (let i = 0; i < dots.length; i++) { 
         for (let n = i + 1; n < dots.length; n++) { 
             const dx = dots[i].x - dots[n].x; 
             const dy = dots[i].y - dots[n].y; 
             const distance = Math.sqrt(dx * dx + dy * dy); 
+            
             if (distance < connectionDistance) { 
-                const alpha = (1 - distance / connectionDistance) * 0.15; 
+                // Enhanced alpha calculation for smoother web transitions
+                const alpha = (1 - distance / connectionDistance) * 0.25; 
                 ctx.beginPath(); 
                 ctx.moveTo(dots[i].x, dots[i].y); 
                 ctx.lineTo(dots[n].x, dots[n].y); 
+                
+                // Neon blue theme lines
                 ctx.strokeStyle = `rgba(41, 171, 226, ${alpha})`; 
-                ctx.lineWidth = 1; 
+                ctx.lineWidth = 1.2; 
                 ctx.stroke(); 
             } 
         } 
-    } 
-
-    // 2. Draw moving vector node particles
-    dots.forEach(node => { 
-        node.update(canvas.width, canvas.height); 
-        node.draw(ctx); 
-    }); 
-
-    requestAnimationFrame(renderEngineFrame); 
-} 
+    }  
 
 // Synchronize dimensions dynamically
 function resizeCanvas() { 
