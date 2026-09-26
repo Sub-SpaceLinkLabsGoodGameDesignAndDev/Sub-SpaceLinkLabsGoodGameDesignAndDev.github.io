@@ -117,7 +117,7 @@ window.addEventListener('resize', () => {
 }); 
 
 // Master bootstrap loop
-document.addEventListener("DOMContentLoaded", () => {
+window.addEventListener('load', () => {
     resizeCanvas(); 
     initTelemetry(); 
     requestAnimationFrame(renderEngineFrame);
