@@ -126,11 +126,11 @@
 		<section class="studio-card" data-gjs-draggable="true" data-gjs-name="App Controller Card">
 			<h3>App Ecosystem Relays</h3>
 			<p>Trigger execution systems across external custom mobile environment arrays.</p>
-			<p>Currently undeveloped game concept IGLI. No engine execution yet available.
+			<p>Currently undeveloped game concept IGLI. No engine execution yet available.</p>
 			<button id="launchBtn" class="action-btn launch-matrix-btn">🏴‍☠️ Launch Mobile IGLI App 🏴‍☠️</button>
-		</section> 
+		</section> <!-- SEALED: Fixed missing section closing tag -->
 		
-				<!-- CARD MODULE 4: INTERACTIVE 3D ENGINE MESH VIEWPORT -->
+		<!-- CARD MODULE 4: INTERACTIVE 3D ENGINE MESH VIEWPORT -->
 		<section class="studio-card" data-gjs-draggable="true" data-gjs-name="Interactive 3D Engine Card">
 			<h3>Interactive Engine Mesh Viewport</h3>
 			<p>Direct vector topology interaction layout node. Click and drag or swipe on your phone screen to orbit and inspect the test asset topology.</p>
@@ -158,7 +158,6 @@
 			<p>Live development renders extracted directly from the Blender model staging pipeline.</p>
 			
 			<div class="gallery-grid" data-gjs-type="container" data-gjs-name="Media Grid Container">
-				
 				<!-- Mock Render 1 -->
 				<div class="gallery-item" data-gjs-draggable="true" data-gjs-name="Gallery Image Slot 1">
 					<img src="./img/IGLIship.png" alt="Blender Model Render Staging" class="gallery-img">
@@ -176,53 +175,50 @@
 					<img src="./img/IGLIship.png" alt="Blender Model Render Staging" class="gallery-img">
 					<div class="gallery-caption">Model Asset Node Gamma</div>
 				</div>
-
 			</div>
 		</section>
-</body>
+	</main> <!-- SEALED: Enclosing master wrapper node safely -->
 
-<footer class="lab-footer"> 
-    <p class="legal-text"> 
-        &copy; 2026 Josh Wade / <strong>Sub-Space Link Labs Good Game Design & Devlogs</strong>. All Rights Reserved. 
-    </p> 
-    <!-- Consolidated Studio Compliance and Legal Matrix Link --> 
-    <ul class="legal-links"> 
-        <li><a href="legal.html">Legal, Terms &amp; Privacy Notices</a></li>
-    </ul> 
-</footer>
+	<footer class="lab-footer"> 
+		<p class="legal-text"> 
+			&copy; 2026 Josh Wade / <strong>Sub-Space Link Labs Good Game Design & Devlogs</strong>. All Rights Reserved. 
+		</p> 
+		<ul class="legal-links"> 
+			<li><a href="legal.html">Legal, Terms &amp; Privacy Notices</a></li>
+		</ul> 
+	</footer>
+</body> 
+
 <!-- INTERACTIVE SCRIPTS RELAY MATRIX -->
-	<script>
-		document.addEventListener("DOMContentLoaded", function() {
-			const launchBtn = document.getElementById("launchBtn");
-			
-			if (launchBtn) {
-				launchBtn.addEventListener("click", function() {
-					// 1. Fire execution packet out to the mobile system launcher
-					window.location.href = "subspacelinklabs://"; 
-					
-					// 2. Start a 1.5-second background countdown race clock
-					setTimeout(function() {
-						// If the page is still visible, the app launcher failed
-						if (!document.hidden) {
-							// Open a secure modal dialog window directly on your user interface
-							const trySandbox = confirm("SYSTEM RELAY EXCEPTION: App not found on this device.\n\nWould you like to boot into the Web Browser Sandbox version instead?");
-							
-							if (trySandbox) {
-								// Re-route the user straight into your standalone Godot engine shell page
-								window.location.href = "game.html";
-							}
+<script src="js/script.js"></script>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		const launchBtn = document.getElementById("launchBtn");
+		
+		if (launchBtn) {
+			launchBtn.addEventListener("click", function() {
+				window.location.href = "subspacelinklabs://"; 
+				
+				setTimeout(function() {
+					if (!document.hidden) {
+						const trySandbox = confirm("SYSTEM RELAY EXCEPTION: App not found on this device.\n\nWould you like to boot into the Web Browser Sandbox version instead?");
+						
+						if (trySandbox) {
+							window.location.href = "game.html";
 						}
-					}, 1500); // 1500 milliseconds matrix threshold
-				});
-			}
-		});
- </script>
+					}
+				}, 1500); 
+			});
+		}
+	});
+</script>
 
 <script type="importmap">
   {
     "imports": {
-      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      "three": "https://unpkg.com",
+      "three/addons/": "https://unpkg.com"
     }
   }
 </script>
