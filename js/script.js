@@ -73,12 +73,10 @@ function renderEngineFrame() {
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
 
-    // 🚀 THE TRAIL GENERATOR: Draws a faint slate with a tiny alpha to build glowing neon trails
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(2, 8, 18, 0.08)'; 
-    ctx.fillRect(0, 0, w, h); 
+    // 🚀 1. VAPORIZE THE GLITCHES: A hard erase clears out all dirty pixels and static patches instantly
+    ctx.clearRect(0, 0, w, h); 
 
-    // Enable blooming composition layering
+    // 🚀 2. INTENTIONAL NEON BLOOM: Tell the GPU to merge overlapping lines into bright energy hubs
     ctx.globalCompositeOperation = 'screen';
 
     // Render wireframe grid lines
@@ -89,13 +87,14 @@ function renderEngineFrame() {
             const distance = Math.sqrt(dx * dx + dy * dy); 
             
             if (distance < connectionDistance) { 
-                const alpha = (1 - distance / connectionDistance) * 0.25; 
+                const alpha = (1 - distance / connectionDistance) * 0.35; 
                 ctx.beginPath(); 
                 ctx.moveTo(dots[i].x, dots[i].y); 
                 ctx.lineTo(dots[n].x, dots[n].y); 
                 
+                // Crisp cosmic neon blue paths
                 ctx.strokeStyle = `rgba(41, 171, 226, ${alpha})`; 
-                ctx.lineWidth = 1.2; 
+                ctx.lineWidth = 1.3; 
                 ctx.stroke(); 
             } 
         } 
@@ -106,6 +105,9 @@ function renderEngineFrame() {
         node.update(w, h); 
         node.draw(ctx); 
     }); 
+
+    // Reset composite tracking for engine safety
+    ctx.globalCompositeOperation = 'source-over';
 
     requestAnimationFrame(renderEngineFrame); 
 }
