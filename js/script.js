@@ -1,9 +1,9 @@
 /* ==========================================================================
-   SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP (OPTIMIZED BACKGROUND MESH)
+   SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP (NEON TRAILS CONFIG)
    ========================================================================== */
 let dots = []; 
-const maxDots = 120;              // Packed tighter for a dense network grid
-const connectionDistance = 140;   // Bridges nodes cleanly together over screen distances
+const maxDots = 120;              
+const connectionDistance = 140;   
 
 class TelemetryNode { 
     constructor(w, h) { 
@@ -17,19 +17,14 @@ class TelemetryNode {
         this.x += this.vx; 
         this.y += this.vy; 
         
-        // Bounce tracking mechanics
         if (this.x < 0 || this.x > w) this.vx *= -1; 
         if (this.y < 0 || this.y > h) this.vy *= -1; 
     } 
     draw(ctx) { 
-        ctx.beginPath(); 
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
-        ctx.fillStyle = 'rgba(41, 171, 226, 0.85)'; 
-        ctx.fill(); 
     } 
 } 
 
-// Populates coordinates matching the scaled canvas bounds perfectly
 function initTelemetry() { 
     const canvas = document.getElementById('animatedCanvas');
     if (!canvas) return;
@@ -37,7 +32,6 @@ function initTelemetry() {
     const rect = canvas.getBoundingClientRect();
     dots = []; 
     for (let i = 0; i < maxDots; i++) { 
-        // Spawns nodes cleanly inside the real bounding box layout
         dots.push(new TelemetryNode(rect.width, rect.height)); 
     } 
 } 
@@ -49,7 +43,6 @@ function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     
-    // Lock canvas internal dimensions strictly to layout scale
     canvas.width = rect.width * dpr; 
     canvas.height = rect.height * dpr; 
     
@@ -73,16 +66,16 @@ function renderEngineFrame() {
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
 
-    // 1. INSTANTLY VAPORIZE PATTERNS: Wipes the canvas pixel array completely clean
-    ctx.clearRect(0, 0, w, h); 
+    // 🚀 1. SMOOTH TRAIL GENERATOR: Instead of clearRect, we paint a faint transparent slate.
+    // A low alpha (0.12) makes old lines smoothly dissolve into fading neon tails!
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(2, 8, 18, 0.12)'; 
+    ctx.fillRect(0, 0, w, h); 
 
-    // 2. CLEAN CONTEXT MEMORY STATE: Erases the browser's hidden line history buffer
-    ctx.beginPath(); 
-
-    // 3. SHIFT TO HARDWARE NEON COMPOSITING: Forces intersecting vectors to bloom beautifully
+    // 🚀 2. BLOOMING HUB EFFECTS: Intersecting lines illuminate into neon energy clusters
     ctx.globalCompositeOperation = 'screen';
 
-    // Render data wireframe grid paths
+    // Render wireframe grid lines
     for (let i = 0; i < dots.length; i++) { 
         for (let n = i + 1; n < dots.length; n++) { 
             const dx = dots[i].x - dots[n].x; 
@@ -92,12 +85,11 @@ function renderEngineFrame() {
             if (distance < connectionDistance) { 
                 const alpha = (1 - distance / connectionDistance) * 0.35; 
                 
-                // Every single line vector gets its own isolated memory state
+                // 🚀 3. PATH RESET GUARD: Keeps your canvas memory completely clean of static patches!
                 ctx.beginPath(); 
                 ctx.moveTo(dots[i].x, dots[i].y); 
                 ctx.lineTo(dots[n].x, dots[n].y); 
                 
-                // Pure high-tech neon blue stroke assignment
                 ctx.strokeStyle = `rgba(41, 171, 226, ${alpha})`; 
                 ctx.lineWidth = 1.3; 
                 ctx.stroke(); 
@@ -105,40 +97,30 @@ function renderEngineFrame() {
         } 
     } 
 
-    // Draw moving vector node particles
+    // Draw vector particles
     dots.forEach(node => { 
         node.update(w, h);
         
-        // Isolate the circle generation memory path
         ctx.beginPath(); 
         node.draw(ctx); 
+        ctx.fillStyle = 'rgba(41, 171, 226, 0.85)';
+        ctx.fill();
     }); 
 
-    // Safely roll back rendering properties for engine stability
     ctx.globalCompositeOperation = 'source-over';
-
     requestAnimationFrame(renderEngineFrame); 
 }
 
-// ============================================================================
-// SYSTEM RESIZE RELAY INTERCEPTOR
-// ============================================================================
 window.addEventListener('resize', () => {
     resizeCanvas();
     initTelemetry();
 }); 
 
-// ============================================================================
-// SYSTEM BOOTSTRAP INIT EXECUTION HOOK
-// ============================================================================
 window.addEventListener('load', () => {
     resizeCanvas(); 
     initTelemetry(); 
     requestAnimationFrame(renderEngineFrame);
 
-    // ============================================================================
-    // SUB-SPACE LINK LABS DEVLOG STREAM INTERACTIVE TAB TOGGLE
-    // ============================================================================
     const btnHistorian = document.getElementById("btn-historian-stream");
     const btnLedger = document.getElementById("btn-ledger-stream");
     const panelHistorian = document.getElementById("panel-historian-stream");
