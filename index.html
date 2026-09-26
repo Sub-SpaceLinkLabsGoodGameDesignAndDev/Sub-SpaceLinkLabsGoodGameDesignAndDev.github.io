@@ -395,7 +395,7 @@ const sharedSailMaterial = new THREE.MeshStandardMaterial({
   metalness: 0.14
 });
 
-const sharedCaptainGoldMaterial = new THREE.MeshStandardMaterial({
+const sharedCaptainGoldMaterial = new THREE.MeshPhysicalMaterial({
   color: 0xffd34f,
   roughness: 0.16,
   metalness: 0.92,
@@ -406,7 +406,7 @@ const sharedCaptainGoldMaterial = new THREE.MeshStandardMaterial({
   side: THREE.DoubleSide
 });
 
-const sharedSpindleMetalMaterial = new THREE.MeshStandardMaterial({
+const sharedSpindleMetalMaterial = new THREE.MeshPhysicalMaterial({
   color: 0xffa8b8,
   roughness: 0.18,
   metalness: 0.9,
@@ -416,10 +416,11 @@ const sharedSpindleMetalMaterial = new THREE.MeshStandardMaterial({
   emissiveIntensity: 0.04,
   side: THREE.DoubleSide
 });
-
+	
 // ============================================================================
 // CLEANED SUB-MESH TRAVERSAL LOOP
 // ============================================================================
+	
 function applyShipMaterials(object) {
   object.traverse((child) => {
     if (child.isLine || child.isLineSegments || child.isPoints) {
