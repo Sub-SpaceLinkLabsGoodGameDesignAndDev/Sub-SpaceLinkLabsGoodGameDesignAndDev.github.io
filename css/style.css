@@ -28,9 +28,13 @@ body {
     z-index: -1;
     display: block;
     pointer-events: none;
-    
-    /* 🚀 MATCH THIS EXACTLY: Locks the background to match your script's trail generator color */
     background-color: #020812; 
+    
+    /* 🚀 THE CURE: Forces the GPU to display scaled internal canvas pixels sharply. */
+    /* This stops image filtering from erasing your neon glow effects and causing blur! */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
 }
 .visually-hidden {
 	position: absolute;
