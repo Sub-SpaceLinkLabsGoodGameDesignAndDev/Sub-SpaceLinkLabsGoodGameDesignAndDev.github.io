@@ -20,12 +20,16 @@ body {
 
 /* --- INTERACTIVE CANVAS GRAPHICS --- */
 #animatedCanvas {
-	display: block;
-	margin: 0 auto;
-	background-color: #000000;
-	border-bottom: 2px solid #232334;
-	width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;       /* Places it safely behind the cards */
+    display: block;
+    pointer-events: none; 
 }
+
 .visually-hidden {
 	position: absolute;
 	width: 1px;
