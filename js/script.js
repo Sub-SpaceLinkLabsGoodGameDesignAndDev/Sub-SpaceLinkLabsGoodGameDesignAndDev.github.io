@@ -2,8 +2,8 @@
    SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP (OPTIMIZED BACKGROUND MESH)
    ========================================================================== */
 let dots = []; 
-const maxDots = 120;              // 🚀 Packed tighter for a dense network grid
-const connectionDistance = 140;   // 🚀 Bridges nodes cleanly together over screen distances
+const maxDots = 120;              // Packed tighter for a dense network grid
+const connectionDistance = 140;   // Bridges nodes cleanly together over screen distances
 
 class TelemetryNode { 
     constructor(w, h) { 
@@ -29,7 +29,7 @@ class TelemetryNode {
     } 
 } 
 
-// 🚀 FIXED: Populates coordinates matching the scaled canvas bounds perfectly
+// Populates coordinates matching the scaled canvas bounds perfectly
 function initTelemetry() { 
     const canvas = document.getElementById('animatedCanvas');
     if (!canvas) return;
@@ -73,13 +73,13 @@ function renderEngineFrame() {
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
 
-    // 🚀 1. INSTANTLY VAPORIZE PATTERNS: Wipes the canvas pixel array completely clean
+    // 1. INSTANTLY VAPORIZE PATTERNS: Wipes the canvas pixel array completely clean
     ctx.clearRect(0, 0, w, h); 
 
-    // 🚀 2. CLEAN CONTEXT MEMORY STATE: Erases the browser's hidden line history buffer
+    // 2. CLEAN CONTEXT MEMORY STATE: Erases the browser's hidden line history buffer
     ctx.beginPath(); 
 
-    // 🚀 3. SHIFT TO HARDWARE NEON COMPOSITING: Forces intersecting vectors to bloom beautifully
+    // 3. SHIFT TO HARDWARE NEON COMPOSITING: Forces intersecting vectors to bloom beautifully
     ctx.globalCompositeOperation = 'screen';
 
     // Render data wireframe grid paths
@@ -92,7 +92,7 @@ function renderEngineFrame() {
             if (distance < connectionDistance) { 
                 const alpha = (1 - distance / connectionDistance) * 0.35; 
                 
-                // 🚀 FIXED: Every single line vector gets its own isolated memory state
+                // Every single line vector gets its own isolated memory state
                 ctx.beginPath(); 
                 ctx.moveTo(dots[i].x, dots[i].y); 
                 ctx.lineTo(dots[n].x, dots[n].y); 
@@ -109,7 +109,7 @@ function renderEngineFrame() {
     dots.forEach(node => { 
         node.update(w, h);
         
-        // 🚀 FIXED: Isolate the circle generation memory path
+        // Isolate the circle generation memory path
         ctx.beginPath(); 
         node.draw(ctx); 
     }); 
@@ -119,15 +119,18 @@ function renderEngineFrame() {
 
     requestAnimationFrame(renderEngineFrame); 
 }
-    // ============================================================================
-// SYSTEM EVENT HOOKS MATRIX (RE-ADDED)
+
+// ============================================================================
+// SYSTEM RESIZE RELAY INTERCEPTOR
 // ============================================================================
 window.addEventListener('resize', () => {
     resizeCanvas();
     initTelemetry();
 }); 
 
-// Master bootstrap loop
+// ============================================================================
+// SYSTEM BOOTSTRAP INIT EXECUTION HOOK
+// ============================================================================
 window.addEventListener('load', () => {
     resizeCanvas(); 
     initTelemetry(); 
