@@ -343,8 +343,8 @@ if (!container) {
 
   const loader = new GLTFLoader();
   const viewerModels = [
-    { id: 'lab-test-model', label: 'Pirate Ship', path: './img/lab-test-model.phtml' }
-  ];
+  { id: 'lab-test-model', label: 'Pirate Ship', path: './img/lab-test-model.glb' }
+];
 
   const modelSelector = document.getElementById('model-selector');
   if (modelSelector) {
@@ -374,82 +374,94 @@ if (!container) {
 
       if (!child.isMesh || !child.material) return;
 
-      const materialList = Array.isArray(child.material) ? child.material : [child.material];
-      const materialCopies = materialList.map((material) => material && material.clone ? material.clone() : material);
-      child.material = Array.isArray(child.material) ? materialCopies : materialCopies;
-      materialCopies.forEach((material) => {
-        if (!material) return;
+      // 1. Create your reusable shared materials ONCE outside the traverse loop to save GPU memory
+const sharedWoodMaterial = new THREE.MeshStandardMaterial({
+  color: 0x9b5b2b,
+  emissive: 0x1d120b,
+  emissiveIntensity: 0.1,
+  roughness: 0.8,
+  metalness: 0.14,
+  side: THREE.DoubleSide,
+  map: woodTexture // Uses the custom canvas texture cleanly
+});
 
-        const partNames = [];
-        let part = child;
-        while (part) {
-          if (part.name) partNames.push(part.name.toLowerCase());
-          part = part.parent;
-        }
-        const name = partNames.join(' ');
-        const woodBrown = new THREE.Color(0x9b5b2b);
-        const stairWood = new THREE.Color(0x8c4a22);
-        const sailBlack = new THREE.Color(0x0d1117);
-        const captainGold = new THREE.Color(0xffd34f);
-        const spindleMetal = new THREE.Color(0xffa8b8);
+const sharedStairWoodMaterial = new THREE.MeshStandardMaterial({
+  color: 0x8c4a22,
+  roughness: 0.78,
+  metalness: 0.05,
+  side: THREE.DoubleSide,
+  map: woodTexture
+});
 
-        if (material.isMeshStandardMaterial) {
-          material.side = THREE.DoubleSide;
-          material.envMapIntensity = 1.25;
-          material.roughness = 0.68;
-          material.metalness = 0.14;
+const sharedSailMaterial = new THREE.MeshStandardMaterial({
+  color: 0x0d1117,
+  emissive: 0x10151b,
+  emissiveIntensity: 0.24,
+  side: THREE.DoubleSide,
+  roughness: 0.68,
+  metalness: 0.14
+});
 
-          if (name.includes('sail')) {
-            material.color.copy(sailBlack);
-            material.emissive = new THREE.Color(0x10151b);
-            material.emissiveIntensity = 0.24;
-            material.map = null;
-          } else if (name.includes('captainsdoorhandles') || name.includes('captainsdoorhandles001')) {
-            material.color.copy(captainGold);
-            material.roughness = 0.16;
-            material.metalness = 0.92;
-            material.clearcoat = 0.6;
-            material.clearcoatRoughness = 0.12;
-            material.map = null;
-            material.emissive = new THREE.Color(0x2a1804);
-            material.emissiveIntensity = 0.04;
-          } else if (name.includes('stairdoor') || name.includes('stairhatch')) {
-            material.color.copy(stairWood);
-            material.roughness = 0.78;
-            material.metalness = 0.05;
-            material.map = woodTexture;
-          } else if (name.includes('circle')) {
-            material.color.copy(spindleMetal);
-            material.roughness = 0.18;
-            material.metalness = 0.9;
-            material.clearcoat = 0.55;
-            material.clearcoatRoughness = 0.14;
-            material.map = null;
-            material.emissive = new THREE.Color(0x2a0d16);
-            material.emissiveIntensity = 0.04;
-          } else {
-            material.color.copy(woodBrown);
-            material.emissive = new THREE.Color(0x1d120b);
-            material.emissiveIntensity = 0.1;
-            material.roughness = 0.8;
-            material.map = woodTexture;
+const sharedCaptainGoldMaterial = new THREE.MeshStandardMaterial({
+  color: 0xffd34f,
+  roughness: 0.16,
+  metalness: 0.92,
+  clearcoat: 0.6,
+  clearcoatRoughness = 0.12,
+  emissive: 0x2a1804,
+  emissiveIntensity: 0.04,
+  side: THREE.DoubleSide
+});
 
-            if (name.includes('cylinder') || name.includes('mast') || name.includes('wheel') || name.includes('door')) {
-              material.color.offsetHSL(0.02, -0.06, 0.04);
-            }
-          }
-        }
+const sharedSpindleMetalMaterial = new THREE.MeshStandardMaterial({
+  color: 0xffa8b8,
+  roughness: 0.18,
+  metalness: 0.9,
+  clearcoat: 0.55,
+  clearcoatRoughness: 0.14,
+  emissive: 0x2a0d16,
+  emissiveIntensity: 0.04,
+  side: THREE.DoubleSide
+});
 
-        if (material.isMeshBasicMaterial) {
-          material.transparent = true;
-          material.opacity = 1;
-        }
-      });
+// 2. The streamlined, memory-safe materials processing function
+function applyShipMaterials(object) {
+  object.traverse((child) => {
+    if (child.isLine || child.isLineSegments || child.isPoints) {
+      child.visible = false;
+      return;
+    }
 
-      child.castShadow = true;
-      child.receiveShadow = true;
-    });
-  }
+    if (!child.isMesh) return;
+
+    // Build hierarchical part name string for targeting specific pieces
+    const partNames = [];
+    let part = child;
+    while (part) {
+      if (part.name) partNames.push(part.name.toLowerCase());
+      part = part.parent;
+    }
+    const name = partNames.join(' ');
+
+    // Match meshes to the correct shared material instance
+    if (name.includes('sail')) {
+      child.material = sharedSailMaterial;
+    } else if (name.includes('captainsdoorhandles') || name.includes('captainsdoorhandles001')) {
+      child.material = sharedCaptainGoldMaterial;
+    } else if (name.includes('stairdoor') || name.includes('stairhatch')) {
+      child.material = sharedStairWoodMaterial;
+    } else if (name.includes('circle')) {
+      child.material = sharedSpindleMetalMaterial;
+    } else {
+      // Default fallback for everything else (masts, hull, decks, wheels)
+      child.material = sharedWoodMaterial;
+    }
+
+    child.castShadow = true;
+    child.receiveShadow = true;
+  });
+}
+
 
   // Auto-center and fit-to-frame engine
   function fitModelToView(model) {
@@ -531,7 +543,7 @@ if (!container) {
         }, 
         (error) => {
           console.error('Failed to load GLB model:', error);
-          container.innerHTML = '<div class="viewer-error">Unable to load the 3D model. Check that ./img/lab-test-model.phtml exists.</div>';
+          container.innerHTML = '<div class="viewer-error">Unable to load the 3D model. Check that ./img/lab-test-model.glb exists.</div>';
           reject(error);
         }
       );
