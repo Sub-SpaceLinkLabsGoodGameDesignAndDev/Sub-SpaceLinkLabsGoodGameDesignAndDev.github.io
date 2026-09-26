@@ -83,9 +83,13 @@ function resizeCanvas() {
     const canvas = document.getElementById('animatedCanvas'); 
     if (!canvas) return;
     
-    canvas.width = window.innerWidth; 
-    canvas.height = window.innerHeight; 
-} 
+    // Get the exact physical bounds of the element on screen
+    const rect = canvas.getBoundingClientRect();
+    
+    // Set internal drawing resolution to match physical size perfectly
+    canvas.width = rect.width; 
+    canvas.height = rect.height; 
+}
 
 // Immediate background environment bootstrap execution
 window.addEventListener('resize', () => {
