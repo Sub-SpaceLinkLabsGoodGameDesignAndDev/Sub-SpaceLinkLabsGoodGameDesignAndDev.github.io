@@ -1,16 +1,16 @@
 /* ==========================================================================
-   SUBSPACESELINKLABS - PROCEDURAL MATRIX SCREEN CLEANER ENGINE (FIXED)
+   SUBSPACESELINKLABS - CRASH-PROOF MATRIX COLOR WIPE ENGINE
    ========================================================================== */
 let dots = []; 
-const maxDots = 75;               // Balanced density for fluid, elegant line coverage
-const connectionDistance = 140;   
+const maxDots = 95;              
+const connectionDistance = 145;   
 
-// Color configurations: We include a tiny, matching tint fader for each theme
+// Full background color wipe stages
 const matrixPalettes = [
-    { name: "Neon Blue", line: "rgba(41, 171, 226, ", dot: "rgba(41, 171, 226, 0.9)", tint: "rgba(41, 171, 226, 0.003)", blank: "#020812" },
-    { name: "Magenta Workbench", line: "rgba(255, 0, 255, ", dot: "rgba(255, 0, 255, 0.9)", tint: "rgba(255, 0, 255, 0.003)", blank: "#07020d" },
-    { name: "Orange Alert", line: "rgba(230, 126, 34, ", dot: "rgba(230, 126, 34, 0.9)", tint: "rgba(230, 126, 34, 0.003)", blank: "#0d0702" },
-    { name: "Godot Matrix Green", line: "rgba(46, 204, 113, ", dot: "rgba(46, 204, 113, 0.9)", tint: "rgba(46, 204, 113, 0.003)", blank: "#020d06" }
+    { name: "Neon Blue", line: "rgba(41, 171, 226, ", dot: "rgba(41, 171, 226, 0.9)", bg: "#020812" },
+    { name: "Magenta Workbench", line: "rgba(255, 0, 255, ", dot: "rgba(255, 0, 255, 0.9)", bg: "#1f021f" },
+    { name: "Orange Alert", line: "rgba(230, 126, 34, ", dot: "rgba(230, 126, 34, 0.9)", bg: "#1f0f02" },
+    { name: "Godot Matrix Green", line: "rgba(46, 204, 113, ", dot: "rgba(46, 204, 113, 0.9)", bg: "#021f06" }
 ];
 let currentPaletteIndex = 0;
 let frameCount = 0;
@@ -19,8 +19,8 @@ class TelemetryNode {
     constructor(w, h) { 
         this.x = Math.random() * w; 
         this.y = Math.random() * h; 
-        this.vx = (Math.random() - 0.5) * 1.5; // Quick movement to draw smooth trails
-        this.vy = (Math.random() - 0.5) * 1.5; 
+        this.vx = (Math.random() - 0.5) * 1.3; 
+        this.vy = (Math.random() - 0.5) * 1.3; 
         this.radius = Math.random() * 2 + 1; 
     } 
     update(w, h) { 
@@ -55,6 +55,11 @@ function resizeCanvas() {
     
     canvas.width = rect.width * dpr; 
     canvas.height = rect.height * dpr; 
+    
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+        ctx.scale(dpr, dpr);
+    }
 } 
 
 function renderEngineFrame() { 
@@ -73,20 +78,10 @@ function renderEngineFrame() {
 
     const activeTheme = matrixPalettes[currentPaletteIndex];
 
-    // 🚀 1. SAFE MATRIX RESET: Keeps hardware transformations 1:1 on every frame loop
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    // 🚀 HARD ERASE: Instantly vaporizes all dirty pixels and messy artifacts 60 times a second
+    ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
-    // 🚀 2. THE SECRET INGREDIENT (LIQUID ACCUMULATOR): Instead of clearing, we paint a tiny,
-    // nearly invisible amount of the current color. This forces the screen to gradually "wash" 
-    // and saturate completely into a solid colored background smoothly over 12 seconds with NO lag!
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = activeTheme.tint; 
-    ctx.fillRect(0, 0, canvas.width, canvas.height); 
-
-    // Apply the high-DPI scaling matrix for crisp path placement
-    ctx.scale(dpr, dpr);
-
-    // Turn on blending so overlapping line vectors leave glowing neon streaks
+    // Enable glowing blend compositing for your matrix links
     ctx.globalCompositeOperation = 'screen';
 
     // Render wireframe matrix paths
@@ -97,7 +92,7 @@ function renderEngineFrame() {
             const distance = Math.sqrt(dx * dx + dy * dy); 
             
             if (distance < connectionDistance) { 
-                const alpha = (1 - distance / connectionDistance) * 0.12; 
+                const alpha = (1 - distance / connectionDistance) * 0.4; 
                 
                 ctx.beginPath(); 
                 ctx.moveTo(dots[i].x, dots[i].y); 
@@ -119,28 +114,20 @@ function renderEngineFrame() {
         ctx.fill();
     }); 
 
-    // 🚀 3. COLOR SWEEP SYSTEM RESET
+    ctx.globalCompositeOperation = 'source-over';
+
+    // 🚀 THE SCREEN CLEANER CONTROLLER
     frameCount++;
     
-    // After ~13 seconds (800 loops), the screen is completely painted solid.
-    // Flash-clean the canvas buffer and swap out to the next workspace palette!
-    if (frameCount > 800) {
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.globalCompositeOperation = 'source-over';
+    // Cycle background colors smoothly every ~10 seconds (600 loops)
+    if (frameCount > 600) {
+        currentPaletteIndex = (currentPaletteIndex + 1) % matrixPalettes.length;
+        const nextTheme = matrixPalettes[currentPaletteIndex];
         
-        // Find the next palette we are moving into
-        const nextPaletteIndex = (currentPaletteIndex + 1) % matrixPalettes.length;
-        const nextTheme = matrixPalettes[nextPaletteIndex];
+        // Push the new background wash target color directly to the DOM stylesheet layer natively
+        canvas.style.backgroundColor = nextTheme.bg;
         
-        // Solid wipe using the incoming theme's dark blank color to clear out the canvas cleanly
-        ctx.fillStyle = nextTheme.blank; 
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Advance the loop pointer and reset clock variables
-        currentPaletteIndex = nextPaletteIndex;
         frameCount = 0;
-        
-        // Re-scatter the data telemetry points to draw unique sweeping pathways
         initTelemetry();
     }
 
