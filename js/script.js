@@ -2,23 +2,22 @@
    SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP (OPTIMIZED BACKGROUND MESH)
    ========================================================================== */
 let dots = []; 
-const maxDots = 85;               // 🚀 Increased from 45 to fill out the full background nicely
-const connectionDistance = 140;   // 🚀 Increased from 110 so nodes bridge together over longer distances
+const maxDots = 120;              // 🚀 Packed tighter for a dense network grid
+const connectionDistance = 140;   // 🚀 Bridges nodes cleanly together over screen distances
 
 class TelemetryNode { 
     constructor(w, h) { 
         this.x = Math.random() * w; 
         this.y = Math.random() * h; 
-        // 🚀 Increased speed slightly so trails don't puddle up into ugly static light patches
-        this.vx = (Math.random() - 0.5) * 0.9; 
-        this.vy = (Math.random() - 0.5) * 0.9; 
-        this.radius = Math.random() * 2.5 + 1.5; 
+        this.vx = (Math.random() - 0.5) * 0.8; 
+        this.vy = (Math.random() - 0.5) * 0.8; 
+        this.radius = Math.random() * 2 + 1; 
     } 
     update(w, h) { 
         this.x += this.vx; 
         this.y += this.vy; 
         
-        // 🚀 Clean bounce physics to prevent nodes from gathering on screen edges
+        // Bounce tracking mechanics
         if (this.x < 0 || this.x > w) this.vx *= -1; 
         if (this.y < 0 || this.y > h) this.vy *= -1; 
     } 
@@ -30,11 +29,16 @@ class TelemetryNode {
     } 
 } 
 
-// Populate vector arrays using the exact window widths
+// 🚀 FIXED: Populates coordinates matching the scaled canvas bounds perfectly
 function initTelemetry() { 
+    const canvas = document.getElementById('animatedCanvas');
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
     dots = []; 
     for (let i = 0; i < maxDots; i++) { 
-        dots.push(new TelemetryNode(window.innerWidth, window.innerHeight)); 
+        // Spawns nodes cleanly inside the real bounding box layout
+        dots.push(new TelemetryNode(rect.width, rect.height)); 
     } 
 } 
 
@@ -45,7 +49,7 @@ function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     
-    // Set internal resolution scaled precisely to screen DPI
+    // Lock canvas internal dimensions strictly to layout scale
     canvas.width = rect.width * dpr; 
     canvas.height = rect.height * dpr; 
     
@@ -55,7 +59,6 @@ function resizeCanvas() {
     }
 } 
 
-// 2. UPDATE YOUR RENDERING FRAME LOOP TO THIS:
 function renderEngineFrame() { 
     const canvas = document.getElementById('animatedCanvas');
     if (!canvas) {
@@ -70,16 +73,15 @@ function renderEngineFrame() {
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
 
-    // 🚀 THE TRAIL GENERATOR: Draws a semi-transparent slate over the screen.
-    // Instead of clearRect, this lets old nodes slowly fade out into trails!
+    // 🚀 THE TRAIL GENERATOR: Draws a faint slate with a tiny alpha to build glowing neon trails
     ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(2, 8, 18, 0.08)'; // Low alpha (0.08) creates long, smooth trails!
+    ctx.fillStyle = 'rgba(2, 8, 18, 0.08)'; 
     ctx.fillRect(0, 0, w, h); 
 
-    // Switch to lighting blend mode so overlapping connections bloom beautifully
+    // Enable blooming composition layering
     ctx.globalCompositeOperation = 'screen';
 
-    // Render data wireframe grid paths
+    // Render wireframe grid lines
     for (let i = 0; i < dots.length; i++) { 
         for (let n = i + 1; n < dots.length; n++) { 
             const dx = dots[i].x - dots[n].x; 
@@ -99,7 +101,7 @@ function renderEngineFrame() {
         } 
     } 
 
-    // Draw moving vector node particles
+    // Draw vector particles
     dots.forEach(node => { 
         node.update(w, h); 
         node.draw(ctx); 
@@ -108,17 +110,27 @@ function renderEngineFrame() {
     requestAnimationFrame(renderEngineFrame); 
 }
 
-// ============================================================================
-// SUB-SPACE LINK LABS DEVLOG STREAM INTERACTIVE TAB TOGGLE
-// ============================================================================
+// Event hooks matrix
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    initTelemetry();
+}); 
+
+// Master bootstrap loop
 document.addEventListener("DOMContentLoaded", () => {
+    resizeCanvas(); 
+    initTelemetry(); 
+    requestAnimationFrame(renderEngineFrame);
+
+    // ============================================================================
+    // SUB-SPACE LINK LABS DEVLOG STREAM INTERACTIVE TAB TOGGLE
+    // ============================================================================
     const btnHistorian = document.getElementById("btn-historian-stream");
     const btnLedger = document.getElementById("btn-ledger-stream");
     const panelHistorian = document.getElementById("panel-historian-stream");
     const panelLedger = document.getElementById("panel-ledger-stream");
 
     if (btnHistorian && btnLedger && panelHistorian && panelLedger) {
-        // ACTIVATE PUBLIC CHRONICLES VIEW
         btnHistorian.addEventListener("click", () => {
             panelHistorian.style.display = "block";
             panelLedger.style.display = "none";
@@ -128,7 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
             btnLedger.style.borderBottom = "none";
         });
 
-        // ACTIVATE BEHIND-THE-SCENES LEDGER VIEW (LIGHTS UP IN MAGENTA)
         btnLedger.addEventListener("click", () => {
             panelHistorian.style.display = "none";
             panelLedger.style.display = "block";
