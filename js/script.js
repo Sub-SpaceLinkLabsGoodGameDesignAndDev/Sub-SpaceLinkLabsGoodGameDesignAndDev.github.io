@@ -74,33 +74,19 @@ function renderEngineFrame() {
                 ctx.stroke(); 
             } 
         } 
-    }  
+    } 
 
-// Synchronize dimensions dynamically
-function resizeCanvas() { 
-    const canvas = document.getElementById('animatedCanvas'); 
-    if (!canvas) return;
-    
-    // Get the exact physical bounds of the element on screen
-    const rect = canvas.getBoundingClientRect();
-    
-    // Set internal drawing resolution to match physical size perfectly
-    canvas.width = rect.width; 
-    canvas.height = rect.height; 
-}
+    // 4. Draw moving vector node particles
+    dots.forEach(node => { 
+        node.update(canvas.width, canvas.height); 
+        node.draw(ctx); 
+    }); 
 
-// Immediate background environment bootstrap execution
-window.addEventListener('resize', () => {
-    resizeCanvas();
-    initTelemetry();
-}); 
+    // Reset composite operation back to default for safety
+    ctx.globalCompositeOperation = 'source-over';
 
-document.addEventListener("DOMContentLoaded", () => {
-    resizeCanvas(); 
-    initTelemetry(); 
-    requestAnimationFrame(renderEngineFrame);
-});
-
+    requestAnimationFrame(renderEngineFrame); 
+} 
 // ============================================================================
 // SUB-SPACE LINK LABS DEVLOG STREAM INTERACTIVE TAB TOGGLE
 // ============================================================================
