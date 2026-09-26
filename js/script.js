@@ -69,9 +69,9 @@ function renderEngineFrame() {
     // 🚀 1. SMOOTH TRAIL GENERATOR: Instead of clearRect, we paint a faint transparent slate.
     // A low alpha (0.12) makes old lines smoothly dissolve into fading neon tails!
     ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(2, 8, 18, 0.12)'; 
-    ctx.fillRect(0, 0, w, h); 
-
+ctx.fillStyle = 'rgba(2, 8, 18, 0.05)'; // 🚀 Lower alpha allows beautiful, long trails!
+ctx.fillRect(0, 0, w, h); 
+   
     // 🚀 2. BLOOMING HUB EFFECTS: Intersecting lines illuminate into neon energy clusters
     ctx.globalCompositeOperation = 'screen';
 
