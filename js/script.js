@@ -38,6 +38,24 @@ function initTelemetry() {
     } 
 } 
 
+function resizeCanvas() { 
+    const canvas = document.getElementById('animatedCanvas'); 
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    
+    // Set internal resolution scaled precisely to screen DPI
+    canvas.width = rect.width * dpr; 
+    canvas.height = rect.height * dpr; 
+    
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+        ctx.scale(dpr, dpr);
+    }
+} 
+
+// 2. UPDATE YOUR RENDERING FRAME LOOP TO THIS:
 function renderEngineFrame() { 
     const canvas = document.getElementById('animatedCanvas');
     if (!canvas) {
@@ -48,13 +66,20 @@ function renderEngineFrame() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // 1. HARD ERASE: Completely wipes out the sub-pixel artifacts causing the glitchy light patches
-    ctx.clearRect(0, 0, canvas.width, canvas.height); 
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
 
-    // 2. COMPOSITE GLOW: Blends overlapping lines into bright, intentional neon hubs
+    // 🚀 THE TRAIL GENERATOR: Draws a semi-transparent slate over the screen.
+    // Instead of clearRect, this lets old nodes slowly fade out into trails!
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(2, 8, 18, 0.08)'; // Low alpha (0.08) creates long, smooth trails!
+    ctx.fillRect(0, 0, w, h); 
+
+    // Switch to lighting blend mode so overlapping connections bloom beautifully
     ctx.globalCompositeOperation = 'screen';
 
-    // 3. Render data wireframe grid paths
+    // Render data wireframe grid paths
     for (let i = 0; i < dots.length; i++) { 
         for (let n = i + 1; n < dots.length; n++) { 
             const dx = dots[i].x - dots[n].x; 
@@ -62,13 +87,11 @@ function renderEngineFrame() {
             const distance = Math.sqrt(dx * dx + dy * dy); 
             
             if (distance < connectionDistance) { 
-                // Enhanced alpha calculation for smoother web transitions
                 const alpha = (1 - distance / connectionDistance) * 0.25; 
                 ctx.beginPath(); 
                 ctx.moveTo(dots[i].x, dots[i].y); 
                 ctx.lineTo(dots[n].x, dots[n].y); 
                 
-                // Neon blue theme lines
                 ctx.strokeStyle = `rgba(41, 171, 226, ${alpha})`; 
                 ctx.lineWidth = 1.2; 
                 ctx.stroke(); 
@@ -76,17 +99,15 @@ function renderEngineFrame() {
         } 
     } 
 
-    // 4. Draw moving vector node particles
+    // Draw moving vector node particles
     dots.forEach(node => { 
-        node.update(canvas.width, canvas.height); 
+        node.update(w, h); 
         node.draw(ctx); 
     }); 
 
-    // Reset composite operation back to default for safety
-    ctx.globalCompositeOperation = 'source-over';
-
     requestAnimationFrame(renderEngineFrame); 
-} 
+}
+
 // ============================================================================
 // SUB-SPACE LINK LABS DEVLOG STREAM INTERACTIVE TAB TOGGLE
 // ============================================================================
