@@ -30,11 +30,8 @@ body {
     pointer-events: none;
     background-color: #020812; 
     
-    /* 🚀 THE CURE: Forces the GPU to display scaled internal canvas pixels sharply. */
-    /* This stops image filtering from erasing your neon glow effects and causing blur! */
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
+    /* Smooth CSS transition for a perfect, hardware-accelerated background color wash */
+    transition: background-color 1.5s ease-in-out;
 }
 .visually-hidden {
 	position: absolute;
