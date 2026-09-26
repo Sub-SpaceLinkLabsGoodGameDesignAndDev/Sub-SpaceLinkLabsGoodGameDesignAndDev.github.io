@@ -342,7 +342,7 @@ if (!container) {
 
   const loader = new GLTFLoader();
   const viewerModels = [
-    { id: 'lab-test-model', label: 'Pirate Ship', path: './img/lab-test-model.glb' }
+    { id: 'lab-test-model', label: 'Pirate Ship', path: './img/lab-test-model.phtml' }
   ];
 
   const modelSelector = document.getElementById('model-selector');
@@ -512,14 +512,21 @@ if (!container) {
           resolve(shipRoot);
         },
         (progressEvent) => {
-          if (progressEvent.total > 0) {
-            const loaded = (progressEvent.loaded / progressEvent.total) * 100;
-            console.log(`Model load progress: ${loaded.toFixed(0)}%`);
-          }
+    // If the server doesn't provide a reliable total, or it's compressed,
+    // total might be 0 or smaller than loaded.
+    if (progressEvent.total > 0 && progressEvent.loaded <= progressEvent.total) {
+        const loaded = (progressEvent.loaded / progressEvent.total) * 100;
+        console.log(`Model load progress: ${loaded.toFixed(0)}%`);
+    } else {
+        // Fallback: Just log the raw megabytes streaming in so it doesn't break
+        const mbLoaded = (progressEvent.loaded / (1024 * 1024)).toFixed(2);
+        console.log(`Downloaded: ${mbLoaded} MB (Total size unknown or compressed)`);
+    }
+}
         },
         (error) => {
           console.error('Failed to load GLB model:', error);
-          container.innerHTML = '<div class="viewer-error">Unable to load the 3D model. Check that ./img/lab-test-model.glb exists.</div>';
+          container.innerHTML = '<div class="viewer-error">Unable to load the 3D model. Check that ./img/lab-test-model.phtml exists.</div>';
           reject(error);
         }
       );
