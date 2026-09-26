@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP (NEON MATRIX FINAL STABLE)
+   SUBSPACESELINKLABS - CORE VISUAL ENGINE LOOP (NEON MATRIX WORKING CONFIG)
    ========================================================================== */
 let dots = []; 
 const maxDots = 110;              
@@ -36,6 +36,7 @@ function initTelemetry() {
     } 
 } 
 
+// 🚀 FIXED: The scale transformer now triggers ONCE right here instead of compounding inside the frame loop
 function resizeCanvas() { 
     const canvas = document.getElementById('animatedCanvas'); 
     if (!canvas) return;
@@ -45,6 +46,11 @@ function resizeCanvas() {
     
     canvas.width = rect.width * dpr; 
     canvas.height = rect.height * dpr; 
+    
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+        ctx.scale(dpr, dpr);
+    }
 } 
 
 function renderEngineFrame() { 
@@ -61,18 +67,19 @@ function renderEngineFrame() {
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
 
-    // 🚀 1. TEMPORARILY RESET TRANSFORM MATRIX: Stops the trail box from stacking up and blurring!
+    // 🚀 FIXED: Save the drawing context environment parameters safely
+    ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-    // 🚀 2. CRISP TRAIL FADER: Draws a perfectly scaled box over raw pixel canvas dimensions
+    // 🚀 TRAIL MAKER LAYER: Draws a faint translucent sheet matching your true background color
     ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(2, 8, 18, 0.04)'; // 🚀 Lower value yields longer, glowing neon trails!
+    ctx.fillStyle = 'rgba(2, 8, 18, 0.12)'; 
     ctx.fillRect(0, 0, canvas.width, canvas.height); 
 
-    // 🚀 3. RESTORE THE HIGH-DPI LOOK: Safely apply scaling for your wireframe paths
-    ctx.scale(dpr, dpr);
+    // 🚀 FIXED: Restore the canvas transformation back to our clean single-fired layout matrix
+    ctx.restore();
 
-    // 🚀 4. BLOOMING CONTEXT APPLIED: Overlapping vectors now bloom bright like true neon hubs
+    // SHIFT TO SHINING NEON HUB COUPLING BLEND MIX
     ctx.globalCompositeOperation = 'screen';
 
     // Render wireframe grid lines
@@ -85,7 +92,6 @@ function renderEngineFrame() {
             if (distance < connectionDistance) { 
                 const alpha = (1 - distance / connectionDistance) * 0.4; 
                 
-                // Clear the internal path array memory cache completely
                 ctx.beginPath(); 
                 ctx.moveTo(dots[i].x, dots[i].y); 
                 ctx.lineTo(dots[n].x, dots[n].y); 
@@ -107,6 +113,7 @@ function renderEngineFrame() {
         ctx.fill();
     }); 
 
+    ctx.globalCompositeOperation = 'source-over';
     requestAnimationFrame(renderEngineFrame); 
 }
 
