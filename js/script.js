@@ -73,13 +73,16 @@ function renderEngineFrame() {
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
 
-    // 🚀 1. VAPORIZE THE GLITCHES: A hard erase clears out all dirty pixels and static patches instantly
+    // 🚀 1. INSTANTLY VAPORIZE PATTERNS: Wipes the canvas pixel array completely clean
     ctx.clearRect(0, 0, w, h); 
 
-    // 🚀 2. INTENTIONAL NEON BLOOM: Tell the GPU to merge overlapping lines into bright energy hubs
+    // 🚀 2. CLEAN CONTEXT MEMORY STATE: Erases the browser's hidden line history buffer
+    ctx.beginPath(); 
+
+    // 🚀 3. SHIFT TO HARDWARE NEON COMPOSITING: Forces intersecting vectors to bloom beautifully
     ctx.globalCompositeOperation = 'screen';
 
-    // Render wireframe grid lines
+    // Render data wireframe grid paths
     for (let i = 0; i < dots.length; i++) { 
         for (let n = i + 1; n < dots.length; n++) { 
             const dx = dots[i].x - dots[n].x; 
@@ -88,11 +91,13 @@ function renderEngineFrame() {
             
             if (distance < connectionDistance) { 
                 const alpha = (1 - distance / connectionDistance) * 0.35; 
+                
+                // 🚀 FIXED: Every single line vector gets its own isolated memory state
                 ctx.beginPath(); 
                 ctx.moveTo(dots[i].x, dots[i].y); 
                 ctx.lineTo(dots[n].x, dots[n].y); 
                 
-                // Crisp cosmic neon blue paths
+                // Pure high-tech neon blue stroke assignment
                 ctx.strokeStyle = `rgba(41, 171, 226, ${alpha})`; 
                 ctx.lineWidth = 1.3; 
                 ctx.stroke(); 
@@ -100,30 +105,20 @@ function renderEngineFrame() {
         } 
     } 
 
-    // Draw vector particles
+    // Draw moving vector node particles
     dots.forEach(node => { 
-        node.update(w, h); 
+        node.update(w, h);
+        
+        // 🚀 FIXED: Isolate the circle generation memory path
+        ctx.beginPath(); 
         node.draw(ctx); 
     }); 
 
-    // Reset composite tracking for engine safety
+    // Safely roll back rendering properties for engine stability
     ctx.globalCompositeOperation = 'source-over';
 
     requestAnimationFrame(renderEngineFrame); 
 }
-
-// Event hooks matrix
-window.addEventListener('resize', () => {
-    resizeCanvas();
-    initTelemetry();
-}); 
-
-// Master bootstrap loop
-window.addEventListener('load', () => {
-    resizeCanvas(); 
-    initTelemetry(); 
-    requestAnimationFrame(renderEngineFrame);
-
     // ============================================================================
     // SUB-SPACE LINK LABS DEVLOG STREAM INTERACTIVE TAB TOGGLE
     // ============================================================================
