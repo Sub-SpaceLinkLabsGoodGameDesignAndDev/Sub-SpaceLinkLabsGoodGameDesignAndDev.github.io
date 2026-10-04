@@ -5,19 +5,26 @@
     user-select: none;
 }
 
+html,
+body,
+#arcade-shell {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     background: #07070b;
     color: #a0a0b0;
     font-family: 'Courier New', monospace;
-    margin: 0;
     min-height: 100vh;
-    padding: 16px;
 }
 
 #arcade-shell {
     width: min(100%, 1180px);
-    margin: 0 auto;
-    padding: 18px;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -497,8 +504,6 @@ canvas {
 #touch-turn-right { top: 64px; right: -64px; }
 
 @media (max-width: 760px) {
-    body { padding: 8px; }
-    #arcade-shell { padding: 10px; }
     canvas { min-height: 0; }
     .dashboard-hud { grid-template-columns: repeat(2, 1fr); }
     .party-portrait { width: 56px; height: 56px; }
