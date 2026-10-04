@@ -16,7 +16,9 @@ const canvas = document.getElementById("screen");
 const ctx = canvas.getContext("2d");
 
 let gameState = "CLASS_SELECT";
-const keys = {};
+const activeInputBuffer = {};
+const impassableIntGridValues = new Set([1, 4, 5]);
+let lastFrameTime = null;
 
 let player = {
   x: 5.5,
@@ -272,19 +274,21 @@ function syncRecruitChoices() {
 // ==========================================================
 // 4. HARDWARE INPUT CONTROLLER REGISTRATIONS
 // ==========================================================
-window.addEventListener("keydown", (e) => {
-  if (!e.repeat && gameState === "PLAYING" && ["ArrowLeft", "ArrowRight"].includes(e.key)) {
-    turnOneQuarter(e.key === "ArrowLeft" ? -1 : 1);
-    return;
+window.addEventListener("keydown", (event) => {
+  activeInputBuffer[event.key] = true;
+  if (gameState === "PLAYING" && event.key.startsWith("Arrow")) {
+    event.preventDefault();
   }
-  if (!e.repeat && gameState === "PLAYING" && ["ArrowUp", "ArrowDown", "w", "W", "s", "S", "a", "A", "d", "D"].includes(e.key)) {
-    moveOneTile(e.key);
-    return;
-  }
-  if (!e.repeat) keys[e.key] = true;
-  handleKeyboardInput(e);
+  handleKeyboardInput(event);
 });
-window.addEventListener("keyup", (e) => (keys[e.key] = false));
+window.addEventListener("keyup", (event) => {
+  activeInputBuffer[event.key] = false;
+});
+window.addEventListener("blur", () => {
+  for (const key of Object.keys(activeInputBuffer)) {
+    activeInputBuffer[key] = false;
+  }
+});
 
 function bindTouchButton(elementId, keyToken) {
   const btn = document.getElementById(elementId);
@@ -299,15 +303,15 @@ function bindTouchButton(elementId, keyToken) {
       turnOneQuarter(keyToken === "turnLeft" ? -1 : 1);
       return;
     }
-    keys[keyToken] = true;
+    activeInputBuffer[keyToken] = true;
   });
   btn.addEventListener("pointerup", (e) => {
     e.preventDefault();
-    keys[keyToken] = false;
+    activeInputBuffer[keyToken] = false;
   });
   btn.addEventListener("pointercancel", (e) => {
     e.preventDefault();
-    keys[keyToken] = false;
+    activeInputBuffer[keyToken] = false;
   });
 }
 bindTouchButton("touch-w", "w");
@@ -415,6 +419,70 @@ function moveOneTile(input) {
     player.y = targetY;
     showMessage(`Moved to tile ${Math.floor(player.x)},${Math.floor(player.y)}.`);
   }
+}
+
+function handlePlayerMovementPhysics(deltaSeconds) {
+  if (
+    gameState !== "PLAYING" ||
+    activeEnemy ||
+    activeInteraction ||
+    !Array.isArray(town1Map)
+  ) {
+    return;
+  }
+
+  const forward =
+    Number(
+      Boolean(activeInputBuffer.w || activeInputBuffer.W || activeInputBuffer.ArrowUp),
+    ) -
+    Number(
+      Boolean(activeInputBuffer.s || activeInputBuffer.S || activeInputBuffer.ArrowDown),
+    );
+  const strafe =
+    Number(
+      Boolean(activeInputBuffer.d || activeInputBuffer.D || activeInputBuffer.ArrowRight),
+    ) -
+    Number(
+      Boolean(activeInputBuffer.a || activeInputBuffer.A || activeInputBuffer.ArrowLeft),
+    );
+  if (forward === 0 && strafe === 0) return;
+
+  const magnitude = Math.hypot(forward, strafe);
+  const normalizedForward = forward / magnitude;
+  const normalizedStrafe = strafe / magnitude;
+
+  const speed = 3.5;
+  const forwardX = Math.cos(player.dir);
+  const forwardY = Math.sin(player.dir);
+  const deltaX =
+    (forwardX * normalizedForward + forwardY * normalizedStrafe) *
+    speed *
+    deltaSeconds;
+  const deltaY =
+    (forwardY * normalizedForward - forwardX * normalizedStrafe) *
+    speed *
+    deltaSeconds;
+
+  const canEnterPosition = (x, y) => {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return false;
+    const tileX = Math.floor(x);
+    const tileY = Math.floor(y);
+    const tileValue = town1Map[tileY]?.[tileX];
+    if (impassableIntGridValues.has(tileValue)) return false;
+
+    const currentTileX = Math.floor(player.x);
+    const currentTileY = Math.floor(player.y);
+    if (tileX !== currentTileX || tileY !== currentTileY) {
+      return handlePlayerMovement(x, y);
+    }
+    return true;
+  };
+
+  const nextX = player.x + deltaX;
+  if (canEnterPosition(nextX, player.y)) player.x = nextX;
+
+  const nextY = player.y + deltaY;
+  if (canEnterPosition(player.x, nextY)) player.y = nextY;
 }
 
 function showSpellEffect(actionName) {
@@ -902,7 +970,13 @@ function drawFloorPlane() {
   }
 }
 
-function renderEngine() {
+function renderEngine(timestamp = performance.now()) {
+  const deltaSeconds =
+    lastFrameTime === null
+      ? 0
+      : Math.min(Math.max((timestamp - lastFrameTime) / 1000, 0), 0.05);
+  lastFrameTime = timestamp;
+  handlePlayerMovementPhysics(deltaSeconds);
   updateGameLogic();
   updateDashboardUI();
 
@@ -1117,7 +1191,7 @@ function renderEngine() {
     drawCombatEffect();
 
   }
-  requestAnimationFrame(renderEngine);
+  window.requestAnimationFrame(renderEngine);
 }
 
 // ==========================================================
