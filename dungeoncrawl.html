@@ -13,6 +13,79 @@
   </head>
   <body>
     <div id="arcade-shell">
+
+<!-- START: REALMS OF INFINITY MAIN CHARACTER CREATION OVERLAY SCREEN -->
+<div id="creation-overlay-mainframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(3, 3, 5, 0.95); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; padding: 20px; font-family: 'Courier New', monospace;">
+
+    <!-- PHASE 1: JAGGERED ALL-CAPS LOGO HEADER PANEL -->
+    <h1 id="creation-logo-header" style="color: #8b0000; text-transform: uppercase; font-size: 28px; font-weight: bold; margin-bottom: 20px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">
+        CHARACTER REGISTRY INITIALIZATION
+    </h1>
+
+    <!-- PHASE 2: ALPHANUMERICAL PORTRAIT CAROUSEL ROLODEX (DIRECTIVE 007) -->
+    <div id="portrait-rolodex-container" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; width: 100%; max-width: 600px;">
+        <button id="rolodex-prev-btn" class="buy-btn" style="min-width: 48px; min-height: 48px; background: #0f0a0a; border: 1px solid #3d1c1c; color: #ff6b6b; font-weight: bold; cursor: pointer;">◀</button>
+
+        <div id="portrait-rolodex-viewport" style="display: flex; align-items: center; justify-content: center; overflow: hidden; width: 300px; height: 120px; position: relative; gap: 10px;">
+            <!-- Left Clipped Card Placeholder (Index N-1, Dimmed 30%, 75% Scale) -->
+            <img id="rolodex-left-card" src="dungeon-img/Sprite-FighterFemaleStatusOK.png" style="width: 64px; height: 64px; opacity: 0.3; transform: scale(0.75); image-rendering: pixelated;" />
+            <!-- Center Focused Active Portrait Card (100% Scale, Pulsing High-Contrast Highlight) -->
+            <img id="rolodex-center-focus" src="dungeon-img/Sprite-FighterMaleStatusOK.png" style="width: 80px; height: 80px; opacity: 1; transform: scale(1.0); border: 2px solid #ffd700; box-shadow: 0 0 10px #ffd700; image-rendering: pixelated;" />
+            <!-- Right Floating Card Placeholder (Index 1, Dimmed 30%, 75% Scale) -->
+            <img id="rolodex-right-card" src="dungeon-img/Sprite-EnchanterFemaleStatusOK.png" style="width: 64px; height: 64px; opacity: 0.3; transform: scale(0.75); image-rendering: pixelated;" />
+        </div>
+
+        <button id="rolodex-next-btn" class="buy-btn" style="min-width: 48px; min-height: 48px; background: #0f0a0a; border: 1px solid #3d1c1c; color: #ff6b6b; font-weight: bold; cursor: pointer;">▶</button>
+    </div>
+
+    <!-- PHASE 3: ALL-CAPS NAME SUBMISSION CORE INPUT FRAME -->
+    <div id="name-input-container" style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 25px; width: 100%; max-width: 400px;">
+        <input type="text" id="character-name-field" placeholder="ENTER HERO IDENTITY..." maxlength="12" style="width: 100%; background: #000; border: 1px solid #3d4f66; color: #ffd700; font-size: 16px; padding: 10px; text-align: center; text-transform: uppercase; font-family: 'Courier New', monospace;" />
+        <button id="input-submit-btn" class="buy-btn" style="width: 100%; padding: 12px; background: #0f0a0a; border: 1px solid #3d1c1c; color: #ff6b6b; font-weight: bold; text-transform: uppercase; cursor: pointer; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000;">
+            ⮚ CONFIRM IDENTITY
+        </button>
+    </div>
+
+    <!-- PHASE 4: THE VERTICAL COLUMN POINT-BUY ALIGNMENT DECK (DIRECTIVE 006) -->
+    <div id="point-buy-alignment-deck" style="width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 8px;">
+
+        <!-- THE ALL-CAPS BONUS POOL INDICATOR ROW -->
+        <div class="stat-row-container" style="display: flex; justify-content: space-between; align-items: center; background: #141419; padding: 6px 12px; border-bottom: 2px solid #3d1c1c;">
+            <span style="color: #ffd700; font-weight: bold; text-transform: uppercase;">BONUS ATTRIBUTE POINTS REMAINING</span>
+            <span id="bonus-pool-counter" style="color: #ffd700; font-weight: bold; font-size: 18px;">5</span>
+        </div>
+
+        <!-- SAMPLE ROW: STRENGTH INTERACTIVE STAT CARD BUTTON (COLUMN DECOUPLED) -->
+        <div class="stat-row-container" style="display: flex; justify-content: space-between; align-items: center; background: #0b0f19; padding: 6px 12px; border: 1px solid #1c222e;">
+            <!-- Column 1: Info Button Card (Triggers Zero Math Loops, Handles Text Overlays) -->
+            <button class="stat-info-btn" style="background: none; border: none; padding: 0; color: #a0b5cc; font-family: 'Courier New', monospace; text-align: left; cursor: pointer; text-transform: uppercase; font-size: 14px;">
+                (STR) MELEE STRIKE MULTIPLIER... [?]
+            </button>
+
+            <!-- Column 2 & 3: Numerical Badges and Point-Buy Adjusters Cluster -->
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="adjust-btn dec-btn" style="width: 24px; height: 24px; background: #000; border: 1px solid #3d4f66; color: #a0b5cc; cursor: pointer;">-</button>
+                <span id="stat-val-str" style="color: #3bec2d; font-weight: bold; min-width: 12px; text-align: center;">4</span>
+                <button class="adjust-btn inc-btn" style="width: 24px; height: 24px; background: #000; border: 1px solid #3d4f66; color: #a0b5cc; cursor: pointer;">+</button>
+            </div>
+        </div>
+
+        <!-- SAMPLE ROW: STAMINA HEALTH-LINKED INTERACTIVE STAT CARD BUTTON -->
+        <div class="stat-row-container" style="display: flex; justify-content: space-between; align-items: center; background: #0b0f19; padding: 6px 12px; border: 1px solid #1c222e;">
+            <button class="stat-info-btn" style="background: none; border: none; padding: 0; color: #a0b5cc; font-family: 'Courier New', monospace; text-align: left; cursor: pointer; text-transform: uppercase; font-size: 14px;">
+                (STA) MAX HEALTH VITALITY GRID... [?]
+            </button>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="adjust-btn dec-btn" style="width: 24px; height: 24px; background: #000; border: 1px solid #3d4f66; color: #a0b5cc; cursor: pointer;">-</button>
+                <span id="stat-val-sta" style="color: #3bec2d; font-weight: bold; min-width: 12px; text-align: center;">5</span>
+                <button class="adjust-btn inc-btn" style="width: 24px; height: 24px; background: #000; border: 1px solid #3d4f66; color: #a0b5cc; cursor: pointer;">+</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- END: REALMS OF INFINITY CHARACTER CREATION DISPLAY OVERLAY -->
+
       <!-- TOP ADMINISTRATIVE UTILITY BAR -->
       <div class="control-header">
         <span class="system-status">⚡ ARCADE NODE ACTIVE</span>
@@ -30,6 +103,37 @@
         <div class="screen-box">
           <canvas id="screen" width="320" height="200"></canvas>
         </div>
+
+        <!-- START: CONTEXTUAL LOWER ACTION DASHBOARD CONTROL SLICE PANEL -->
+<div id="fighter-posture-slice-tray" style="width: 100%; min-height: 48px; background: #050508; border-top: 1px solid #1c222e; display: none; align-items: center; justify-content: space-around; padding: 4px 8px; box-sizing: border-box; gap: 6px;">
+
+    <!-- STANCE CARD 1: NEUTRAL BALANCED FOOTPRINT -->
+    <button class="stance-action-btn balanced-active" onclick="toggleFighterStance('BALANCED')" style="flex: 1; padding: 8px; background: #0b0f19; border: 1px solid #3d4f66; color: #3bec2d; font-family: 'Courier New', monospace; font-weight: bold; font-size: 11px; cursor: pointer; text-transform: uppercase; text-align: center;">
+        🧘 BALANCED
+    </button>
+
+    <!-- STANCE CARD 2: BULWARK INTERCEPT FORTRESS -->
+    <button class="stance-action-btn" onclick="toggleFighterStance('BULWARK')" style="flex: 1; padding: 8px; background: #0b0f19; border: 1px solid #1c222e; color: #a0b5cc; font-family: 'Courier New', monospace; font-weight: bold; font-size: 11px; cursor: pointer; text-transform: uppercase; text-align: center;">
+        🛡️ BULWARK
+    </button>
+
+    <!-- STANCE CARD 3: RETALIATORY OUT-OF-TURN COUNTER -->
+    <button class="stance-action-btn" onclick="toggleFighterStance('RETALIATORY')" style="flex: 1; padding: 8px; background: #0b0f19; border: 1px solid #1c222e; color: #a0b5cc; font-family: 'Courier New', monospace; font-weight: bold; font-size: 11px; cursor: pointer; text-transform: uppercase; text-align: center;">
+        ⚔️ RECOUNTER
+    </button>
+
+    <!-- STANCE CARD 4: AGGRESSIVE CRMSION BRUTAL OVERDRIVE -->
+    <button class="stance-action-btn terminal-btn" onclick="toggleFighterStance('AGGRESSIVE')" style="flex: 1; padding: 8px; background: #0f0a0a; border: 1px solid #3d1c1c; color: #ff6b6b; font-family: 'Courier New', monospace; font-weight: bold; font-size: 11px; cursor: pointer; text-transform: uppercase; text-align: center; text-shadow: 1px 1px 0 #000;">
+        🪓 AGGRESSIVE
+    </button>
+
+    <!-- STANCE CARD 5: DEFENSIVE INDIVIDUAL HUNKED GUARD -->
+    <button class="stance-action-btn" onclick="toggleFighterStance('DEFENSIVE')" style="flex: 1; padding: 8px; background: #0b0f19; border: 1px solid #1c222e; color: #a0b5cc; font-family: 'Courier New', monospace; font-weight: bold; font-size: 11px; cursor: pointer; text-transform: uppercase; text-align: center;">
+        🛡️ DEFENSIVE
+    </button>
+
+</div>
+<!-- END: CONTEXTUAL LOWER ACTION DASHBOARD CONTROL SLICE PANEL -->
 
         <!-- RIGHT PANEL CONTEXT CONSOLE -->
         <div class="console-hud">
@@ -289,10 +393,7 @@
     </div>
 
     <!-- SPELL EFFECTS SPRITE CONTAINERS -->
-    <!-- <canvas id="spellCanvas"></canvas> -->
-    <!-- spell effect option 2, currently not in use -->
     <div class="spell-sprite" id="fire-sprite-1"></div>
-    <!-- choose to use spell-sprite or spellCanvas for spell effects, currently using spell-sprite for now -->
     <div class="spell-sprite" id="arcane-sprite-1"></div>
     <div class="spell-sprite" id="meteorite-sprite-1"></div>
     <div class="spell-sprite" id="ice-sprite-1"></div>
@@ -371,7 +472,7 @@
       autocomplete="off"
       autocapitalize="words"
     />
-    
+
     <script type="module" src="js/dungeon-core.js"></script>
   </body>
 </html>

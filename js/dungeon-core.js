@@ -4,10 +4,11 @@
 import {
   CLASS_DATA,
   monsterCatalog,
-  town1Map,
   TILE_TYPES,
 } from "./dungeon-data.js";
 import { CombatFormulas, entityFactory } from "./dungeon-combat.js";
+import { loadLdtkRuntimeLevel } from "./ldtk-level-loader.js";
+import { activateFighterStance } from "../src/systems/fighter-combat-logic.js";
 
 // ==========================================================
 // 2. CANVAS & STATE DEFINITIONS
@@ -17,6 +18,8 @@ const ctx = canvas.getContext("2d");
 
 let gameState = "CLASS_SELECT";
 const keys = {};
+let activeLevel = null;
+let town1Map = [];
 
 let player = {
   x: 5.5,
@@ -26,8 +29,8 @@ let player = {
   classchoice: null,
   gender: "male",
   name: "",
-  hp: 100,
-  maxHp: 100,
+  hp: 20,
+  maxHp: 20,
   mp: 50,
   maxMp: 50,
   stamina: 100,
@@ -35,7 +38,7 @@ let player = {
   level: 1,
   experience: 0,
   gold: 0,
-  stats: { str: 10, dex: 10, ac: 10, int: 10, wis: 10, agil: 10, char: 10 },
+  stats: { str: 10, sta: 5, dex: 10, ac: 10, int: 10, wis: 10, agil: 10, char: 10 },
   inventory: [],
   equipment: [],
 };
@@ -101,6 +104,50 @@ function switchTab(tabId) {
 }
 window.switchTab = switchTab;
 
+function updateFighterStanceTray() {
+  const tray = document.getElementById("fighter-posture-slice-tray");
+  if (!tray) return;
+
+  const isActiveFighter =
+    gameState === "PLAYING" && party.leader?.classKey === "fighter";
+  tray.style.display = isActiveFighter ? "flex" : "none";
+  if (!isActiveFighter) return;
+
+  tray.querySelectorAll(".stance-action-btn").forEach((button) => {
+    const stance = button.getAttribute("onclick")?.match(/'([A-Z_]+)'/)?.[1];
+    button.classList.toggle(
+      "balanced-active",
+      stance === (party.leader.activeStance || "BALANCED"),
+    );
+  });
+}
+
+window.toggleFighterStance = (stance) => {
+  if (gameState !== "PLAYING" || party.leader?.classKey !== "fighter") {
+    showMessage("Only the active Fighter can change stance.");
+    return;
+  }
+
+  const result = activateFighterStance(party.leader, stance);
+  if (!result.activated) {
+    const messages = {
+      "level-requirement": `That stance requires level ${result.requiredLevel}.`,
+      "insufficient-stamina": "Not enough stamina to change stance.",
+      "invalid-stance": "That Fighter stance is not configured.",
+      "not-fighter": "Only the active Fighter can change stance.",
+    };
+    showMessage(messages[result.reason] || "The stance could not be changed.");
+    return;
+  }
+
+  if (result.changed) {
+    showMessage(
+      `${party.leader.name} adopts ${result.stance} stance${result.staminaSpent ? ` (-${result.staminaSpent} STA)` : ""}.`,
+    );
+  }
+  updateFighterStanceTray();
+};
+
 const fsBtn = document.getElementById("fullscreen-btn");
 if (fsBtn) {
   fsBtn.addEventListener("click", () => {
@@ -164,6 +211,7 @@ function updateDashboardUI() {
   renderInteractionActions();
   updateCombatTurnLabel();
   updateRuntimeStatus();
+  updateFighterStanceTray();
 }
 
 function getSelectedPartyMember() {
@@ -436,6 +484,10 @@ function beginCombat(tileX, tileY) {
 }
 
 function startExpedition() {
+  if (!activeLevel) {
+    showMessage("The authored world data has not loaded yet.");
+    return;
+  }
   syncRecruitChoices();
   party.leader = entityFactory.player({
     name: player.name || "Hero",
@@ -443,6 +495,9 @@ function startExpedition() {
     gender: player.gender,
     startingWeaponKey: "iron_shortsword",
   });
+  if (party.leader.classKey === "fighter") {
+    party.leader.activeStance = "BALANCED";
+  }
   party.entities = party.members.map((classKey, index) =>
     entityFactory.companion({
       name: CLASS_DATA[classKey].name,
@@ -452,6 +507,8 @@ function startExpedition() {
   );
   player.hp = party.leader.hp;
   player.maxHp = party.leader.maxHp;
+  player.x = activeLevel.spawn.x;
+  player.y = activeLevel.spawn.y;
   updateCombatButtons();
   gameState = "PLAYING";
 }
@@ -675,27 +732,31 @@ document.getElementById("interaction-exit")?.addEventListener("click", () => {
 });
 
 function interactWithTile(tileX, tileY, tileValue) {
-  if (tileValue === TILE_TYPES.NPC) {
-    beginCombat(tileX, tileY);
-  } else if (tileValue === TILE_TYPES.MERCHANT) {
-    activeInteraction = {
-      title: "TRAVELLING MERCHANT",
-      message: "A travelling merchant offers equipment.",
-    };
-    showMessage(activeInteraction.message);
-  } else if (tileValue === TILE_TYPES.CHEST) {
-    player.gold += 15;
-    town1Map[tileY][tileX] = TILE_TYPES.FLOOR;
-    showMessage("Chest opened: +15 gold.");
-  } else if (tileValue === TILE_TYPES.ZONE_EXIT) {
-    showMessage("The zone exit is sealed until the next area is built.");
-  }
+  const entity = activeLevel?.entities.find(
+    (candidate) =>
+      candidate.layerIdentifier === "Landmarks" &&
+      candidate.__identifier !== "PLAYER_SPAWN" &&
+      candidate.__grid?.[0] === tileX &&
+      candidate.__grid?.[1] === tileY,
+  );
+  if (!entity) return false;
+
+  const fields = Object.fromEntries(
+    (entity.fieldInstances || []).map((field) => [
+      field.__identifier,
+      field.__value,
+    ]),
+  );
+  const message =
+    fields.greetingText ||
+    fields.alternativeText ||
+    (entity.__identifier === "ZONE_IN_LOCATION"
+      ? "This zone transition is not configured yet."
+      : `${entity.__identifier} interaction is not configured yet.`);
+  showMessage(message);
+  return true;
 }
 
-const mapEntitySprites = {
-  [TILE_TYPES.NPC]: "dungeon-img/Sprite-PossessedSkeleton-sheet.png",
-  [TILE_TYPES.MERCHANT]: "dungeon-img/Sprite-MushroomMan1-sheet.png",
-};
 const loadedMapSprites = new Map();
 const effectSpritePaths = [
   "dungeon-img/Sprite-Fireball-sheet.png",
@@ -706,47 +767,44 @@ const effectSpritePaths = [
 function drawMapEntities() {
   const halfFov = player.fov / 2;
   const visibleEntities = [];
-  for (let tileY = 0; tileY < town1Map.length; tileY++) {
-    for (let tileX = 0; tileX < town1Map[tileY].length; tileX++) {
-      const tileValue = town1Map[tileY][tileX];
-      if (![TILE_TYPES.NPC, TILE_TYPES.MERCHANT].includes(tileValue)) continue;
+  for (const entity of activeLevel?.entities || []) {
+    if (entity.__identifier === "PLAYER_SPAWN") continue;
+    const [tileX, tileY] = entity.__grid || [];
+    if (!Number.isInteger(tileX) || !Number.isInteger(tileY)) continue;
 
-      const dx = tileX + 0.5 - player.x;
-      const dy = tileY + 0.5 - player.y;
-      const distance = Math.hypot(dx, dy);
-      let relativeAngle = Math.atan2(dy, dx) - player.dir;
-      while (relativeAngle > Math.PI) relativeAngle -= Math.PI * 2;
-      while (relativeAngle < -Math.PI) relativeAngle += Math.PI * 2;
-      if (Math.abs(relativeAngle) > halfFov || distance < 0.25) continue;
-      if (!hasLineOfSight(tileX + 0.5, tileY + 0.5)) continue;
+    const dx = tileX + 0.5 - player.x;
+    const dy = tileY + 0.5 - player.y;
+    const distance = Math.hypot(dx, dy);
+    let relativeAngle = Math.atan2(dy, dx) - player.dir;
+    while (relativeAngle > Math.PI) relativeAngle -= Math.PI * 2;
+    while (relativeAngle < -Math.PI) relativeAngle += Math.PI * 2;
+    if (Math.abs(relativeAngle) > halfFov || distance < 0.25) continue;
+    if (!hasLineOfSight(tileX + 0.5, tileY + 0.5)) continue;
 
-      visibleEntities.push({ tileX, tileY, tileValue, distance, relativeAngle });
-    }
+    visibleEntities.push({
+      entity,
+      tileX,
+      tileY,
+      distance,
+      relativeAngle,
+    });
   }
 
   visibleEntities.sort((first, second) => second.distance - first.distance);
-  visibleEntities.forEach(({ tileX, tileY, tileValue, distance, relativeAngle }) => {
-
-      const screenX = canvas.width / 2 + (relativeAngle / player.fov) * canvas.width;
-      const size = Math.min(canvas.height * 1.4, canvas.height / distance);
-          const groundY = canvas.height / 2 + Math.min(canvas.height * 0.36, size * 0.45);
-          const screenY = groundY - size;
-      const imagePath = mapEntitySprites[tileValue];
-      const image = imagePath ? loadedMapSprites.get(imagePath) : null;
-
-      if (image?.complete && image.naturalWidth > 0) {
-        const frameSize = 64;
-        const frameCount = Math.max(1, Math.floor(image.naturalWidth / frameSize));
-        const frame = Math.floor(Date.now() / 180) % frameCount;
-        ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
-        ctx.beginPath();
-        ctx.ellipse(screenX, groundY, size * 0.22, size * 0.06, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.drawImage(image, frame * frameSize, 0, frameSize, frameSize, screenX - size / 2, screenY, size, size);
-      } else {
-        ctx.fillStyle = tileValue === TILE_TYPES.NPC ? "#d14b4b" : tileValue === TILE_TYPES.MERCHANT ? "#d1a84b" : "#29abe2";
-        ctx.fillRect(screenX - size / 4, screenY + size / 4, size / 2, size / 2);
-      }
+  visibleEntities.forEach(({ entity, distance, relativeAngle }) => {
+    const screenX = canvas.width / 2 + (relativeAngle / player.fov) * canvas.width;
+    const size = Math.min(canvas.height * 1.4, canvas.height / distance);
+    const groundY = canvas.height / 2 + Math.min(canvas.height * 0.36, size * 0.45);
+    const markerSize = Math.max(2, size * 0.24);
+    ctx.fillStyle = /^#[0-9a-f]{6}$/i.test(entity.__smartColor || "")
+      ? entity.__smartColor
+      : "#a0b5cc";
+    ctx.fillRect(
+      screenX - markerSize / 2,
+      groundY - markerSize,
+      markerSize,
+      markerSize,
+    );
   });
 }
 
@@ -785,16 +843,11 @@ function hasLineOfSight(targetX, targetY) {
     const progress = step / steps;
     const checkX = Math.floor(player.x + (targetX - player.x) * progress);
     const checkY = Math.floor(player.y + (targetY - player.y) * progress);
-    if (town1Map[checkY]?.[checkX] === TILE_TYPES.WALL) return false;
+    if (isMapTileBlocked(checkX, checkY)) return false;
   }
   return true;
 }
 
-Object.values(mapEntitySprites).forEach((path) => {
-  const image = new Image();
-  image.src = path;
-  loadedMapSprites.set(path, image);
-});
 effectSpritePaths.forEach((path) => {
   const image = new Image();
   image.src = path;
@@ -808,28 +861,32 @@ function handlePlayerMovement(targetX, targetY) {
   if (targetX < 0 || targetX >= mapW || targetY < 0 || targetY >= mapH)
     return false;
 
-  const tileValue = town1Map[Math.floor(targetY)][Math.floor(targetX)];
+  const tileX = Math.floor(targetX);
+  const tileY = Math.floor(targetY);
+  const tileValue = town1Map[tileY][tileX];
 
   if (activeEnemy || activeInteraction) return false;
-  if (tileValue !== TILE_TYPES.WALL) {
-    interactWithTile(Math.floor(targetX), Math.floor(targetY), tileValue);
-    if (activeEnemy) return false;
+  if (tileValue === TILE_TYPES.DOOR) {
+    town1Map[tileY][tileX] = TILE_TYPES.FLOOR;
+    showMessage("Door opened. Move again to enter.");
+    return false;
+  }
+  if (tileValue === TILE_TYPES.WALL) {
+    showMessage("That structure blocks movement.");
+    return false;
   }
 
-  switch (tileValue) {
-    case TILE_TYPES.WALL:
-      console.log("🚫 Ouch! You walked into a wall.");
-      return false;
+  if (interactWithTile(tileX, tileY, tileValue)) return false;
+  return true;
+}
 
-    case TILE_TYPES.ZONE_EXIT:
-      console.log(
-        `🗺️ Transitioning zone coordinates at [${Math.floor(targetX)}, ${Math.floor(targetY)}]...`,
-      );
-      return true;
-
-    default:
-      return true;
-  }
+function isMapTileBlocked(tileX, tileY) {
+  const tileValue = town1Map[tileY]?.[tileX];
+  return (
+    tileValue === undefined ||
+    tileValue === TILE_TYPES.WALL ||
+    tileValue === TILE_TYPES.DOOR
+  );
 }
 
 function updateGameLogic() {
@@ -850,16 +907,6 @@ function updateGameLogic() {
   }
 
   if (activeEnemy || activeInteraction) return;
-  for (let tileY = 0; tileY < town1Map.length; tileY++) {
-    for (let tileX = 0; tileX < town1Map[tileY].length; tileX++) {
-      if (town1Map[tileY][tileX] !== TILE_TYPES.NPC) continue;
-      if (Math.hypot(tileX + 0.5 - player.x, tileY + 0.5 - player.y) < 1.25) {
-        beginCombat(tileX, tileY);
-        return;
-      }
-    }
-  }
-
 }
 
 // ==========================================================
@@ -1096,7 +1143,7 @@ function renderEngine() {
           checkX >= mapWidth ||
           checkY < 0 ||
           checkY >= mapHeight ||
-          town1Map[checkY][checkX] === TILE_TYPES.WALL
+          isMapTileBlocked(checkX, checkY)
         ) {
           hitWall = true;
         }
@@ -1286,4 +1333,27 @@ if (proxyInput) {
   });
 }
 
-renderEngine();
+ctx.fillStyle = "#fff";
+ctx.font = "10px monospace";
+ctx.fillText("Loading LDtk world data...", 15, 25);
+
+loadLdtkRuntimeLevel()
+  .then((level) => {
+    activeLevel = level;
+    town1Map = level.collisionGrid;
+    player.x = level.spawn.x;
+    player.y = level.spawn.y;
+    renderEngine();
+  })
+  .catch((error) => {
+    console.error("Unable to initialize the LDtk test level.", error);
+    const eventLog = document.getElementById("event-log");
+    if (eventLog) {
+      eventLog.textContent = `World data failed to load: ${error.message}`;
+    }
+    ctx.fillStyle = "#ff6b6b";
+    ctx.font = "10px monospace";
+    ctx.fillText("WORLD DATA LOAD FAILED", 15, 25);
+    ctx.fillStyle = "#fff";
+    ctx.fillText(String(error.message).slice(0, 48), 15, 45);
+  });

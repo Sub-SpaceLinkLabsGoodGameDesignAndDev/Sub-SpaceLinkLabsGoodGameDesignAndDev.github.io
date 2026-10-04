@@ -1,0 +1,126 @@
+#fighter-posture-slice-tray {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.35rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0.35rem;
+  overflow: hidden;
+  border: 1px solid #34344e;
+  background: #0b0b10;
+}
+
+#fighter-posture-slice-tray[hidden] {
+  display: none;
+}
+
+#fighter-posture-slice-tray .stance-action-btn,
+#fighter-posture-slice-tray .fighter-posture-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 2.5rem;
+  margin: 0;
+  padding: 0.4rem 0.55rem;
+  overflow: hidden;
+  border: 1px solid #34344e;
+  border-radius: 2px;
+  background: #151522;
+  color: #e6e6f0;
+  font-family: "Courier New", monospace;
+  font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    padding 120ms ease,
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease,
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+#fighter-posture-slice-tray .stance-action-btn:hover,
+#fighter-posture-slice-tray .fighter-posture-card:hover {
+  padding: 0.45rem 0.6rem;
+  border-color: #29abe2;
+  box-shadow: 2px 2px 0 #29abe2;
+  transform: translate(-1px, -1px);
+}
+
+#fighter-posture-slice-tray .stance-action-btn:focus-visible,
+#fighter-posture-slice-tray .fighter-posture-card:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+#fighter-posture-slice-tray .stance-action-btn[aria-pressed="true"],
+#fighter-posture-slice-tray .fighter-posture-card[aria-pressed="true"] {
+  border-color: #29abe2;
+  box-shadow: inset 0 0 0 1px #29abe2;
+  color: #fff;
+}
+
+#fighter-posture-slice-tray
+  .stance-action-btn[data-stance="AGGRESSIVE"],
+#fighter-posture-slice-tray
+  .fighter-posture-card[data-stance="AGGRESSIVE"] {
+  border: 1px solid #3d1c1c;
+  background: #0f0a0a;
+  color: #ff6b6b;
+  transition: all 120ms;
+}
+
+#fighter-posture-slice-tray
+  .stance-action-btn[data-stance="AGGRESSIVE"]:hover,
+#fighter-posture-slice-tray
+  .fighter-posture-card[data-stance="AGGRESSIVE"]:hover {
+  border-color: #ff6b6b;
+  box-shadow: 2px 2px 0 #ff6b6b;
+}
+
+#fighter-posture-slice-tray
+  .stance-action-btn[data-stance="AGGRESSIVE"][aria-pressed="true"],
+#fighter-posture-slice-tray
+  .fighter-posture-card[data-stance="AGGRESSIVE"][aria-pressed="true"] {
+  box-shadow: inset 0 0 0 1px #ff6b6b;
+}
+
+@media (max-width: 759px) {
+  #fighter-posture-slice-tray {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0.25rem;
+  }
+
+  #fighter-posture-slice-tray .stance-action-btn,
+  #fighter-posture-slice-tray .fighter-posture-card {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0.35rem;
+    font-size: 0.7rem;
+  }
+
+  #fighter-posture-slice-tray
+    .stance-action-btn[data-stance="AGGRESSIVE"],
+  #fighter-posture-slice-tray
+    .fighter-posture-card[data-stance="AGGRESSIVE"] {
+    transition: all 120ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #fighter-posture-slice-tray .stance-action-btn,
+  #fighter-posture-slice-tray .fighter-posture-card {
+    transition: none;
+  }
+}

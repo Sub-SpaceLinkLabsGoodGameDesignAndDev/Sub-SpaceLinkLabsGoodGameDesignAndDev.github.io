@@ -1,4 +1,11 @@
 import { CLASS_DATA, WEAPON_CATALOG } from "./dungeon-data.js";
+import { BaseEntity as StatEntity } from "../src/data/entities/BaseEntity.js";
+import {
+  calculateEvasionChance,
+  calculateParryChance,
+  calculateStanceArmorClass,
+  resolveStanceDamage,
+} from "../src/systems/fighter-combat-logic.js";
 
 // ==========================================================
 // 1. DATA LOOKUPS & DICTIONARIES
@@ -54,33 +61,22 @@ export const ABILITIES = {
 // ==========================================================
 // 2. UNIVERSAL CLASS ENTITY DESIGN ENGINE
 // ==========================================================
-class BaseEntity {
+class BaseEntity extends StatEntity {
   constructor(config, customData = {}) {
-    this.name = customData.name || "Unnamed Entity";
-    this.classKey = (
+    const name = customData.name || "Unnamed Entity";
+    const classKey = (
       customData.classType ||
       customData.classKey ||
       "fighter"
     ).toLowerCase();
-    this.classType = this.classKey;
-    this.level = Math.min(Math.max(customData.level || 1, 1), 100);
-    this.gender = customData.gender || "male";
-    this.maxHp = customData.maxHp || 100;
-    this.hp = customData.hp ?? this.maxHp;
-    this.maxMp = customData.maxMp || 50;
-    this.mp = customData.mp ?? this.maxMp;
-    this.maxStamina = customData.maxStamina || 100;
-    this.stamina = customData.stamina ?? this.maxStamina;
-
-    this.description = config.description;
-    this.encounterType = config.encounterType;
-    this.monsterTags = customData.monsterTags || config.monsterTags || [];
-    this.merchantTags = customData.merchantTags || config.merchantTags || [];
-    this.companionTags = customData.companionTags || config.companionTags || [];
-
-    this.stats = customData.stats ||
+    const level = Math.min(Math.max(customData.level || 1, 1), 100);
+    const designBlueprint = CLASS_DATA[classKey];
+    const baseStats =
+      customData.baseStats ||
+      customData.stats ||
       config.stats || {
         str: 10,
+        sta: 5,
         dex: 10,
         ac: 10,
         int: 10,
@@ -89,7 +85,34 @@ class BaseEntity {
         char: 10,
       };
 
-    const designBlueprint = CLASS_DATA[this.classKey];
+    super({
+      id: customData.id || "",
+      name,
+      classKey,
+      className: designBlueprint?.name || classKey,
+      level,
+      baseStats,
+      trainedStats: customData.trainedStats,
+      equipmentSlots: customData.equipmentSlots,
+      inventory: customData.inventory || [],
+      activeEffects: customData.activeEffects || [],
+      hp: customData.hp,
+    });
+
+    this.classType = this.classKey;
+    this.gender = customData.gender || "male";
+    this.maxMp = customData.maxMp || 50;
+    this.mp = customData.mp ?? this.maxMp;
+    this.maxStamina = customData.maxStamina || 100;
+    this.stamina = customData.stamina ?? this.maxStamina;
+    this.stats = this.baseStats;
+
+    this.description = config.description;
+    this.encounterType = config.encounterType;
+    this.monsterTags = customData.monsterTags || config.monsterTags || [];
+    this.merchantTags = customData.merchantTags || config.merchantTags || [];
+    this.companionTags = customData.companionTags || config.companionTags || [];
+
     if (designBlueprint) {
       this.className = designBlueprint.name;
       this.uiColor = designBlueprint.color;
@@ -137,19 +160,13 @@ class BaseEntity {
   }
 
   getModifiedStat(statName) {
-    let baseValue = this.stats[statName] || 10;
-    if (
-      this.equippedWeapon &&
-      this.equippedWeapon.statModifiers &&
-      this.equippedWeapon.statModifiers[statName]
-    ) {
-      baseValue += this.equippedWeapon.statModifiers[statName];
-    }
-    return baseValue;
+    const weaponModifier = this.equippedWeapon?.statModifiers?.[statName] || 0;
+    return super.getModifiedStat(statName) + weaponModifier;
   }
 
   equipWeapon(weaponKey) {
     this.equippedWeapon = weaponFactory.create(weaponKey);
+    this.recalculateMaxHp();
     console.log(`⚔️ ${this.name} equipped ${this.equippedWeapon.name}!`);
   }
 }
@@ -285,10 +302,24 @@ export const CombatFormulas = {
         DamageTypes.BLUDGEONING,
       ].includes(damageType)
     ) {
-      const reduction = stats.ac || 0;
+      const parryChance =
+        defender.classKey === "fighter"
+          ? calculateParryChance(defender, 0)
+          : 0;
+      if (Math.random() < parryChance) {
+        return { status: "PARRIED", damage: 0 };
+      }
+      const reduction =
+        defender.classKey === "fighter"
+          ? calculateStanceArmorClass(defender, stats.ac || 0)
+          : stats.ac || 0;
       finalDamage = Math.max(1, rawOutput - reduction);
     } else if (damageType === DamageTypes.RANGED) {
-      const dodgeChance = Math.min(0.5, (stats.agil || 10) * 0.02);
+      const baseDodgeChance = Math.min(0.5, (stats.agil || 10) * 0.02);
+      const dodgeChance =
+        defender.classKey === "fighter"
+          ? calculateEvasionChance(defender, baseDodgeChance)
+          : baseDodgeChance;
       if (Math.random() < dodgeChance) {
         return { status: "DODGED", damage: 0 };
       }
@@ -371,11 +402,20 @@ export const CombatFormulas = {
       };
     }
 
-    const rawStrike = this.calculateBaseOutput(
+    let rawStrike = this.calculateBaseOutput(
       attacker,
       skill.damageType,
       skill.basePower,
     );
+    if (
+      attacker.classKey === "fighter" &&
+      skill.name.toLowerCase() === "melee attack"
+    ) {
+      rawStrike = resolveStanceDamage({
+        character: attacker,
+        damageSplit: { [skill.damageType]: rawStrike },
+      }).total;
+    }
     const resolution = this.calculateFinalMitigation(
       rawStrike,
       skill.damageType,
