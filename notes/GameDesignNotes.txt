@@ -1,0 +1,50 @@
+1. Missing some stats still.
+2. missing specialist selection.
+3. missing fighter stances.
+4. missing exploration menus and options.
+5. unable to zone out of first area.
+6. combat encounters should be random and monsters not sitting visible on grid waiting.
+7. encounters should be random in monster number also.
+8. unable to test ranks and rows.
+9. unable to test horde mechanics.
+10. unable to test attrition values inside the safe zone town player is stuck inside.
+11. the encounters should not be happening inside the safe zones need to be able to transition to other zones to test everything properly.
+12. the combat encounters are very bland and turn sequences are still not functioning the way I want.
+13. the text log window is still too small.
+14. the right side panel is still scrollable and there should be zero scrolling anywhere except in the text log to scroll up and see previous messages and down to bottom to see most current.
+15. the text log window cuts off the bottom of the most current entries.
+16. the point buy system and character creation is not working the way I want.
+17. the point buy 15 points are split between all party members and its very unclear what is happening and what to do exactly.
+18. the point buy should be strictly 5 points per character and the player should have to finish one step at a time during the character/party creation part.
+19. the hero select, party select, and point buys should all be separate and not all crammed into the same screen and instance.
+20. want to implement the intro and title screen sequences.
+21. the text log only outputs the moved to grid location message when moving using screen clicks and does not need to be logged at all in the players text log its just clutter.
+22. the grid location instead should be tracked separately in a very small fluidly constant updating style component inside the hud that is missing.
+23. the missing hud or huds during exploration mode play should include a compass, the grid location, a mini map hud with a fog of war mechanic that is uncovered as areas are discovered.
+24. the quest log is missing.
+25. the buttons will need to be smaller still to make room for everything.
+26. the ui needs to use more drop down menus to save room.
+27. there is a lot of wasted space in oversized buttons, unused spaces, arcade shell, the fullscreen and resart buttons are oversized and probably not even needed.
+28. the restart button should not exist there the restart should fall under a system or game drop down menu or tab that includes other system/game options.
+29. the full screen toggle button can be greatly reduced in size or removed and be activated using common keyboard shortcuts.
+30. there should be an options tab or drop down inside the system/game tab or menu.
+31. for now options will only be what is available and more added so make sure to plan for more things and not use up a bunch of space and have to change it later perhaps we can use tab and drop menus inisde.
+32. the inventory window is not right, there should be an interactive paperdoll with slots that can be clicked and filled and items dropped into, when in inventory tab there should also be tabs or dropdowns to switch between equipment/paperdoll and items.
+33. the raycaster must remain in the large dominating disposition that it is and not sacrificed to make room for other things but it could be used to house some prudent drop downs when activated maybe when it wont be a detriment to gameplay.
+34. everything needs more flair it is all kind of bland, and boxy.
+35. I would like to be able to customize the screen able to move any and every component around to fit in the screen to my liking, manually in game so the player can do it, and also add a grapesjs type editor so I can move things around while developing and set default layout.
+36. the log output that state you turned right/you turned left is also clutter and only works on the screen click turns, it should be removed and instead player can see which way they are heading in the mini map hud and compass.
+37. the text log should indicate whose turn it is every turn and the turn mechanics need to be more clear and prometed.
+38. the end turn button should not be end turn to skip the turn but actually end the players turn not the characters.. so after all choices for upcoming turns have been made, if initiative order is for example fighter then cleric then monster, then the player will choose fighter and cleric actions and must hit end turn before these will take place then the monster will take its turn and any monsters that might be immidiately next in order then back to player turn selecting actions for all the next upcoming party turns before the next monsters turn.
+39. there should be a defend button that will make the character actually defend itself for its combat turn.
+40. there needs to be more color in all of the texts inside the buttons and the target button highlight is an unpleasing color.
+41. there is supposed to be a target ring around the targeted konster in the raycaste. and if a player targets one of the party members the portrait of targeted member should also have the border highlighted.
+42. the turn sequence should automatically move to next selection prompts in the players turn so when the player selects attack or autofight then it transitions to the next character choice selection untill the player is finished and hits end turn on the last one before the next monsters turn, there should also be a back button or selection in a drop menu depending on which is used to go back and change the action choices before end turn is clicked.
+43. the training and merchant mechanics need to be implemented so more spells and abilities can be tested, the spells and abilirties need to be only available as defined in master blueprint.
+44. the point buy system stat buy windows need to be more clearly separated and all of the stats added as stated above in these notes.
+45. the player should be able to embark furing the party creation before using all of the buy points and with stats in any state that the player chooses to leave them in within the min and max but there should be a warning before the choice is finalized asking the player if they are sure they want to continue withoiut finishing.
+46. the player should also be able to choose to not pick other companions and try it solo, duo, or trio, or of course the normal 4 members but also should be the warning asking the player if they are sure before continuing.
+47. in the party creation screen or screens  there is unused area inside the upper left window that displays the class names first creating hero then recruits. this would be a better place that more noticeable for the stat web-like graph.
+48. the weblike stat graph could use some color to make it pop more and again should include all stats.
+49. after a party wipes and the game starts over at the creation screen the characters that died are displayed at 0 hp and some showing negative stat buy points, everything should reset cleanly aside from choices made that are still there if player wants to jump right back to the same scenario they tried the first time without having to reselect or the player could be asked if they want to continue meaning using the exact same setup or if they want to start over.
+50. the inn/tavern mechanics need to be implemented to test actual save states so when the party wipes they can continue from the last saved point instead of starting over from the beginning.
