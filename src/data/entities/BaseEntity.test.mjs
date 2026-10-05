@@ -6,7 +6,7 @@ const entityModuleSource = await readFile(
   new URL("./BaseEntity.js", import.meta.url),
   "utf8",
 );
-const { BaseEntity, PAPERDOLL_SLOTS } = await import(
+const { BaseEntity, entityFactory, PAPERDOLL_SLOTS } = await import(
   `data:text/javascript;base64,${Buffer.from(entityModuleSource).toString("base64")}`
 );
 
@@ -30,6 +30,26 @@ test("changing base or trained STA recalculates max HP without healing", () => {
   assert.equal(entity.setTrainedStat("sta", 1), 7);
   assert.equal(entity.maxHp, 24);
   assert.equal(entity.hp, 18);
+});
+
+test("base INT and STA changes recalculate resource caps without restoring spent points", () => {
+  const entity = entityFactory.player({
+    classKey: "archmage",
+    stats: { int: 5, sta: 5 },
+    maxMp: 4,
+    maxStamina: 8,
+    resourceBaselineStats: { int: 5, sta: 5 },
+  });
+  entity.mp = 2;
+  entity.stamina = 3;
+
+  entity.setBaseStat("int", 6);
+  entity.setBaseStat("sta", 6);
+
+  assert.equal(entity.maxMp, 5);
+  assert.equal(entity.mp, 2);
+  assert.equal(entity.maxStamina, 9);
+  assert.equal(entity.stamina, 3);
 });
 
 test("equipment STA and explicit HP bonuses determine floored maximum HP", () => {

@@ -5,8 +5,7 @@ export const studioIdentity = Object.freeze({
   studio: "SSLLGGD&D\u2122",
 });
 
-export const ITEM_DATABASE = {};
-export const MONSTER_DATABASE = {};
+
 
 const PROJECT_URL = new URL("./world/realms_of_infinity.ldtk", import.meta.url);
 const REGISTRY_IDENTIFIER = "DATABASE_REGISTRY";

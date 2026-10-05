@@ -1,13 +1,13 @@
 // ==========================================================
 // 1. MODULE IMPORTS
 // ==========================================================
-import {
-  CLASS_DATA,
-  monsterCatalog,
-  town1Map,
-  TILE_TYPES,
-} from "../../js/dungeon-data.js";
-import { CombatFormulas, entityFactory } from "../../js/dungeon-combat.js";
+import { loadLdtkRuntimeLevel } from "../../js/ldtk-level-loader.js";
+import { CombatFormulas } from "../systems/combat-formulas.js";
+import { entityFactory } from "../data/entities/BaseEntity.js";
+import { CLASS_DATA } from "../systems/character-creation.js";
+import { monsterCatalog } from "../data/monsters/index.js";
+import { InitiativeCore } from "../systems/initiative-core.js";
+
 
 // ==========================================================
 // 2. CANVAS & STATE DEFINITIONS
@@ -17,7 +17,8 @@ const ctx = canvas.getContext("2d");
 
 let gameState = "CLASS_SELECT";
 const activeInputBuffer = {};
-const impassableIntGridValues = new Set([1, 4, 5]);
+let activeLevel = null;
+const clearedEntityIids = new Set();
 let lastFrameTime = null;
 
 let player = {
@@ -42,6 +43,51 @@ let player = {
   equipment: [],
 };
 
+function getEntityField(entity, identifier) {
+  return entity.fieldInstances?.find(
+    (field) => field.__identifier === identifier,
+  )?.__value;
+}
+
+function getRuntimeEntityKind(entity) {
+  if (entity.__identifier === "NPC") return "npc";
+  if (entity.__identifier === "CHEST") return "chest";
+  if (
+    typeof getEntityField(entity, "utilityType") === "string" &&
+    getEntityField(entity, "utilityType").toLowerCase() === "merchant"
+  ) {
+    return "merchant";
+  }
+  return null;
+}
+
+function getActiveEntities(kind) {
+  return (activeLevel?.entities ?? []).filter(
+    (entity) =>
+      !clearedEntityIids.has(entity.iid) &&
+      getRuntimeEntityKind(entity) === kind,
+  );
+}
+
+function getEntityAt(tileX, tileY) {
+  return (activeLevel?.entities ?? []).find((entity) => {
+    if (
+      clearedEntityIids.has(entity.iid) ||
+      getRuntimeEntityKind(entity) === null
+    ) {
+      return false;
+    }
+    const [entityX, entityY] = entity.__grid ?? [];
+    return entityX === tileX && entityY === tileY;
+  });
+}
+
+function isBlockedCell(tileX, tileY) {
+  const terrain = activeLevel?.terrainGrid?.[tileY]?.[tileX];
+  const collision = activeLevel?.collisionGrid?.[tileY]?.[tileX];
+  return terrain == null || collision !== 0;
+}
+
 let party = {
   leader: player,
   members: [],
@@ -57,41 +103,453 @@ let party = {
 let hoveredClassKey = null;
 let selectedClassKey = null;
 let selectedGender = "male";
+let selectedRecruitSlotIndex = 0;
 let activeEnemy = null;
 let activeInteraction = null;
 let selectedPartyIndex = 0;
 let selectedTarget = { type: "enemy", index: 0 };
-let detailPanelMode = "none";
 let activeEffect = null;
 let combatLog = ["Explore the town and investigate marked locations."];
-let lastPartyDetailsKey = "";
 let lastTargetListKey = "";
-let combatTurnIndex = 0;
+let lastInventoryState = "";
 let actedThisRound = new Set();
+let combatInitiative = [];
+let combatInitiativeCursor = -1;
+let combatBillboardBounds = null;
 const autoFightMembers = new Set();
+const pointBuyProfiles = new Map();
+const POINT_BUY_STATS = ["str", "agil", "int", "sta"];
+const POINT_BUY_MIN = 2;
+const POINT_BUY_CAP = 9;
+const POINT_BUY_POOL = 15;
 
-const classLayouts = {};
 const heroLayouts = {};
 const selectButtonLayout = { x: 110, y: 170, w: 100, h: 22 };
-const randomButtonLayout = { x: 30, y: 170, w: 120, h: 22 };
-const embarkButtonLayout = { x: 170, y: 170, w: 120, h: 22 };
 const maleBtnLayout = { x: 145, y: 135, w: 75, h: 16 };
 const femaleBtnLayout = { x: 225, y: 135, w: 75, h: 16 };
 
 function setupLayout() {
   let yOffset = 40;
   Object.keys(CLASS_DATA).forEach((key) => {
-    classLayouts[key] = { x: 15, y: yOffset, w: 110, h: 18 };
     heroLayouts[key] = { x: 15, y: yOffset, w: 110, h: 18 };
     yOffset += 21;
   });
 }
 setupLayout();
 
+const creationCarousel = document.getElementById("creation-carousel-track");
+const classCarousel = creationCarousel?.closest(".class-carousel");
+const consoleHud = document.querySelector(".console-hud");
+["combat-actions", "target-actions", "interaction-actions"].forEach((id) => {
+  const panel = document.getElementById(id);
+  if (consoleHud && panel) consoleHud.append(panel);
+});
+const eventLogPanel = document.querySelector(".event-log-panel");
+if (consoleHud && eventLogPanel) consoleHud.append(eventLogPanel);
+const sortedClassKeys = Object.keys(CLASS_DATA).sort((left, right) =>
+  CLASS_DATA[left].name.localeCompare(CLASS_DATA[right].name),
+);
+selectedClassKey ||= sortedClassKeys[0] || null;
+if (creationCarousel) {
+  for (let index = 0; index < 3; index += 1) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "creation-carousel-card";
+    button.setAttribute("aria-pressed", "false");
+    const portrait = document.createElement("img");
+    portrait.alt = "";
+    portrait.onerror = () => {
+      portrait.onerror = null;
+      portrait.src = "dungeon-img/Sprite-FighterMaleStatusOK.png";
+    };
+    const name = document.createElement("span");
+    button.append(portrait, name);
+    button.addEventListener("click", () => {
+      if (button.dataset.classKey) chooseCarouselClass(button.dataset.classKey);
+    });
+    button.addEventListener("pointerenter", () => {
+      hoveredClassKey = button.dataset.classKey || null;
+    });
+    button.addEventListener("pointerleave", () => {
+      hoveredClassKey = null;
+    });
+    creationCarousel.append(button);
+  }
+}
+
+function chooseCarouselClass(key) {
+  if (!CLASS_DATA[key]) return;
+  hoveredClassKey = key;
+  selectedClassKey = key;
+  if (gameState === "PARTY_RECRUIT") {
+    if (key === player.classchoice) {
+      showMessage("Your hero class cannot be selected as a companion.");
+    } else if (party.members[selectedRecruitSlotIndex] === key) {
+      party.members.splice(selectedRecruitSlotIndex, 1);
+      party.npcGenders.splice(selectedRecruitSlotIndex, 1);
+      selectedRecruitSlotIndex = Math.min(
+        selectedRecruitSlotIndex,
+        party.members.length,
+      );
+      renderRecruitChoices();
+      updateDashboardUI();
+    } else {
+      const existingIndex = party.members.indexOf(key);
+      const gender =
+        existingIndex >= 0
+          ? party.npcGenders[existingIndex]
+          : Math.random() > 0.5
+            ? "male"
+            : "female";
+      if (existingIndex >= 0) {
+        party.members.splice(existingIndex, 1);
+        party.npcGenders.splice(existingIndex, 1);
+        if (existingIndex < selectedRecruitSlotIndex) {
+          selectedRecruitSlotIndex -= 1;
+        }
+      }
+      if (selectedRecruitSlotIndex < party.members.length) {
+        party.members[selectedRecruitSlotIndex] = key;
+        party.npcGenders[selectedRecruitSlotIndex] = gender;
+      } else if (party.members.length < 3) {
+        party.members.push(key);
+        party.npcGenders.push(gender);
+      } else {
+        showMessage("Remove or replace a companion before adding another.");
+      }
+      const assignedIndex = party.members.indexOf(key);
+      selectedRecruitSlotIndex = Math.min(
+        assignedIndex + 1,
+        party.members.length < 3
+          ? party.members.length
+          : party.members.length - 1,
+      );
+      selectedPartyIndex = selectedRecruitSlotIndex + 1;
+      renderRecruitChoices();
+      updateDashboardUI();
+    }
+  }
+  updateCreationCarousel();
+}
+
+function updateCreationCarousel() {
+  if (!creationCarousel) return;
+  classCarousel.hidden =
+    gameState !== "CLASS_SELECT" && gameState !== "PARTY_RECRUIT";
+  creationCarousel.hidden = false;
+  document.getElementById("name-entry-controls").hidden =
+    gameState !== "NAME_INPUT";
+  document.getElementById("recruit-actions").hidden =
+    gameState !== "PARTY_RECRUIT";
+  const embarkButton = document.getElementById("embark-party-btn");
+  const pointBuy = getPointBuyStatus();
+  if (embarkButton) embarkButton.disabled = party.members.length !== 3 || !pointBuy.valid;
+  const selectedClass =
+    gameState === "CLASS_SELECT"
+      ? selectedClassKey
+      : party.members[selectedRecruitSlotIndex] || selectedClassKey || player.classchoice;
+  const selectedIndex = Math.max(0, sortedClassKeys.indexOf(selectedClass));
+  const visibleKeys = [
+    sortedClassKeys[(selectedIndex - 1 + sortedClassKeys.length) % sortedClassKeys.length],
+    sortedClassKeys[selectedIndex],
+    sortedClassKeys[(selectedIndex + 1) % sortedClassKeys.length],
+  ];
+  creationCarousel.querySelectorAll(".creation-carousel-card").forEach((button, index) => {
+    const key = visibleKeys[index];
+    const profile = CLASS_DATA[key];
+    button.dataset.classKey = key;
+    button.dataset.carouselPosition = ["previous", "center", "next"][index];
+    const selected = key === selectedClass;
+    button.setAttribute("aria-pressed", String(selected));
+    button.classList.toggle("active-card", index === 1);
+    const portrait = button.querySelector("img");
+    const name = button.querySelector("span");
+    portrait.src = profile.portraits[selectedGender] || profile.portraits.male;
+    name.textContent = profile.name;
+  });
+  updatePointBuyPanel();
+  updateAbilityTabLabel(hoveredClassKey || selectedClass || player.classchoice);
+}
+
+function getPointBuyClassKeys() {
+  const heroClass =
+    gameState === "CLASS_SELECT"
+      ? selectedClassKey || player.classchoice
+      : player.classchoice;
+  return [...new Set([heroClass, ...party.members])].filter(
+    (key) => Boolean(key && CLASS_DATA[key]),
+  );
+}
+
+function getPointBuyClassKey() {
+  if (gameState === "CLASS_SELECT") return selectedClassKey || player.classchoice;
+  if (gameState === "PARTY_RECRUIT") {
+    return party.members[selectedRecruitSlotIndex] || player.classchoice;
+  }
+  return player.classchoice;
+}
+
+function getPointBuyProfile(classKey) {
+  if (!pointBuyProfiles.has(classKey)) {
+    const classStats = CLASS_DATA[classKey].stats;
+    pointBuyProfiles.set(classKey, Object.fromEntries(
+      POINT_BUY_STATS.map((stat) => [
+        stat,
+        Math.min(
+          POINT_BUY_CAP,
+          Math.max(POINT_BUY_MIN, Math.round(classStats[stat] ?? POINT_BUY_MIN)),
+        ),
+      ]),
+    ));
+  }
+  return pointBuyProfiles.get(classKey);
+}
+
+function getPointBuyStatus() {
+  const classKeys = getPointBuyClassKeys();
+  let spent = 0;
+  let valid = classKeys.length > 0;
+  for (const classKey of classKeys) {
+    const profile = getPointBuyProfile(classKey);
+    for (const stat of POINT_BUY_STATS) {
+      const value = profile[stat];
+      if (!Number.isInteger(value) || value < POINT_BUY_MIN || value > POINT_BUY_CAP) {
+        valid = false;
+        continue;
+      }
+      spent += value - getPointBuyBaseline(classKey, stat);
+    }
+  }
+  return {
+    spent,
+    remaining: Math.min(POINT_BUY_POOL, POINT_BUY_POOL - spent),
+    valid: valid && spent === POINT_BUY_POOL,
+  };
+}
+
+function getPointBuyBaseline(classKey, stat) {
+  return Math.min(
+    POINT_BUY_CAP,
+    Math.max(POINT_BUY_MIN, Math.round(CLASS_DATA[classKey].stats[stat] ?? POINT_BUY_MIN)),
+  );
+}
+
+function getDerivedPools(classKey, attributes) {
+  const classProfile = CLASS_DATA[classKey];
+  const staminaDelta = attributes.sta - getPointBuyBaseline(classKey, "sta");
+  const intellectDelta = attributes.int - getPointBuyBaseline(classKey, "int");
+  return {
+    hp: Math.max(
+      0,
+      (classProfile.baseHp ?? 10 + getPointBuyBaseline(classKey, "sta") * 2) +
+        staminaDelta * 2,
+    ),
+    mp: Math.max(0, (classProfile.maxMp ?? 0) + intellectDelta),
+    stamina: Math.max(0, (classProfile.maxStamina ?? attributes.sta * 2) + staminaDelta),
+  };
+}
+
+function getAttributeSheetData() {
+  if (gameState === "PLAYING") {
+    const selectedMember = getSelectedPartyMember();
+    if (selectedMember) {
+      return {
+        stats: Object.fromEntries(
+          POINT_BUY_STATS.map((stat) => [stat, selectedMember.getModifiedStat(stat)]),
+        ),
+        pools: {
+          hp: [selectedMember.hp, selectedMember.maxHp],
+          mp: [selectedMember.mp, selectedMember.maxMp],
+          stamina: [selectedMember.stamina, selectedMember.maxStamina],
+        },
+      };
+    }
+  }
+  const classKey = getPointBuyClassKey();
+  if (!classKey) return null;
+  const attributes = getPointBuyProfile(classKey);
+  const pools = getDerivedPools(classKey, attributes);
+  return {
+    stats: attributes,
+    pools: {
+      hp: [pools.hp, pools.hp],
+      mp: [pools.mp, pools.mp],
+      stamina: [pools.stamina, pools.stamina],
+    },
+  };
+}
+
+function renderAttributeSheet() {
+  const data = getAttributeSheetData();
+  if (!data) return;
+  for (const stat of POINT_BUY_STATS) {
+    const output = document.getElementById(`stat-${stat}`);
+    if (output) output.textContent = String(data.stats[stat]);
+  }
+  for (const [poolName, elementId] of [
+    ["hp", "resource-hp"],
+    ["mp", "resource-mp"],
+    ["stamina", "resource-stamina"],
+  ]) {
+    const output = document.getElementById(elementId);
+    if (output) output.textContent = `${data.pools[poolName][0]}/${data.pools[poolName][1]}`;
+  }
+  drawAttributeRadar(data.stats);
+}
+
+function drawAttributeRadar(stats) {
+  const radar = document.getElementById("attribute-radar");
+  const radarContext = radar?.getContext("2d");
+  if (!radar || !radarContext) return;
+  const centerX = radar.width / 2;
+  const centerY = radar.height / 2 + 5;
+  const radius = Math.min(centerX - 30, centerY - 28);
+  const axes = [
+    { stat: "str", label: "STR", angle: -Math.PI / 2 },
+    { stat: "agil", label: "AGI", angle: 0 },
+    { stat: "int", label: "INT", angle: Math.PI / 2 },
+    { stat: "sta", label: "STA", angle: Math.PI },
+  ];
+  radarContext.clearRect(0, 0, radar.width, radar.height);
+  radarContext.font = "10px monospace";
+  radarContext.textAlign = "center";
+  radarContext.textBaseline = "middle";
+  for (const scale of [0.25, 0.5, 0.75, 1]) {
+    radarContext.beginPath();
+    axes.forEach((axis, index) => {
+      const x = centerX + Math.cos(axis.angle) * radius * scale;
+      const y = centerY + Math.sin(axis.angle) * radius * scale;
+      if (index === 0) radarContext.moveTo(x, y);
+      else radarContext.lineTo(x, y);
+    });
+    radarContext.closePath();
+    radarContext.strokeStyle = "#34344e";
+    radarContext.stroke();
+  }
+  radarContext.beginPath();
+  axes.forEach((axis, index) => {
+    const value = Math.max(POINT_BUY_MIN, Math.min(POINT_BUY_CAP, stats[axis.stat]));
+    const scale = (value - POINT_BUY_MIN) / (POINT_BUY_CAP - POINT_BUY_MIN);
+    const x = centerX + Math.cos(axis.angle) * radius * scale;
+    const y = centerY + Math.sin(axis.angle) * radius * scale;
+    if (index === 0) radarContext.moveTo(x, y);
+    else radarContext.lineTo(x, y);
+  });
+  radarContext.closePath();
+  radarContext.fillStyle = "rgba(41, 171, 226, 0.28)";
+  radarContext.strokeStyle = "#29abe2";
+  radarContext.lineWidth = 2;
+  radarContext.fill();
+  radarContext.stroke();
+  axes.forEach((axis) => {
+    const x = centerX + Math.cos(axis.angle) * (radius + 18);
+    const y = centerY + Math.sin(axis.angle) * (radius + 18);
+    radarContext.fillStyle = "#d5d7e4";
+    radarContext.fillText(axis.label, x, y);
+  });
+}
+
+function updatePointBuyPanel() {
+  const panel = document.getElementById("point-buy-panel");
+  if (!panel) return;
+  const visible = gameState === "CLASS_SELECT" || gameState === "PARTY_RECRUIT";
+  panel.hidden = !visible;
+  const classKey = getPointBuyClassKey();
+  const profile = classKey ? getPointBuyProfile(classKey) : null;
+  const status = getPointBuyStatus();
+  const memberLabel = document.getElementById("point-buy-member");
+  if (memberLabel) {
+    memberLabel.textContent =
+      classKey === player.classchoice || gameState === "CLASS_SELECT"
+        ? "HERO"
+        : CLASS_DATA[classKey]?.name.toUpperCase() || "HERO";
+  }
+  const remaining = document.getElementById("point-buy-remaining");
+  if (remaining) remaining.textContent = String(status.remaining);
+  const validation = document.getElementById("point-buy-validation");
+  if (validation) {
+    validation.textContent = status.valid
+      ? "All 15 points allocated. Your party is ready to embark."
+      : status.remaining < 0
+        ? `${Math.abs(status.remaining)} points over budget. Reduce attributes before embarking.`
+        : `${status.remaining} points remaining. Allocate all 15 before embarking.`;
+    validation.dataset.valid = String(status.valid);
+  }
+  panel.querySelectorAll(".point-buy-row").forEach((row) => {
+    const stat = row.dataset.pointBuyStat;
+    const value = profile?.[stat] ?? POINT_BUY_MIN;
+    const output = row.querySelector("output");
+    if (output) output.textContent = String(value);
+    row.querySelectorAll("button[data-point-buy-change]").forEach((button) => {
+      const delta = Number(button.dataset.pointBuyChange);
+      button.disabled =
+        !classKey ||
+        (delta > 0
+          ? status.remaining <= 0 || value >= POINT_BUY_CAP
+          : value <= POINT_BUY_MIN);
+    });
+  });
+  renderAttributeSheet();
+}
+
+document.getElementById("point-buy-panel")?.addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-point-buy-change]");
+  if (!button) return;
+  const classKey = getPointBuyClassKey();
+  const row = button.closest("[data-point-buy-stat]");
+  const stat = row?.dataset.pointBuyStat;
+  const delta = Number(button.dataset.pointBuyChange);
+  if (!classKey || !POINT_BUY_STATS.includes(stat) || ![-1, 1].includes(delta)) return;
+  const profile = getPointBuyProfile(classKey);
+  const nextValue = profile[stat] + delta;
+  if (nextValue < POINT_BUY_MIN || nextValue > POINT_BUY_CAP) return;
+  if (delta > 0 && getPointBuyStatus().remaining <= 0) return;
+  profile[stat] = nextValue;
+  updateCreationCarousel();
+});
+
+function updateAbilityTabLabel(classKey) {
+  const label = document.getElementById("ability-tab-label");
+  if (!label) return;
+  const profile = CLASS_DATA[classKey];
+  if (!profile) {
+    label.textContent = "MAGIC";
+    return;
+  }
+  const spells = profile.progression?.[1]?.spells || profile.spells || [];
+  const hasSpells = spells.length > 0;
+  label.textContent = hasSpells ? "MAGIC" : "SKILLS / ABILITIES";
+  const sheet = document.getElementById("tab-spells");
+  if (!sheet || sheet.dataset.classKey === classKey) return;
+  sheet.dataset.classKey = classKey;
+  const list = document.createElement("ul");
+  list.className = "item-list";
+  const abilities = hasSpells ? spells.map((spell) => spell.name) : profile.abilities || [];
+  abilities.forEach((ability) => {
+    const item = document.createElement("li");
+    item.textContent = ability;
+    list.append(item);
+  });
+  sheet.replaceChildren(list);
+}
+
+document.getElementById("class-carousel-prev")?.addEventListener("click", () => {
+  const currentIndex = sortedClassKeys.indexOf(selectedClassKey);
+  chooseCarouselClass(
+    sortedClassKeys[(Math.max(0, currentIndex) - 1 + sortedClassKeys.length) % sortedClassKeys.length],
+  );
+});
+document.getElementById("class-carousel-next")?.addEventListener("click", () => {
+  const currentIndex = sortedClassKeys.indexOf(selectedClassKey);
+  chooseCarouselClass(
+    sortedClassKeys[(Math.max(0, currentIndex) + 1) % sortedClassKeys.length],
+  );
+});
+
 // ==========================================================
 // 3. UI TAB PANEL & HUD RENDERING SYNCS
 // ==========================================================
-function switchTab(tabId) {
+function switchTab(tabId, event) {
   document
     .querySelectorAll(".tab-content")
     .forEach((el) => el.classList.remove("active-content"));
@@ -99,7 +557,10 @@ function switchTab(tabId) {
     .querySelectorAll(".tab-link")
     .forEach((el) => el.classList.remove("active"));
   document.getElementById(`tab-${tabId}`).classList.add("active-content");
-  if (window.event) window.event.currentTarget.classList.add("active");
+  const activeButton =
+    event?.currentTarget ||
+    document.querySelector(`.tab-link[onclick*="switchTab('${tabId}'"]`);
+  activeButton?.classList.add("active");
 }
 window.switchTab = switchTab;
 
@@ -118,7 +579,10 @@ if (fsBtn) {
 }
 
 function updateDashboardUI() {
-  if (!player.classchoice) return;
+  if (!player.classchoice) {
+    renderInventoryTab();
+    return;
+  }
 
   document.getElementById("hud-name").innerText =
     `${(player.name || "Hero").toUpperCase()} (${CLASS_DATA[player.classchoice].name.substring(0, 4)})`;
@@ -145,8 +609,8 @@ function updateDashboardUI() {
   document.getElementById("stat-gold").innerText = player.gold;
   document.getElementById("stat-xp").innerText = player.experience;
   document.getElementById("stat-lvl").innerText = player.level;
-  document.getElementById("stat-vit").innerText = `${player.hp}/${player.maxHp}`;
-  document.getElementById("hp-bar-p0").style.width = `${Math.max(0, player.hp / player.maxHp) * 100}%`;
+  document.getElementById("hp-bar-p0").style.width =
+    `${Math.max(0, player.hp / player.maxHp) * 100}%`;
 
   const combatActions = document.getElementById("combat-actions");
   if (combatActions) combatActions.hidden = !activeEnemy;
@@ -161,7 +625,8 @@ function updateDashboardUI() {
     const bar = document.getElementById(`hp-bar-p${index}`);
     if (bar && member) bar.style.width = `${Math.max(0, member.hp / member.maxHp) * 100}%`;
   });
-  renderPartyDetails();
+  renderInventoryTab();
+  renderAttributeSheet();
   renderTargetList();
   renderInteractionActions();
   updateCombatTurnLabel();
@@ -173,52 +638,33 @@ function getSelectedPartyMember() {
   return party.entities[selectedPartyIndex - 1] || null;
 }
 
-function renderPartyDetails() {
-  const member = getSelectedPartyMember();
-  const nameEl = document.getElementById("party-detail-name");
-  const classEl = document.getElementById("party-detail-class");
-  const statsEl = document.getElementById("party-detail-stats");
-  const abilitiesEl = document.getElementById("party-detail-abilities");
-  const equipmentEl = document.getElementById("party-detail-equipment");
-  if (!nameEl || !classEl || !statsEl || !abilitiesEl || !equipmentEl) return;
-  const detailPanel = document.querySelector(".party-detail-panel");
-  if (detailPanel) detailPanel.hidden = detailPanelMode === "none";
-  const inventoryKey = detailPanelMode === "inventory" ? party.inventory.map((item) => `${item.name}:${item.quantity}`).join("|") : "hidden";
-  const memberKey = member ? `${member.name}:${selectedPartyIndex}:${JSON.stringify(member.stats)}:${member.hp}` : `empty:${selectedPartyIndex}`;
-  const renderKey = `${detailPanelMode}:${memberKey}:${inventoryKey}`;
-  if (renderKey === lastPartyDetailsKey) return;
-  lastPartyDetailsKey = renderKey;
-
-  if (!member) {
-    nameEl.textContent = "Empty party slot";
-    classEl.textContent = "Recruit a companion to fill this position.";
-    statsEl.innerHTML = "";
-    abilitiesEl.innerHTML = "";
-    equipmentEl.innerHTML = "";
-  } else {
-    nameEl.textContent = member.name.toUpperCase();
-    classEl.textContent = member.className || "Adventurer";
-    statsEl.innerHTML = Object.entries(member.stats || {})
-      .map(([name, value]) => `<span class="detail-chip">${name.toUpperCase()}: ${value}</span>`)
-      .join("");
-    abilitiesEl.innerHTML = (member.abilities || [])
-      .map((ability) => `<span class="detail-chip">${ability}</span>`)
-      .join("");
-    const weapon = member.equippedWeapon?.name || "Unarmed";
-    equipmentEl.innerHTML = `<span class="equipment-left">HEAD<br>Armor pending</span><span class="equipment-center">BODY<br>${weapon}</span><span class="equipment-right">HANDS<br>${weapon}</span>`;
-  }
-
-  const inventoryEl = document.getElementById("shared-inventory");
-  if (inventoryEl && detailPanelMode === "inventory") {
-    inventoryEl.innerHTML = `<strong>INVENTORY</strong>${party.inventory
-      .filter((item) => item.quantity > 0)
-      .map((item, index) => `<span class="inventory-item detail-chip">${item.name} x${item.quantity}<button type="button" data-item-index="${index}">USE</button></span>`)
-      .join("")}`;
-    inventoryEl.querySelectorAll("[data-item-index]").forEach((button) => {
-      button.addEventListener("click", () => useSharedItem(Number(button.dataset.itemIndex)));
-    });
-  } else if (inventoryEl) {
-    inventoryEl.innerHTML = "";
+function renderInventoryTab() {
+  const list = document.getElementById("inventory-items");
+  if (!list) return;
+  const inventoryState = party.inventory
+    .map((item) => `${item.name}:${item.quantity}`)
+    .join("|");
+  if (inventoryState === lastInventoryState) return;
+  lastInventoryState = inventoryState;
+  list.replaceChildren();
+  party.inventory.forEach((item, index) => {
+    if (item.quantity <= 0) return;
+    const row = document.createElement("li");
+    row.className = "inventory-entry";
+    const label = document.createElement("span");
+    label.textContent = `${item.name} x${item.quantity}`;
+    const useButton = document.createElement("button");
+    useButton.type = "button";
+    useButton.className = "inventory-use-btn";
+    useButton.textContent = "USE";
+    useButton.addEventListener("click", () => useSharedItem(index));
+    row.append(label, useButton);
+    list.append(row);
+  });
+  if (list.childElementCount === 0) {
+    const empty = document.createElement("li");
+    empty.textContent = "No shared items.";
+    list.append(empty);
   }
 }
 
@@ -235,10 +681,16 @@ function renderInteractionActions() {
 function updateCombatTurnLabel() {
   const label = document.getElementById("combat-turn-label");
   if (!label || !activeEnemy) return;
-  const actor = getPartyEntities()[combatTurnIndex];
-  label.textContent = actor
-    ? `TURN: ${actor.name.toUpperCase()}${autoFightMembers.has(combatTurnIndex) ? " (AUTO)" : ""}`
-    : "ENEMY TURN";
+  const actor = combatInitiative[combatInitiativeCursor];
+  if (actor === activeEnemy) {
+    label.textContent = "TURN: ENEMY";
+    return;
+  }
+  const index = getPartyEntities().indexOf(actor);
+  label.textContent =
+    index >= 0
+      ? `TURN: ${actor.name.toUpperCase()}${autoFightMembers.has(index) ? " (AUTO)" : ""}`
+      : "TURN: WAITING";
 }
 
 function getPartyEntities() {
@@ -246,7 +698,28 @@ function getPartyEntities() {
 }
 
 function prepareRecruitPanel() {
+  const eligibleClasses = Object.keys(CLASS_DATA).filter(
+    (key) => key !== player.classchoice,
+  );
+  party.members = party.members
+    .filter(
+      (key, index, members) =>
+        eligibleClasses.includes(key) && members.indexOf(key) === index,
+    )
+    .slice(0, 3);
+  while (party.members.length < 3) {
+    const nextClass = eligibleClasses.find(
+      (key) => !party.members.includes(key),
+    );
+    if (!nextClass) break;
+    party.members.push(nextClass);
+  }
+  party.npcGenders = party.members.map(
+    (_, index) => party.npcGenders[index] || "male",
+  );
+
   const classOptions = Object.entries(CLASS_DATA)
+    .filter(([key]) => key !== player.classchoice)
     .map(([key, data]) => `<option value="${key}">${data.name}</option>`)
     .join("");
   for (let index = 1; index <= 3; index++) {
@@ -254,21 +727,79 @@ function prepareRecruitPanel() {
     const genderSelect = document.getElementById(`recruit-${index}-gender`);
     if (!classSelect || !genderSelect) continue;
     classSelect.innerHTML = classOptions;
-    classSelect.value = party.members[index - 1] || Object.keys(CLASS_DATA)[index];
+    classSelect.value = party.members[index - 1];
     genderSelect.value = party.npcGenders[index - 1] || "male";
-    classSelect.addEventListener("change", syncRecruitChoices);
-    genderSelect.addEventListener("change", syncRecruitChoices);
+    classSelect.onchange = syncRecruitChoices;
+    genderSelect.onchange = syncRecruitChoices;
   }
   syncRecruitChoices();
+  updateDashboardUI();
+  updateCreationCarousel();
 }
 
 function syncRecruitChoices() {
   party.members = [];
   party.npcGenders = [];
   for (let index = 1; index <= 3; index++) {
-    party.members.push(document.getElementById(`recruit-${index}-class`).value);
-    party.npcGenders.push(document.getElementById(`recruit-${index}-gender`).value);
+    const classSelect = document.getElementById(`recruit-${index}-class`);
+    const genderSelect = document.getElementById(`recruit-${index}-gender`);
+    const classKey = classSelect?.value;
+    if (!CLASS_DATA[classKey] || classKey === player.classchoice) continue;
+    if (!party.members.includes(classKey)) {
+      party.members.push(classKey);
+      party.npcGenders.push(genderSelect?.value || "male");
+    }
   }
+  selectedRecruitSlotIndex = Math.min(selectedRecruitSlotIndex, party.members.length);
+  renderRecruitChoices();
+  updateDashboardUI();
+  updateCreationCarousel();
+}
+
+function renderRecruitChoices() {
+  const availableClasses = Object.entries(CLASS_DATA).filter(
+    ([key]) => key !== player.classchoice,
+  );
+  const options = availableClasses
+    .map(([key, profile]) => `<option value="${key}">${profile.name}</option>`)
+    .join("");
+  for (let index = 0; index < 3; index++) {
+    const classSelect = document.getElementById(`recruit-${index + 1}-class`);
+    const genderSelect = document.getElementById(`recruit-${index + 1}-gender`);
+    if (!classSelect || !genderSelect) continue;
+    classSelect.innerHTML = options;
+    classSelect.value =
+      party.members[index] ||
+      availableClasses.find(
+        ([key]) => !party.members.includes(key),
+      )?.[0] ||
+      availableClasses[0]?.[0];
+    genderSelect.value = party.npcGenders[index] || "male";
+    classSelect.onchange = syncRecruitChoices;
+    genderSelect.onchange = syncRecruitChoices;
+  }
+}
+
+function randomizeParty() {
+  const candidates = Object.keys(CLASS_DATA).filter(
+    (key) => key !== player.classchoice,
+  );
+  for (let index = candidates.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [candidates[index], candidates[randomIndex]] = [
+      candidates[randomIndex],
+      candidates[index],
+    ];
+  }
+  party.members = candidates.slice(0, 3);
+  party.npcGenders = party.members.map(() =>
+    Math.random() > 0.5 ? "male" : "female",
+  );
+  selectedRecruitSlotIndex = 0;
+  selectedPartyIndex = 1;
+  renderRecruitChoices();
+  updateDashboardUI();
+  updateCreationCarousel();
 }
 
 // ==========================================================
@@ -321,33 +852,53 @@ bindTouchButton("touch-d", "d");
 bindTouchButton("touch-turn-left", "turnLeft");
 bindTouchButton("touch-turn-right", "turnRight");
 
+function submitCharacterName() {
+  const nameInput = document.getElementById("character-name-field");
+  const submittedName = (nameInput?.value || player.name).trim().slice(0, 12);
+  if (!submittedName) {
+    showMessage("Enter a character name before continuing.");
+    nameInput?.focus();
+    return false;
+  }
+  player.name = submittedName;
+  if (nameInput) nameInput.value = submittedName;
+  gameState = "PARTY_RECRUIT";
+  selectedRecruitSlotIndex = 0;
+  prepareRecruitPanel();
+  updateCreationCarousel();
+  return true;
+}
+
 function handleKeyboardInput(e) {
   const classKeys = Object.keys(CLASS_DATA);
+  if (gameState === "NAME_INPUT" && e.target?.id === "character-name-field") {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      submitCharacterName();
+    }
+    return;
+  }
   if (gameState === "CLASS_SELECT") {
     const classIndex = Number(e.key) - 1;
     if (classIndex >= 0 && classIndex < classKeys.length) {
-      selectedClassKey = classKeys[classIndex];
+      chooseCarouselClass(classKeys[classIndex]);
     }
     if (e.key === "Enter" && selectedClassKey) {
       player.classchoice = selectedClassKey;
       player.gender = selectedGender;
       gameState = "NAME_INPUT";
+      const nameInput = document.getElementById("character-name-field");
+      if (nameInput) nameInput.value = player.name;
+      updateCreationCarousel();
+      nameInput?.focus();
     }
     return;
   }
   if (gameState === "PARTY_RECRUIT") {
     const recruitIndex = Number(e.key) - 1;
     const recruitKey = classKeys[recruitIndex];
-    if (recruitKey && recruitKey !== player.classchoice) {
-      const memberIndex = party.members.indexOf(recruitKey);
-      if (memberIndex >= 0) {
-        party.members.splice(memberIndex, 1);
-        party.npcGenders.splice(memberIndex, 1);
-      } else if (party.members.length < 3) {
-        party.members.push(recruitKey);
-        party.npcGenders.push(Math.random() > 0.5 ? "male" : "female");
-      }
-    }
+    if (recruitKey && recruitKey !== player.classchoice)
+      chooseCarouselClass(recruitKey);
     if (e.key === "Enter" && party.members.length === 3) {
       startExpedition();
     }
@@ -360,27 +911,42 @@ function handleKeyboardInput(e) {
     }
   }
   if (gameState === "NAME_INPUT") {
-    if (e.key === "Enter" && player.name.trim().length > 0) {
-      gameState = "PARTY_RECRUIT";
-      prepareRecruitPanel();
-    } else if (e.key === "Backspace") {
-      player.name = player.name.slice(0, -1);
-    } else if (e.key.length === 1 && player.name.length < 12) {
-      if (/[a-zA-Z0-9 ]/.test(e.key)) player.name += e.key;
+    if (e.key === "Enter") {
+      submitCharacterName();
     }
   }
 }
 
+document
+  .getElementById("confirm-name-btn")
+  ?.addEventListener("click", submitCharacterName);
+document
+  .getElementById("character-name-field")
+  ?.addEventListener("input", (event) => {
+    player.name = event.currentTarget.value
+      .replace(/[^a-zA-Z0-9 ]/g, "")
+      .slice(0, 12);
+    event.currentTarget.value = player.name;
+  });
+document
+  .getElementById("randomize-party-btn")
+  ?.addEventListener("click", randomizeParty);
+document.getElementById("embark-party-btn")?.addEventListener("click", () => {
+  if (party.members.length === 3) startExpedition();
+});
+
 // ==========================================================
 // 5. MAZE MOVEMENT & WALL PHYSICS COLLISION LOGIC
 // ==========================================================
-let spellsPopulated = false;
 
 function showMessage(message) {
   combatLog.push(message);
   combatLog = combatLog.slice(-8);
   const eventLog = document.getElementById("event-log");
-  if (eventLog) eventLog.textContent = combatLog.join("\n");
+  if (eventLog) {
+    eventLog.textContent = combatLog.join("\n");
+    eventLog.scrollTop = eventLog.scrollHeight;
+  }
 }
 
 function updateRuntimeStatus() {
@@ -426,7 +992,7 @@ function handlePlayerMovementPhysics(deltaSeconds) {
     gameState !== "PLAYING" ||
     activeEnemy ||
     activeInteraction ||
-    !Array.isArray(town1Map)
+    !activeLevel
   ) {
     return;
   }
@@ -438,13 +1004,19 @@ function handlePlayerMovementPhysics(deltaSeconds) {
     Number(
       Boolean(activeInputBuffer.s || activeInputBuffer.S || activeInputBuffer.ArrowDown),
     );
+  const turn =
+    Number(Boolean(activeInputBuffer.ArrowRight)) -
+    Number(Boolean(activeInputBuffer.ArrowLeft));
   const strafe =
-    Number(
-      Boolean(activeInputBuffer.d || activeInputBuffer.D || activeInputBuffer.ArrowRight),
-    ) -
-    Number(
-      Boolean(activeInputBuffer.a || activeInputBuffer.A || activeInputBuffer.ArrowLeft),
-    );
+    Number(Boolean(activeInputBuffer.d || activeInputBuffer.D)) -
+    Number(Boolean(activeInputBuffer.a || activeInputBuffer.A));
+  if (forward === 0 && strafe === 0 && turn === 0) return;
+
+  const turnSpeed = 2.5;
+  player.dir += turn * turnSpeed * deltaSeconds;
+  while (player.dir > Math.PI) player.dir -= Math.PI * 2;
+  while (player.dir < -Math.PI) player.dir += Math.PI * 2;
+
   if (forward === 0 && strafe === 0) return;
 
   const magnitude = Math.hypot(forward, strafe);
@@ -467,8 +1039,7 @@ function handlePlayerMovementPhysics(deltaSeconds) {
     if (!Number.isFinite(x) || !Number.isFinite(y)) return false;
     const tileX = Math.floor(x);
     const tileY = Math.floor(y);
-    const tileValue = town1Map[tileY]?.[tileX];
-    if (impassableIntGridValues.has(tileValue)) return false;
+    if (isBlockedCell(tileX, tileY)) return false;
 
     const currentTileX = Math.floor(player.x);
     const currentTileY = Math.floor(player.y);
@@ -489,26 +1060,70 @@ function showSpellEffect(actionName) {
   activeEffect = { actionName, startedAt: performance.now(), target: { ...selectedTarget } };
 }
 
-function beginCombat(tileX, tileY) {
+function beginCombat(entity) {
+  const [monsterX, monsterY] = entity.__grid ?? [];
+  if (
+    Number.isInteger(monsterX) &&
+    Number.isInteger(monsterY) &&
+    getEntityField(entity, "surpriseRound") !== true
+  ) {
+    player.dir = Math.atan2(monsterY + 0.5 - player.y, monsterX + 0.5 - player.x);
+    while (player.dir > Math.PI) player.dir -= Math.PI * 2;
+    while (player.dir < -Math.PI) player.dir += Math.PI * 2;
+  }
+
   activeEnemy = entityFactory.monster({
     ...Object.values(monsterCatalog)[0],
     classKey: "fighter",
     level: 1,
     startingWeaponKey: "iron_shortsword",
   });
-  activeEnemy.mapTile = { x: tileX, y: tileY };
+  activeEnemy.mapTile = { x: entity.__grid[0], y: entity.__grid[1] };
+  activeEnemy.mapEntity = entity;
   activeInteraction = null;
-  combatTurnIndex = 0;
   actedThisRound = new Set();
+  selectedTarget = { type: "enemy", index: 0 };
+  combatInitiative = InitiativeCore.sort([...getPartyEntities(), activeEnemy]);
+  combatInitiativeCursor = -1;
   showMessage(`${activeEnemy.name} blocks the way. Choose an action.`);
+  advanceCombatTurn();
 }
 
 function startExpedition() {
+  const pointBuyStatus = getPointBuyStatus();
+  if (party.members.length !== 3 || !pointBuyStatus.valid) {
+    showMessage(
+      `Embark requires three companions and all 15 attribute points allocated (${Math.max(0, pointBuyStatus.remaining)} remaining).`,
+    );
+    updateCreationCarousel();
+    return;
+  }
   syncRecruitChoices();
+  const statsForClass = (classKey) => ({
+    ...CLASS_DATA[classKey].stats,
+    ...getPointBuyProfile(classKey),
+  });
+  const baseHpForClass = (classKey) => {
+    const profile = CLASS_DATA[classKey];
+    return typeof profile.baseHp === "number"
+      ? profile.baseHp +
+        (getPointBuyProfile(classKey).sta -
+          getPointBuyBaseline(classKey, "sta")) * 2
+      : undefined;
+  };
   party.leader = entityFactory.player({
     name: player.name || "Hero",
     classKey: player.classchoice,
     gender: player.gender,
+    stats: statsForClass(player.classchoice),
+    baseHp: baseHpForClass(player.classchoice),
+    maxMp: CLASS_DATA[player.classchoice].maxMp,
+    maxStamina: CLASS_DATA[player.classchoice].maxStamina,
+    resourceBaselineStats: {
+      int: getPointBuyBaseline(player.classchoice, "int"),
+      sta: getPointBuyBaseline(player.classchoice, "sta"),
+    },
+    spellbook: CLASS_DATA[player.classchoice].progression?.[1]?.spells || [],
     startingWeaponKey: "iron_shortsword",
   });
   party.entities = party.members.map((classKey, index) =>
@@ -516,12 +1131,23 @@ function startExpedition() {
       name: CLASS_DATA[classKey].name,
       classKey,
       gender: party.npcGenders[index],
+      stats: statsForClass(classKey),
+      baseHp: baseHpForClass(classKey),
+      maxMp: CLASS_DATA[classKey].maxMp,
+      maxStamina: CLASS_DATA[classKey].maxStamina,
+      resourceBaselineStats: {
+        int: getPointBuyBaseline(classKey, "int"),
+        sta: getPointBuyBaseline(classKey, "sta"),
+      },
+      spellbook: CLASS_DATA[classKey].progression?.[1]?.spells || [],
     }),
   );
   player.hp = party.leader.hp;
   player.maxHp = party.leader.maxHp;
   updateCombatButtons();
   gameState = "PLAYING";
+  updateAbilityTabLabel(player.classchoice);
+  updateCreationCarousel();
 }
 
 function renderTargetList() {
@@ -545,8 +1171,7 @@ function renderTargetList() {
 }
 
 function finishCombat() {
-  const tile = activeEnemy.mapTile;
-  town1Map[tile.y][tile.x] = TILE_TYPES.FLOOR;
+  clearedEntityIids.add(activeEnemy.mapEntity.iid);
   // add dropTables = DROP_TABLES.monsterType.level.Rarity use drop tables for gold and exp too.
   player.experience += 25;
   player.gold += 8;
@@ -554,12 +1179,21 @@ function finishCombat() {
   activeEnemy = null;
   activeEffect = null;
   actedThisRound = new Set();
+  combatInitiative = [];
+  combatInitiativeCursor = -1;
 }
 
 function performCombatAction(input) {
   if (!activeEnemy) return;
-  const actor = getPartyEntities()[combatTurnIndex];
-  if (!actor || actedThisRound.has(combatTurnIndex)) return;
+  const actor = combatInitiative[combatInitiativeCursor];
+  const partyIndex = getPartyEntities().indexOf(actor);
+  if (
+    partyIndex < 0 ||
+    actor.hp <= 0 ||
+    actedThisRound.has(partyIndex)
+  ) {
+    return;
+  }
   const spells = actor.spellbook || [];
   const action = input === " " ? "Melee Attack" : spells[Number(input) - 1]?.name;
   if (!action) {
@@ -585,34 +1219,82 @@ function performCombatAction(input) {
     finishCombat();
     return;
   }
-  actedThisRound.add(combatTurnIndex);
+  actedThisRound.add(partyIndex);
   advanceCombatTurn();
 }
 window.performCombatAction = performCombatAction;
 
 function advanceCombatTurn() {
+  if (!activeEnemy || combatInitiative.length === 0) return;
+
   const members = getPartyEntities();
-  if (actedThisRound.size >= members.length) {
-    enemyTurn();
-    actedThisRound = new Set();
-    combatTurnIndex = 0;
-  } else {
-    do {
-      combatTurnIndex = (combatTurnIndex + 1) % members.length;
-    } while (actedThisRound.has(combatTurnIndex));
-    if (autoFightMembers.has(combatTurnIndex)) {
-      performCombatAction(" ");
+  for (let checked = 0; checked < combatInitiative.length; checked += 1) {
+    const previousCursor = combatInitiativeCursor;
+    combatInitiativeCursor = (combatInitiativeCursor + 1) % combatInitiative.length;
+    if (combatInitiativeCursor <= previousCursor) {
+      actedThisRound = new Set();
+    }
+
+    const actor = combatInitiative[combatInitiativeCursor];
+    if (actor === activeEnemy) {
+      updateCombatButtons();
+      if (members.every((member) => member.hp <= 0)) {
+        retreatAfterDefeat();
+        return;
+      }
+      enemyTurn();
+      if (!activeEnemy || gameState !== "PLAYING") return;
+      advanceCombatTurn();
       return;
     }
+
+    const partyIndex = members.indexOf(actor);
+    if (
+      partyIndex < 0 ||
+      actor.hp <= 0 ||
+      actedThisRound.has(partyIndex)
+    ) {
+      continue;
+    }
+    selectedPartyIndex = partyIndex;
+    updateCombatButtons();
+    if (autoFightMembers.has(partyIndex)) {
+      if (actor.spellbook?.length) {
+        const affordableSpellIndex = actor.spellbook.findIndex(
+          (spell) =>
+            spell.costType !== "mp" ||
+            (actor.mp ?? 0) >= (spell.cost ?? 0),
+        );
+        performCombatAction(
+          affordableSpellIndex >= 0 ? String(affordableSpellIndex + 1) : " ",
+        );
+      } else {
+        performCombatAction(" ");
+      }
+      return;
+    }
+    return;
   }
-  selectedPartyIndex = combatTurnIndex;
-  updateCombatButtons();
+}
+
+function retreatAfterDefeat() {
+  activeEnemy = null;
+  gameState = "CLASS_SELECT";
+  selectedClassKey = null;
+  party.members = [];
+  party.entities = [];
+  combatInitiative = [];
+  combatInitiativeCursor = -1;
+  actedThisRound = new Set();
+  showMessage("The party is defeated and retreats to town.");
+  updateCreationCarousel();
 }
 
 function enemyTurn() {
   const members = getPartyEntities();
-  const targetIndex = Math.floor(Math.random() * members.length);
-  const target = members[targetIndex];
+  const livingMembers = members.filter((member) => member.hp > 0);
+  if (livingMembers.length === 0) return;
+  const target = livingMembers[Math.floor(Math.random() * livingMembers.length)];
   const result = CombatFormulas.executeClassAction(
     activeEnemy,
     target,
@@ -625,76 +1307,99 @@ function enemyTurn() {
     player.mp = party.leader.mp;
     player.stamina = party.leader.stamina;
   }
-  if (members.every((member) => member.hp <= 0)) {
-    activeEnemy = null;
-    gameState = "CLASS_SELECT";
-    selectedClassKey = null;
-    party.members = [];
-    party.entities = [];
-    showMessage("The party is defeated and retreats to town.");
-  }
+  if (members.every((member) => member.hp <= 0)) retreatAfterDefeat();
 }
 
 function endCombatTurn() {
   if (!activeEnemy) return;
-  const actor = getPartyEntities()[combatTurnIndex];
-  if (!actor || actedThisRound.has(combatTurnIndex)) return;
+  const actor = combatInitiative[combatInitiativeCursor];
+  const partyIndex = getPartyEntities().indexOf(actor);
+  if (partyIndex < 0 || actedThisRound.has(partyIndex)) return;
   showMessage(`${actor.name} waits.`);
-  actedThisRound.add(combatTurnIndex);
+  actedThisRound.add(partyIndex);
   advanceCombatTurn();
 }
 
 function useSharedItem(itemIndex) {
   const item = party.inventory[itemIndex];
-  const target = getSelectedPartyMember();
+  const actor = activeEnemy
+    ? combatInitiative[combatInitiativeCursor]
+    : getSelectedPartyMember();
+  const actorIndex = getPartyEntities().indexOf(actor);
+  const target = activeEnemy ? actor : getSelectedPartyMember();
   if (!item || item.quantity <= 0 || !target) return;
+  if (activeEnemy && (actorIndex < 0 || actedThisRound.has(actorIndex))) return;
   if (item.type === "healing") {
     const restored = Math.min(item.value, target.maxHp - target.hp);
     target.hp += restored;
     item.quantity -= 1;
+    renderInventoryTab();
     if (target === party.leader) player.hp = target.hp;
     showMessage(`${target.name} uses ${item.name} and restores ${restored} HP.`);
   }
   if (activeEnemy) {
-    actedThisRound.add(combatTurnIndex);
+    actedThisRound.add(actorIndex);
     advanceCombatTurn();
   }
 }
 
 function selectPartyMember(index) {
+  if (activeEnemy) {
+    selectedTarget = { type: "party", index };
+    renderTargetList();
+    return;
+  }
   selectedPartyIndex = index;
-  if (activeEnemy && !actedThisRound.has(index)) combatTurnIndex = index;
-  if (activeEnemy && selectedTarget.type === "party") selectedTarget.index = index;
   updateCombatButtons();
-  renderPartyDetails();
+  renderInventoryTab();
+  renderAttributeSheet();
 }
 
 document.querySelectorAll(".party-slot").forEach((slot) => {
-  slot.addEventListener("click", () => selectPartyMember(Number(slot.dataset.partyIndex)));
-});
-
-document.getElementById("stats-btn")?.addEventListener("click", () => {
-  detailPanelMode = detailPanelMode === "stats" ? "none" : "stats";
-  renderPartyDetails();
-});
-document.getElementById("inventory-btn")?.addEventListener("click", () => {
-  detailPanelMode = detailPanelMode === "inventory" ? "none" : "inventory";
-  renderPartyDetails();
-});
-document.getElementById("close-detail-btn")?.addEventListener("click", () => {
-  detailPanelMode = "none";
-  renderPartyDetails();
+  slot.addEventListener("click", () => {
+    const partyIndex = Number(slot.dataset.partyIndex);
+    if (gameState === "PARTY_RECRUIT" && partyIndex === 0) {
+      gameState = "CLASS_SELECT";
+      selectedClassKey = player.classchoice;
+      updateCreationCarousel();
+      return;
+    }
+    if (gameState === "PARTY_RECRUIT" && partyIndex > 0) {
+      selectedRecruitSlotIndex = Math.min(
+        partyIndex - 1,
+        party.members.length,
+      );
+      selectedPartyIndex = selectedRecruitSlotIndex + 1;
+      updateDashboardUI();
+      updateCreationCarousel();
+      return;
+    }
+    selectPartyMember(partyIndex);
+  });
 });
 
 function updateCombatButtons() {
-  const actor = getPartyEntities()[combatTurnIndex];
+  const actor = combatInitiative[combatInitiativeCursor];
+  const actorIndex = getPartyEntities().indexOf(actor);
+  const isPartyTurn = actorIndex >= 0 && !actedThisRound.has(actorIndex);
   const spells = actor?.spellbook || [];
+  const attackButton = document.getElementById("attack-btn");
+  const endTurnButton = document.getElementById("end-turn-btn");
+  const useItemButton = document.getElementById("use-item-btn");
+  const autoFightToggle = document.getElementById("auto-fight-toggle");
+  if (attackButton) attackButton.disabled = !isPartyTurn;
+  if (endTurnButton) endTurnButton.disabled = !isPartyTurn;
+  if (useItemButton) useItemButton.disabled = !isPartyTurn;
+  if (autoFightToggle) {
+    autoFightToggle.disabled = !isPartyTurn;
+    autoFightToggle.checked = actorIndex >= 0 && autoFightMembers.has(actorIndex);
+  }
   [1, 2, 3].forEach((slot) => {
     const button = document.getElementById(`spell-${slot}-btn`);
     if (!button) return;
     const spell = spells[slot - 1];
     button.textContent = spell ? `${slot} ${spell.name}` : `${slot} EMPTY`;
-    button.disabled = !spell;
+    button.disabled = !isPartyTurn || !spell;
   });
   updateCombatTurnLabel();
 }
@@ -706,8 +1411,7 @@ function resetExpedition() {
 document.getElementById("attack-btn")?.addEventListener("click", () => performCombatAction(" "));
 document.getElementById("end-turn-btn")?.addEventListener("click", endCombatTurn);
 document.getElementById("use-item-btn")?.addEventListener("click", () => {
-  detailPanelMode = "inventory";
-  renderPartyDetails();
+  switchTab("inventory");
 });
 document.getElementById("auto-fight-toggle")?.addEventListener("change", (event) => {
   if (event.target.checked) autoFightMembers.add(selectedPartyIndex);
@@ -742,27 +1446,31 @@ document.getElementById("interaction-exit")?.addEventListener("click", () => {
   renderInteractionActions();
 });
 
-function interactWithTile(tileX, tileY, tileValue) {
-  if (tileValue === TILE_TYPES.NPC) {
-    beginCombat(tileX, tileY);
-  } else if (tileValue === TILE_TYPES.MERCHANT) {
+function interactWithTile(tileX, tileY) {
+  const entity = getEntityAt(tileX, tileY);
+  if (!entity) return;
+
+  const entityKind = getRuntimeEntityKind(entity);
+  if (entityKind === "npc") {
+    beginCombat(entity);
+  } else if (entityKind === "merchant") {
     activeInteraction = {
-      title: "TRAVELLING MERCHANT",
+      title:
+        getEntityField(entity, "identity")?.toString().toUpperCase() ||
+        "TRAVELLING MERCHANT",
       message: "A travelling merchant offers equipment.",
     };
     showMessage(activeInteraction.message);
-  } else if (tileValue === TILE_TYPES.CHEST) {
+  } else if (entityKind === "chest") {
     player.gold += 15;
-    town1Map[tileY][tileX] = TILE_TYPES.FLOOR;
+    clearedEntityIids.add(entity.iid);
     showMessage("Chest opened: +15 gold.");
-  } else if (tileValue === TILE_TYPES.ZONE_EXIT) {
-    showMessage("The zone exit is sealed until the next area is built.");
   }
 }
 
 const mapEntitySprites = {
-  [TILE_TYPES.NPC]: "dungeon-img/Sprite-PossessedSkeleton-sheet.png",
-  [TILE_TYPES.MERCHANT]: "dungeon-img/Sprite-MushroomMan1-sheet.png",
+  NPC: "dungeon-img/Sprite-PossessedSkeleton-sheet.png",
+  UTILITY_NPC: "dungeon-img/Sprite-MushroomMan1-sheet.png",
 };
 const loadedMapSprites = new Map();
 const effectSpritePaths = [
@@ -774,32 +1482,52 @@ const effectSpritePaths = [
 function drawMapEntities() {
   const halfFov = player.fov / 2;
   const visibleEntities = [];
-  for (let tileY = 0; tileY < town1Map.length; tileY++) {
-    for (let tileX = 0; tileX < town1Map[tileY].length; tileX++) {
-      const tileValue = town1Map[tileY][tileX];
-      if (![TILE_TYPES.NPC, TILE_TYPES.MERCHANT].includes(tileValue)) continue;
+  combatBillboardBounds = null;
+  for (const entity of activeLevel?.entities ?? []) {
+    if (clearedEntityIids.has(entity.iid)) continue;
+    const kind = getRuntimeEntityKind(entity);
+    if (!kind) continue;
 
-      const dx = tileX + 0.5 - player.x;
-      const dy = tileY + 0.5 - player.y;
-      const distance = Math.hypot(dx, dy);
-      let relativeAngle = Math.atan2(dy, dx) - player.dir;
-      while (relativeAngle > Math.PI) relativeAngle -= Math.PI * 2;
-      while (relativeAngle < -Math.PI) relativeAngle += Math.PI * 2;
-      if (Math.abs(relativeAngle) > halfFov || distance < 0.25) continue;
-      if (!hasLineOfSight(tileX + 0.5, tileY + 0.5)) continue;
+    const [tileX, tileY] = entity.__grid ?? [];
+    if (!Number.isInteger(tileX) || !Number.isInteger(tileY)) continue;
+    const dx = tileX + 0.5 - player.x;
+    const dy = tileY + 0.5 - player.y;
+    const distance = Math.hypot(dx, dy);
+    let relativeAngle = Math.atan2(dy, dx) - player.dir;
+    while (relativeAngle > Math.PI) relativeAngle -= Math.PI * 2;
+    while (relativeAngle < -Math.PI) relativeAngle += Math.PI * 2;
+    if (Math.abs(relativeAngle) > halfFov || distance < 0.25) continue;
+    if (!hasLineOfSight(tileX + 0.5, tileY + 0.5)) continue;
 
-      visibleEntities.push({ tileX, tileY, tileValue, distance, relativeAngle });
-    }
+    visibleEntities.push({
+      entity,
+      kind,
+      tileX,
+      tileY,
+      distance,
+      relativeAngle,
+    });
   }
 
   visibleEntities.sort((first, second) => second.distance - first.distance);
-  visibleEntities.forEach(({ tileX, tileY, tileValue, distance, relativeAngle }) => {
+  visibleEntities.forEach(({ entity, kind, distance, relativeAngle }) => {
 
       const screenX = canvas.width / 2 + (relativeAngle / player.fov) * canvas.width;
       const size = Math.min(canvas.height * 1.4, canvas.height / distance);
           const groundY = canvas.height / 2 + Math.min(canvas.height * 0.36, size * 0.45);
           const screenY = groundY - size;
-      const imagePath = mapEntitySprites[tileValue];
+      if (activeEnemy?.mapEntity === entity) {
+        combatBillboardBounds = {
+          left: screenX - size / 2,
+          right: screenX + size / 2,
+          top: screenY,
+          bottom: screenY + size,
+        };
+      }
+      const imagePath =
+        kind === "merchant"
+          ? mapEntitySprites.UTILITY_NPC
+          : mapEntitySprites[entity.__identifier];
       const image = imagePath ? loadedMapSprites.get(imagePath) : null;
 
       if (image?.complete && image.naturalWidth > 0) {
@@ -812,7 +1540,12 @@ function drawMapEntities() {
         ctx.fill();
         ctx.drawImage(image, frame * frameSize, 0, frameSize, frameSize, screenX - size / 2, screenY, size, size);
       } else {
-        ctx.fillStyle = tileValue === TILE_TYPES.NPC ? "#d14b4b" : tileValue === TILE_TYPES.MERCHANT ? "#d1a84b" : "#29abe2";
+        ctx.fillStyle =
+          kind === "npc"
+            ? "#d14b4b"
+            : kind === "merchant"
+              ? "#d1a84b"
+              : "#29abe2";
         ctx.fillRect(screenX - size / 4, screenY + size / 4, size / 2, size / 2);
       }
   });
@@ -853,7 +1586,7 @@ function hasLineOfSight(targetX, targetY) {
     const progress = step / steps;
     const checkX = Math.floor(player.x + (targetX - player.x) * progress);
     const checkY = Math.floor(player.y + (targetY - player.y) * progress);
-    if (town1Map[checkY]?.[checkX] === TILE_TYPES.WALL) return false;
+    if (isBlockedCell(checkX, checkY)) return false;
   }
   return true;
 }
@@ -870,61 +1603,35 @@ effectSpritePaths.forEach((path) => {
 });
 
 function handlePlayerMovement(targetX, targetY) {
-  const mapH = town1Map ? town1Map.length : 0;
-  const mapW = town1Map && town1Map[0] ? town1Map[0].length : 0;
+  const mapH = activeLevel?.height ?? 0;
+  const mapW = activeLevel?.width ?? 0;
 
   if (targetX < 0 || targetX >= mapW || targetY < 0 || targetY >= mapH)
     return false;
 
-  const tileValue = town1Map[Math.floor(targetY)][Math.floor(targetX)];
+  const tileX = Math.floor(targetX);
+  const tileY = Math.floor(targetY);
 
   if (activeEnemy || activeInteraction) return false;
-  if (tileValue !== TILE_TYPES.WALL) {
-    interactWithTile(Math.floor(targetX), Math.floor(targetY), tileValue);
-    if (activeEnemy) return false;
-  }
+  if (isBlockedCell(tileX, tileY)) return false;
 
-  switch (tileValue) {
-    case TILE_TYPES.WALL:
-      console.log("🚫 Ouch! You walked into a wall.");
-      return false;
-
-    case TILE_TYPES.ZONE_EXIT:
-      console.log(
-        `🗺️ Transitioning zone coordinates at [${Math.floor(targetX)}, ${Math.floor(targetY)}]...`,
-      );
-      return true;
-
-    default:
-      return true;
-  }
+  interactWithTile(tileX, tileY);
+  return !activeEnemy;
 }
 
 function updateGameLogic() {
   if (gameState !== "PLAYING") return;
 
-  if (!spellsPopulated) {
-    const spellContainer = document.getElementById("tab-spells");
-    if (spellContainer && player.classchoice) {
-      const lvl1Spells =
-        CLASS_DATA[player.classchoice].progression?.[1]?.spells || [];
-      spellContainer.innerHTML = `
-                <ul class="item-list">
-                    ${lvl1Spells.map((spell) => `<li>${spell.name}</li>`).join("")}
-                </ul>
-            `;
-      spellsPopulated = true;
-    }
-  }
-
   if (activeEnemy || activeInteraction) return;
-  for (let tileY = 0; tileY < town1Map.length; tileY++) {
-    for (let tileX = 0; tileX < town1Map[tileY].length; tileX++) {
-      if (town1Map[tileY][tileX] !== TILE_TYPES.NPC) continue;
-      if (Math.hypot(tileX + 0.5 - player.x, tileY + 0.5 - player.y) < 1.25) {
-        beginCombat(tileX, tileY);
-        return;
-      }
+  for (const entity of getActiveEntities("npc")) {
+    const [tileX, tileY] = entity.__grid ?? [];
+    if (
+      Number.isInteger(tileX) &&
+      Number.isInteger(tileY) &&
+      Math.hypot(tileX + 0.5 - player.x, tileY + 0.5 - player.y) < 1.25
+    ) {
+      beginCombat(entity);
+      return;
     }
   }
 
@@ -971,6 +1678,7 @@ function drawFloorPlane() {
 }
 
 function renderEngine(timestamp = performance.now()) {
+  updateCreationCarousel();
   const deltaSeconds =
     lastFrameTime === null
       ? 0
@@ -987,22 +1695,6 @@ function renderEngine(timestamp = performance.now()) {
     ctx.fillStyle = "#fff";
     ctx.font = "10px monospace";
     ctx.fillText("CHOOSE YOUR HERO", 15, 25);
-
-    Object.keys(classLayouts).forEach((key) => {
-      let box = classLayouts[key];
-      if (key === selectedClassKey) {
-        ctx.fillStyle = "#444";
-        ctx.fillRect(box.x, box.y, box.w, box.h);
-        ctx.strokeStyle = CLASS_DATA[key].color;
-        ctx.strokeRect(box.x, box.y, box.w, box.h);
-      } else if (key === hoveredClassKey) {
-        ctx.fillStyle = "#222";
-        ctx.fillRect(box.x, box.y, box.w, box.h);
-      }
-      ctx.fillStyle =
-        key === selectedClassKey || key === hoveredClassKey ? "#fff" : "#aaa";
-      ctx.fillText(CLASS_DATA[key].name, box.x + 8, box.y + 13);
-    });
 
     ctx.strokeStyle = "#444";
     ctx.strokeRect(140, 35, 165, 120);
@@ -1056,7 +1748,7 @@ function renderEngine(timestamp = performance.now()) {
     } else {
       ctx.fillStyle = "#666";
       ctx.font = "9px monospace";
-      ctx.fillText("Hover or click a class", 155, 95);
+      ctx.fillText("Select a class below", 155, 95);
     }
 
     if (selectedClassKey) {
@@ -1114,36 +1806,6 @@ function renderEngine(timestamp = performance.now()) {
       }
     });
 
-    ctx.fillStyle = "#444";
-    ctx.fillRect(
-      randomButtonLayout.x,
-      randomButtonLayout.y,
-      randomButtonLayout.w,
-      randomButtonLayout.h,
-    );
-    ctx.fillStyle = "#fff";
-    ctx.font = "9px monospace";
-    ctx.fillText(
-      "RANDOMIZE",
-      randomButtonLayout.x + 35,
-      randomButtonLayout.y + 14,
-    );
-
-    if (party.members.length === 3) {
-      ctx.fillStyle = "#00aa44";
-      ctx.fillRect(
-        embarkButtonLayout.x,
-        embarkButtonLayout.y,
-        embarkButtonLayout.w,
-        embarkButtonLayout.h,
-      );
-      ctx.fillStyle = "#fff";
-      ctx.fillText(
-        "EMBARK",
-        embarkButtonLayout.x + 40,
-        embarkButtonLayout.y + 14,
-      );
-    }
   } else if (gameState === "PLAYING") {
     ctx.fillStyle = "#181822";
     ctx.fillRect(0, 0, canvas.width, canvas.height / 2);
@@ -1157,8 +1819,8 @@ function renderEngine(timestamp = performance.now()) {
       let distance = 0;
       let hitWall = false;
 
-      const mapHeight = town1Map ? town1Map.length : 0;
-      const mapWidth = town1Map && town1Map[0] ? town1Map[0].length : 0;
+      const mapHeight = activeLevel?.height ?? 0;
+      const mapWidth = activeLevel?.width ?? 0;
 
       while (!hitWall && distance < 12) {
         distance += 0.08;
@@ -1170,7 +1832,7 @@ function renderEngine(timestamp = performance.now()) {
           checkX >= mapWidth ||
           checkY < 0 ||
           checkY >= mapHeight ||
-          town1Map[checkY][checkX] === TILE_TYPES.WALL
+          isBlockedCell(checkX, checkY)
         ) {
           hitWall = true;
         }
@@ -1197,7 +1859,7 @@ function renderEngine(timestamp = performance.now()) {
 // ==========================================================
 // 7. MOUSE BOUNDARY TRIGGERS & MOBILE KEYBOARD PROXY
 // ==========================================================
-const proxyInput = document.getElementById("mobile-keyboard-proxy");
+const nameInput = document.getElementById("character-name-field");
 
 function getMousePos(e) {
   let rect = canvas.getBoundingClientRect();
@@ -1209,13 +1871,9 @@ function getMousePos(e) {
 
 canvas.addEventListener("mousemove", (e) => {
   let mouse = getMousePos(e);
+  if (gameState !== "PARTY_RECRUIT") return;
   hoveredClassKey = null;
-  let layouts =
-    gameState === "CLASS_SELECT"
-      ? classLayouts
-      : gameState === "PARTY_RECRUIT"
-        ? heroLayouts
-        : {};
+  let layouts = heroLayouts;
   Object.keys(layouts).forEach((key) => {
     let b = layouts[key];
     if (
@@ -1231,28 +1889,44 @@ canvas.addEventListener("mousemove", (e) => {
 canvas.addEventListener("click", (e) => {
   let mouse = getMousePos(e);
 
+  if (gameState === "PLAYING") {
+    if (activeEnemy) {
+      const bounds = combatBillboardBounds;
+      if (
+        bounds &&
+        mouse.x >= bounds.left &&
+        mouse.x <= bounds.right &&
+        mouse.y >= bounds.top &&
+        mouse.y <= bounds.bottom
+      ) {
+        selectedTarget = { type: "enemy", index: 0 };
+        showMessage(`Target selected: ${activeEnemy.name}.`);
+        renderTargetList();
+      }
+    } else if (!activeInteraction) {
+      const horizontalPosition = mouse.x / canvas.width;
+      if (horizontalPosition < 0.25) {
+        turnOneQuarter(-1);
+      } else if (horizontalPosition >= 0.75) {
+        turnOneQuarter(1);
+      } else {
+        moveOneTile("w");
+      }
+    }
+    e.preventDefault();
+    return;
+  }
+
   // NEW: Handle touch targeting inside the text entry phase
-  if (gameState === "NAME_INPUT" && proxyInput) {
-    // Canvas dimensions are 320x200. The rectangle is drawn at x=40, y=80, w=240, h=30
+  if (gameState === "NAME_INPUT" && nameInput) {
     if (mouse.x >= 40 && mouse.x <= 280 && mouse.y >= 80 && mouse.y <= 110) {
-      proxyInput.value = player.name;
-      proxyInput.focus();
+      nameInput.value = player.name;
+      nameInput.focus();
     }
     return;
   }
 
   if (gameState === "CLASS_SELECT") {
-    Object.keys(classLayouts).forEach((key) => {
-      let b = classLayouts[key];
-      if (
-        mouse.x >= b.x &&
-        mouse.x <= b.x + b.w &&
-        mouse.y >= b.y &&
-        mouse.y <= b.y + b.h
-      )
-        selectedClassKey = key;
-    });
-
     if (selectedClassKey) {
       if (
         mouse.x >= maleBtnLayout.x &&
@@ -1283,6 +1957,9 @@ canvas.addEventListener("click", (e) => {
       player.classchoice = selectedClassKey;
       player.gender = selectedGender;
       gameState = "NAME_INPUT";
+      nameInput.value = player.name;
+      updateCreationCarousel();
+      nameInput.focus();
     }
   } else if (gameState === "PARTY_RECRUIT") {
     Object.keys(heroLayouts).forEach((key) => {
@@ -1305,59 +1982,21 @@ canvas.addEventListener("click", (e) => {
       }
     });
 
-    let rB = randomButtonLayout;
-    if (
-      mouse.x >= rB.x &&
-      mouse.x <= rB.x + rB.w &&
-      mouse.y >= rB.y &&
-      mouse.y <= rB.y + rB.h
-    ) {
-      party.members = [];
-      party.npcGenders = [];
-      let avail = Object.keys(CLASS_DATA).filter(
-        (k) => k !== player.classchoice,
-      );
-      while (party.members.length < 3) {
-        let rIdx = Math.floor(Math.random() * avail.length);
-        party.members.push(avail[rIdx]);
-        party.npcGenders.push(Math.random() > 0.5 ? "male" : "female");
-        avail.splice(rIdx, 1);
-      }
-    }
-    let eB = embarkButtonLayout;
-    if (
-      party.members.length === 3 &&
-      mouse.x >= eB.x &&
-      mouse.x <= eB.x + eB.w &&
-      mouse.y >= eB.y &&
-      mouse.y <= eB.y + eB.h
-    ) {
-      startExpedition();
-    }
+    renderRecruitChoices();
+    updateDashboardUI();
+    updateCreationCarousel();
   }
 });
 
-// NEW: Real-time event mirrors to bind the hidden mobile element to the engine
-if (proxyInput) {
-  proxyInput.addEventListener("input", (e) => {
-    if (gameState === "NAME_INPUT") {
-      // Clean non-alphanumeric and cut off at 12 characters max
-      let cleanInput = e.target.value.replace(/[^a-zA-Z0-9 ]/g, "");
-      if (cleanInput.length > 12) {
-        cleanInput = cleanInput.slice(0, 12);
-        proxyInput.value = cleanInput;
-      }
-      player.name = cleanInput;
-    }
+loadLdtkRuntimeLevel()
+  .then((level) => {
+    activeLevel = level;
+    player.x = level.spawn.x;
+    player.y = level.spawn.y;
+    renderEngine();
+  })
+  .catch((error) => {
+    console.error("Unable to initialize the LDtk runtime level.", error);
+    showMessage(`Unable to load level: ${error.message}`);
+    renderEngine();
   });
-
-  proxyInput.addEventListener("keydown", (e) => {
-    if (gameState === "NAME_INPUT" && e.key === "Enter" && player.name.trim().length > 0) {
-      proxyInput.blur(); // Collapse keyboard layout
-      gameState = "PARTY_RECRUIT";
-      prepareRecruitPanel();
-    }
-  });
-}
-
-renderEngine();

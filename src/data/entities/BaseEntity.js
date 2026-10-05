@@ -231,6 +231,7 @@ export class BaseEntity {
         percentages.push(percentage);
       }
     }
+
     for (const effect of this.activeEffects) {
       percentages.push(
         modifierValue(effect.statPercentModifiers, stat),
@@ -306,7 +307,29 @@ export class BaseEntity {
 
     this.maxHp = nextMaxHp;
     this.hp = Math.min(currentHp, nextMaxHp);
+    this.recalculateResourcePools();
     return this.maxHp;
+  }
+
+  recalculateResourcePools() {
+    if (!this.resourceBaselineStats) return;
+    const nextMaxMp = Math.max(
+      0,
+      this.baseMaxMp +
+        this.getModifiedStat("int") -
+        this.resourceBaselineStats.int,
+    );
+    const nextMaxStamina = Math.max(
+      0,
+      this.baseMaxStamina +
+        this.getModifiedStat("sta") -
+        this.resourceBaselineStats.sta,
+    );
+    this.maxMp = nextMaxMp;
+    this.mp = Math.min(this.mp, nextMaxMp);
+    this.maxStamina = nextMaxStamina;
+    this.stamina = Math.min(this.stamina, nextMaxStamina);
+    return { maxMp: this.maxMp, maxStamina: this.maxStamina };
   }
 
   createEffectInstanceId(additionalIds = new Set()) {
@@ -456,3 +479,178 @@ export class BaseEntity {
     return item;
   }
 }
+
+function readLdtkFields(entity) {
+  const fields = {};
+  for (const field of entity.fieldInstances ?? []) {
+    if (field && typeof field.__identifier === "string") {
+      fields[field.__identifier] = field.__value;
+    }
+  }
+  return fields;
+}
+
+function createActor(options = {}, actorType = "character") {
+  if (!options || typeof options !== "object" || Array.isArray(options)) {
+    throw new TypeError("Entity factory options must be an object.");
+  }
+
+  const level = options.level ?? 1;
+  const stats = options.stats ?? options.baseStats ?? {};
+  if (!stats || typeof stats !== "object" || Array.isArray(stats)) {
+    throw new TypeError("Entity stats must be an object.");
+  }
+
+  const baseStats = { ...stats };
+  const trainedStats = { ...options.trainedStats };
+  const staminaStat =
+    (typeof baseStats.sta === "number"
+      ? baseStats.sta
+      : DEFAULT_BASE_STATS.sta) + modifierValue(trainedStats, "sta");
+
+  if (typeof options.baseHp === "number") {
+    baseStats.hpBonus =
+      options.baseHp -
+      10 -
+      staminaStat * 2 -
+      modifierValue(trainedStats, "hpBonus");
+  }
+
+  if (typeof baseStats.ac === "number") {
+    trainedStats.ac = baseStats.ac - (1 + Math.floor(level / 2));
+    delete baseStats.ac;
+  }
+
+  const equipmentSlots = options.equipmentSlots
+    ? { ...options.equipmentSlots }
+    : undefined;
+  if (
+    equipmentSlots &&
+    Object.prototype.hasOwnProperty.call(equipmentSlots, "body")
+  ) {
+    equipmentSlots.chest ??= equipmentSlots.body;
+    delete equipmentSlots.body;
+  }
+
+  const entity = new BaseEntity({
+    id: options.id ?? options.iid ?? "",
+    name: options.name ?? options.__identifier ?? "",
+    classKey: options.classKey ?? options.baseClass ?? "",
+    className:
+      options.className ?? options.classKey ?? options.baseClass ?? "",
+    level,
+    baseStats,
+    trainedStats,
+    equipmentSlots,
+    inventory: options.inventory,
+    activeEffects: options.activeEffects,
+    hp: options.hp,
+  });
+
+  entity.actorType = actorType;
+  entity.iid = options.iid ?? null;
+  entity.ldtkIdentifier = options.__identifier ?? null;
+  entity.customFields = options.customFields ?? {};
+  entity.tags = Array.isArray(options.tags) ? [...options.tags] : [];
+  entity.grid = Array.isArray(options.__grid) ? [...options.__grid] : null;
+  entity.abilities = Array.isArray(options.abilities)
+    ? [...options.abilities]
+    : [];
+  entity.spellbook = Array.isArray(options.spellbook)
+    ? [...options.spellbook]
+    : [];
+  entity.experience = options.experience ?? options.baseXpReward ?? 0;
+  entity.gold = options.gold ?? 0;
+  entity.baseMaxMp = options.maxMp ?? 0;
+  entity.baseMaxStamina =
+    options.maxStamina ??
+    Math.max(0, Math.floor(entity.getModifiedStat("sta") * 2));
+  entity.resourceBaselineStats = {
+    int:
+      options.resourceBaselineStats?.int ?? entity.getModifiedStat("int"),
+    sta:
+      options.resourceBaselineStats?.sta ?? entity.getModifiedStat("sta"),
+  };
+  entity.maxMp = Math.max(
+    0,
+    entity.baseMaxMp +
+      entity.getModifiedStat("int") -
+      entity.resourceBaselineStats.int,
+  );
+  entity.maxStamina = Math.max(
+    0,
+    entity.baseMaxStamina +
+      entity.getModifiedStat("sta") -
+      entity.resourceBaselineStats.sta,
+  );
+  entity.mp = options.mp ?? entity.maxMp;
+  entity.stamina = options.stamina ?? entity.maxStamina;
+  entity.statusEffects = Array.isArray(options.statusEffects)
+    ? [...options.statusEffects]
+    : [];
+
+  Object.defineProperty(entity, "stats", {
+    enumerable: true,
+    get() {
+      const statKeys = new Set([
+        ...Object.keys(this.baseStats),
+        ...Object.keys(this.trainedStats),
+      ]);
+      const currentStats = {};
+      for (const stat of statKeys) {
+        currentStats[stat] =
+          stat === "ac" ? this.getTotalAc() : this.getModifiedStat(stat);
+      }
+      currentStats.ac = this.getTotalAc();
+      return currentStats;
+    },
+  });
+  Object.defineProperty(entity, "equipment", {
+    enumerable: true,
+    get() {
+      return Object.values(this.equipmentSlots).filter(Boolean);
+    },
+  });
+
+  return entity;
+}
+
+function createLdtkActor(entity) {
+  if (!entity || typeof entity !== "object" || Array.isArray(entity)) {
+    throw new TypeError("An LDtk entity instance is required.");
+  }
+
+  const customFields = readLdtkFields(entity);
+  const stats =
+    typeof customFields.stats === "string"
+      ? JSON.parse(customFields.stats)
+      : customFields.stats;
+  const options = {
+    ...customFields,
+    id: entity.iid,
+    iid: entity.iid,
+    name: customFields.name ?? entity.__identifier,
+    classKey: customFields.classKey ?? customFields.baseClass ?? "",
+    level: customFields.level ?? 1,
+    stats: stats ?? {},
+    tags: entity.__tags,
+    __identifier: entity.__identifier,
+    __grid: entity.__grid,
+    customFields,
+  };
+
+  return createActor(options, "ldtk");
+}
+
+export const entityFactory = Object.freeze({
+  player(options = {}) {
+    return createActor(options, "player");
+  },
+  companion(options = {}) {
+    return createActor(options, "companion");
+  },
+  monster(options = {}) {
+    return createActor(options, "monster");
+  },
+  fromLdtk: createLdtkActor,
+});

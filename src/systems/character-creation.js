@@ -106,6 +106,265 @@ const DEFAULT_STYLE = Object.freeze({
   fontFamily: "monospace",
 });
 
+export const CLASS_SLICE_TRAY_BASELINE = Object.freeze({
+  baseSlots: 4,
+  statDivisor: 5,
+  standardMaximum: 10,
+  level100OverdriveSlots: 2,
+  absoluteMaximum: 12,
+});
+
+export const STARTER_CLASS_KEYS = Object.freeze([
+  "fighter",
+  "ranger",
+  "cleric",
+  "archmage",
+  "rogue",
+  "necromancer",
+  "geomancer",
+  "doppleganger",
+  "enchanter",
+]);
+
+const BASIC_ATTACK = Object.freeze({
+  name: "Melee Attack",
+  cost: 0,
+  costType: "stamina",
+  basePower: 10,
+  damageType: "physical",
+  accuracy: 0.9,
+});
+
+function createClassProfile({
+  key,
+  name,
+  color,
+  description,
+  stats,
+  portraits,
+  baseHp,
+  maxMp = 0,
+  maxStamina,
+  abilities = [],
+  spells = [],
+  classAnchorStat,
+}) {
+  return Object.freeze({
+    name,
+    color,
+    desc: description,
+    stats: Object.freeze({ ...stats }),
+    baseHp,
+    maxMp,
+    maxStamina,
+    abilities: Object.freeze([...abilities]),
+    portraits: Object.freeze({ ...portraits }),
+    classAnchorStat,
+    sliceTray: CLASS_SLICE_TRAY_BASELINE,
+    progression: Object.freeze({
+      1: Object.freeze({
+        basicAttack: BASIC_ATTACK,
+        spells: Object.freeze([...spells]),
+      }),
+    }),
+    key,
+  });
+}
+
+const FALLBACK_PORTRAIT = "dungeon-img/Sprite-FighterMaleStatusOK.png";
+
+export const CLASS_DATA = Object.freeze({
+  fighter: createClassProfile({
+    key: "fighter",
+    name: "Fighter",
+    color: "#ce0d0d",
+    description: "A resilient front-line combatant.",
+    stats: { ...FIGHTER_BASELINE, ac: 0 },
+    portraits: {
+      male: "dungeon-img/Sprite-FighterMaleStatusOK.png",
+      female: "dungeon-img/Sprite-FighterFemaleStatusOK.png",
+    },
+    baseHp: 20,
+    maxStamina: 10,
+    abilities: ["Melee Attack", "Defend"],
+    classAnchorStat: "str",
+  }),
+  ranger: createClassProfile({
+    key: "ranger",
+    name: "Ranger",
+    color: "hsl(120, 60%, 25%)",
+    description: "A versatile archer and wilderness scout.",
+    stats: { str: 3, dex: 4, int: 2, wis: 3, agil: 3, char: 1, sta: 5, ac: 0 },
+    portraits: {
+      male: FALLBACK_PORTRAIT,
+      female: FALLBACK_PORTRAIT,
+    },
+    baseHp: 10,
+    maxMp: 2,
+    maxStamina: 12,
+    abilities: ["Melee Attack", "Brambleshot I", "Nature Mend I", "Defend"],
+    spells: [
+      Object.freeze({
+        name: "Nature Mend I",
+        cost: 2,
+        costType: "mp",
+        targetType: "SINGLE_TARGET",
+        damageSplit: Object.freeze({ divine: -5 }),
+        accuracy: 1,
+      }),
+    ],
+    classAnchorStat: "dex",
+  }),
+  cleric: createClassProfile({
+    key: "cleric",
+    name: "Cleric",
+    color: "hsl(64, 100%, 50%)",
+    description: "A divine caster devoted to protection and recovery.",
+    stats: { str: 3, dex: 2, int: 2, wis: 4, agil: 2, char: 4, sta: 5, ac: 0 },
+    portraits: { male: FALLBACK_PORTRAIT, female: FALLBACK_PORTRAIT },
+    baseHp: 9,
+    maxMp: 4,
+    maxStamina: 9,
+    abilities: ["Melee Attack", "Mending Mist I", "Smite I", "Defend"],
+    spells: [
+      Object.freeze({
+        name: "Smite I",
+        cost: 2,
+        costType: "mp",
+        damageSplit: Object.freeze({ divine: 4 }),
+        accuracy: 1,
+      }),
+    ],
+    classAnchorStat: "wis",
+  }),
+  archmage: createClassProfile({
+    key: "archmage",
+    name: "Archmage",
+    color: "rgb(226, 101, 43)",
+    description: "An elemental caster with mastery over arcane forces.",
+    stats: { str: 2, dex: 3, int: 4, wis: 3, agil: 3, char: 2, sta: 5, ac: 0 },
+    portraits: {
+      male: "dungeon-img/Sprite-ArchmageMaleStatusOK.png",
+      female: "dungeon-img/Sprite-ArchmageMaleStatusOK.png",
+    },
+    baseHp: 7,
+    maxMp: 5,
+    maxStamina: 8,
+    abilities: ["Melee Attack", "Fireball Spark I", "Ice Spike I", "Defend"],
+    spells: [
+      Object.freeze({
+        name: "Fireball Spark I",
+        cost: 1,
+        costType: "mp",
+        damageSplit: Object.freeze({ fire: 5, magic: 1 }),
+        accuracy: 1,
+      }),
+      Object.freeze({
+        name: "Ice Spike I",
+        cost: 1,
+        costType: "mp",
+        damageSplit: Object.freeze({ cold: 5, magic: 1 }),
+        accuracy: 1,
+      }),
+    ],
+    classAnchorStat: "int",
+  }),
+  rogue: createClassProfile({
+    key: "rogue",
+    name: "Rogue",
+    color: "rgb(240, 198, 116)",
+    description: "A quick-footed specialist in finesse and stealth.",
+    stats: { str: 2, dex: 4, int: 2, wis: 2, agil: 4, char: 2, sta: 5, ac: 0 },
+    portraits: {
+      male: FALLBACK_PORTRAIT,
+      female: "dungeon-img/Sprite-DopplegangerFemaleStatusOK.png",
+    },
+    baseHp: 8,
+    maxStamina: 16,
+    abilities: ["Melee Attack", "Sneak Attack I", "Pick Pocket I", "Defend"],
+    classAnchorStat: "dex",
+  }),
+  necromancer: createClassProfile({
+    key: "necromancer",
+    name: "Necromancer",
+    color: "hsl(170, 88%, 7%)",
+    description: "A scholar of unholy magic and the undead.",
+    stats: { str: 2, dex: 2, int: 3, wis: 4, agil: 2, char: 2, sta: 5, ac: 0 },
+    portraits: { male: FALLBACK_PORTRAIT, female: FALLBACK_PORTRAIT },
+    baseHp: 8,
+    maxMp: 4,
+    maxStamina: 8,
+    abilities: ["Melee Attack", "Life Siphon I", "Blood Toxin I", "Defend"],
+    spells: [
+      Object.freeze({
+        name: "Life Siphon I",
+        cost: 3,
+        costType: "mp",
+        damageSplit: Object.freeze({ necrotic: 3 }),
+        accuracy: 1,
+      }),
+    ],
+    classAnchorStat: "wis",
+  }),
+  geomancer: createClassProfile({
+    key: "geomancer",
+    name: "Geomancer",
+    color: "hsl(179, 75%, 47%)",
+    description: "A terrain-focused caster who shapes the natural world.",
+    stats: { str: 3, dex: 2, int: 3, wis: 3, agil: 2, char: 2, sta: 5, ac: 0 },
+    portraits: { male: "dungeon-img/Sprite-GeomancerMaleStatusOK.png", female: FALLBACK_PORTRAIT },
+    baseHp: 10,
+    maxMp: 3,
+    maxStamina: 10,
+    abilities: ["Melee Attack", "Stranglevine I", "Dust Storm I", "Defend"],
+    spells: [
+      Object.freeze({
+        name: "Stranglevine I",
+        cost: 2,
+        costType: "mp",
+        damageSplit: Object.freeze({ physical: 2 }),
+        accuracy: 1,
+      }),
+    ],
+    classAnchorStat: "int",
+  }),
+  doppleganger: createClassProfile({
+    key: "doppleganger",
+    name: "Doppleganger",
+    color: "#35e512",
+    description: "A versatile mimic capable of adapting to other combatants.",
+    stats: { str: 3, dex: 3, int: 3, wis: 2, agil: 4, char: 1, sta: 5, ac: 0 },
+    portraits: {
+      male: FALLBACK_PORTRAIT,
+      female: "dungeon-img/Sprite-DopplegangerFemaleStatusOK.png",
+    },
+    abilities: ["Melee Attack", "Mimicry Lifecycle I", "Defend"],
+    classAnchorStat: "char",
+  }),
+  enchanter: createClassProfile({
+    key: "enchanter",
+    name: "Enchanter",
+    color: "#ff69b4",
+    description: "A psychic caster who bends perception and thought.",
+    stats: { str: 2, dex: 2, int: 4, wis: 2, agil: 3, char: 4, sta: 5, ac: 0 },
+    portraits: {
+      male: FALLBACK_PORTRAIT,
+      female: "dungeon-img/Sprite-EnchanterFemaleStatusOK.png",
+    },
+    abilities: ["Melee Attack", "Synapse Blast I", "Defend"],
+    spells: [
+      Object.freeze({
+        name: "Synapse Blast I",
+        cost: 2,
+        costType: "mp",
+        damageSplit: Object.freeze({ psychic: 4 }),
+        accuracy: 1,
+      }),
+    ],
+    classAnchorStat: "char",
+  }),
+});
+
 let activeController = null;
 
 function applyStyles(element, styles) {

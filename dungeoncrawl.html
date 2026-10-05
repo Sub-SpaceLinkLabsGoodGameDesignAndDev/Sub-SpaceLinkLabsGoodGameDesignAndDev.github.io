@@ -15,79 +15,7 @@
   <body>
     <div id="arcade-shell">
 
-<!-- START: REALMS OF INFINITY MAIN CHARACTER CREATION OVERLAY SCREEN -->
-<div id="creation-overlay-mainframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(3, 3, 5, 0.95); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; padding: 20px; font-family: 'Courier New', monospace;">
-
-    <!-- PHASE 1: JAGGERED ALL-CAPS LOGO HEADER PANEL -->
-    <h1 id="creation-logo-header" style="color: #8b0000; text-transform: uppercase; font-size: 28px; font-weight: bold; margin-bottom: 20px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">
-        CHARACTER REGISTRY INITIALIZATION
-    </h1>
-
-    <!-- PHASE 2: ALPHANUMERICAL PORTRAIT CAROUSEL ROLODEX (DIRECTIVE 007) -->
-    <div id="portrait-rolodex-container" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; width: 100%; max-width: 600px;">
-        <button id="rolodex-prev-btn" class="buy-btn" style="min-width: 48px; min-height: 48px; background: #0f0a0a; border: 1px solid #3d1c1c; color: #ff6b6b; font-weight: bold; cursor: pointer;">◀</button>
-
-        <div id="portrait-rolodex-viewport" style="display: flex; align-items: center; justify-content: center; overflow: hidden; width: 300px; height: 120px; position: relative; gap: 10px;">
-            <!-- Left Clipped Card Placeholder (Index N-1, Dimmed 30%, 75% Scale) -->
-            <img id="rolodex-left-card" src="dungeon-img/Sprite-FighterFemaleStatusOK.png" style="width: 64px; height: 64px; opacity: 0.3; transform: scale(0.75); image-rendering: pixelated;" />
-            <!-- Center Focused Active Portrait Card (100% Scale, Pulsing High-Contrast Highlight) -->
-            <img id="rolodex-center-focus" src="dungeon-img/Sprite-FighterMaleStatusOK.png" style="width: 80px; height: 80px; opacity: 1; transform: scale(1.0); border: 2px solid #ffd700; box-shadow: 0 0 10px #ffd700; image-rendering: pixelated;" />
-            <!-- Right Floating Card Placeholder (Index 1, Dimmed 30%, 75% Scale) -->
-            <img id="rolodex-right-card" src="dungeon-img/Sprite-EnchanterFemaleStatusOK.png" style="width: 64px; height: 64px; opacity: 0.3; transform: scale(0.75); image-rendering: pixelated;" />
-        </div>
-
-        <button id="rolodex-next-btn" class="buy-btn" style="min-width: 48px; min-height: 48px; background: #0f0a0a; border: 1px solid #3d1c1c; color: #ff6b6b; font-weight: bold; cursor: pointer;">▶</button>
-    </div>
-
-    <!-- PHASE 3: ALL-CAPS NAME SUBMISSION CORE INPUT FRAME -->
-    <div id="name-input-container" style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 25px; width: 100%; max-width: 400px;">
-        <input type="text" id="character-name-field" placeholder="ENTER HERO IDENTITY..." maxlength="12" style="width: 100%; background: #000; border: 1px solid #3d4f66; color: #ffd700; font-size: 16px; padding: 10px; text-align: center; text-transform: uppercase; font-family: 'Courier New', monospace;" />
-        <button id="input-submit-btn" class="buy-btn" style="width: 100%; padding: 12px; background: #0f0a0a; border: 1px solid #3d1c1c; color: #ff6b6b; font-weight: bold; text-transform: uppercase; cursor: pointer; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000;">
-            ⮚ CONFIRM IDENTITY
-        </button>
-    </div>
-
-    <!-- PHASE 4: THE VERTICAL COLUMN POINT-BUY ALIGNMENT DECK (DIRECTIVE 006) -->
-    <div id="point-buy-alignment-deck" style="width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 8px;">
-
-        <!-- THE ALL-CAPS BONUS POOL INDICATOR ROW -->
-        <div class="stat-row-container" style="display: flex; justify-content: space-between; align-items: center; background: #141419; padding: 6px 12px; border-bottom: 2px solid #3d1c1c;">
-            <span style="color: #ffd700; font-weight: bold; text-transform: uppercase;">BONUS ATTRIBUTE POINTS REMAINING</span>
-            <span id="bonus-pool-counter" style="color: #ffd700; font-weight: bold; font-size: 18px;">5</span>
-        </div>
-
-        <!-- SAMPLE ROW: STRENGTH INTERACTIVE STAT CARD BUTTON (COLUMN DECOUPLED) -->
-        <div class="stat-row-container" style="display: flex; justify-content: space-between; align-items: center; background: #0b0f19; padding: 6px 12px; border: 1px solid #1c222e;">
-            <!-- Column 1: Info Button Card (Triggers Zero Math Loops, Handles Text Overlays) -->
-            <button class="stat-info-btn" style="background: none; border: none; padding: 0; color: #a0b5cc; font-family: 'Courier New', monospace; text-align: left; cursor: pointer; text-transform: uppercase; font-size: 14px;">
-                (STR) MELEE STRIKE MULTIPLIER... [?]
-            </button>
-
-            <!-- Column 2 & 3: Numerical Badges and Point-Buy Adjusters Cluster -->
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <button class="adjust-btn dec-btn" style="width: 24px; height: 24px; background: #000; border: 1px solid #3d4f66; color: #a0b5cc; cursor: pointer;">-</button>
-                <span id="stat-val-str" style="color: #3bec2d; font-weight: bold; min-width: 12px; text-align: center;">4</span>
-                <button class="adjust-btn inc-btn" style="width: 24px; height: 24px; background: #000; border: 1px solid #3d4f66; color: #a0b5cc; cursor: pointer;">+</button>
-            </div>
-        </div>
-
-        <!-- SAMPLE ROW: STAMINA HEALTH-LINKED INTERACTIVE STAT CARD BUTTON -->
-        <div class="stat-row-container" style="display: flex; justify-content: space-between; align-items: center; background: #0b0f19; padding: 6px 12px; border: 1px solid #1c222e;">
-            <button class="stat-info-btn" style="background: none; border: none; padding: 0; color: #a0b5cc; font-family: 'Courier New', monospace; text-align: left; cursor: pointer; text-transform: uppercase; font-size: 14px;">
-                (STA) MAX HEALTH VITALITY GRID... [?]
-            </button>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <button class="adjust-btn dec-btn" style="width: 24px; height: 24px; background: #000; border: 1px solid #3d4f66; color: #a0b5cc; cursor: pointer;">-</button>
-                <span id="stat-val-sta" style="color: #3bec2d; font-weight: bold; min-width: 12px; text-align: center;">5</span>
-                <button class="adjust-btn inc-btn" style="width: 24px; height: 24px; background: #000; border: 1px solid #3d4f66; color: #a0b5cc; cursor: pointer;">+</button>
-            </div>
-        </div>
-
-    </div>
-</div>
-<!-- END: REALMS OF INFINITY CHARACTER CREATION DISPLAY OVERLAY -->
-
-      <!-- TOP ADMINISTRATIVE UTILITY BAR -->
+<!-- TOP ADMINISTRATIVE UTILITY BAR -->
       <div class="control-header">
         <span class="system-status">⚡ ARCADE NODE ACTIVE</span>
         <div class="header-actions">
@@ -102,8 +30,76 @@
       <div class="viewport-matrix">
         <!-- RENDER DEVICE VIEWBOX -->
         <div class="screen-box">
-          <canvas id="screen" width="320" height="200"></canvas>
+          <div class="canvas-frame">
+            <canvas id="screen" width="320" height="200"></canvas>
+          </div>
+          <div id="name-entry-controls" class="name-entry-controls" hidden>
+            <input
+              type="text"
+              id="character-name-field"
+              placeholder="ENTER HERO IDENTITY..."
+              maxlength="12"
+              autocomplete="off"
+              aria-label="Character name"
+            />
+            <button id="confirm-name-btn" class="combat-btn" type="button">
+              CONFIRM NAME
+            </button>
+          </div>
         </div>
+
+        <div class="class-carousel" aria-label="Hero class selection">
+          <button id="class-carousel-prev" class="carousel-arrow" type="button" aria-label="Previous class">◀</button>
+          <div
+            id="creation-carousel-track"
+            class="creation-carousel-track"
+            role="group"
+            aria-label="Choose your hero class"
+            hidden
+          ></div>
+          <button id="class-carousel-next" class="carousel-arrow" type="button" aria-label="Next class">▶</button>
+          <div id="recruit-actions" class="recruit-actions" hidden>
+            <button id="randomize-party-btn" class="combat-btn" type="button">RANDOMIZE PARTY</button>
+            <button id="embark-party-btn" class="combat-btn" type="button">EMBARK</button>
+          </div>
+        </div>
+
+        <section id="point-buy-panel" class="point-buy-panel" hidden aria-label="Party attribute point buy">
+          <div class="point-buy-heading">
+            <strong>ATTRIBUTE POINT BUY</strong>
+            <span>
+              <output id="point-buy-member">HERO</output>:
+              <output id="point-buy-remaining">15</output> / 15 POINTS REMAINING
+            </span>
+          </div>
+          <div class="point-buy-rows">
+            <div class="point-buy-row" data-point-buy-stat="str">
+              <span>STRENGTH</span>
+              <button type="button" data-point-buy-change="-1" aria-label="Decrease strength">-</button>
+              <output>2</output>
+              <button type="button" data-point-buy-change="1" aria-label="Increase strength">+</button>
+            </div>
+            <div class="point-buy-row" data-point-buy-stat="agil">
+              <span>AGILITY</span>
+              <button type="button" data-point-buy-change="-1" aria-label="Decrease agility">-</button>
+              <output>2</output>
+              <button type="button" data-point-buy-change="1" aria-label="Increase agility">+</button>
+            </div>
+            <div class="point-buy-row" data-point-buy-stat="int">
+              <span>INTELLECT</span>
+              <button type="button" data-point-buy-change="-1" aria-label="Decrease intellect">-</button>
+              <output>2</output>
+              <button type="button" data-point-buy-change="1" aria-label="Increase intellect">+</button>
+            </div>
+            <div class="point-buy-row" data-point-buy-stat="sta">
+              <span>STAMINA</span>
+              <button type="button" data-point-buy-change="-1" aria-label="Decrease stamina">-</button>
+              <output>2</output>
+              <button type="button" data-point-buy-change="1" aria-label="Increase stamina">+</button>
+            </div>
+          </div>
+          <p id="point-buy-validation" role="status">Allocate all 15 points across your party.</p>
+        </section>
 
         <!-- START: CONTEXTUAL LOWER ACTION DASHBOARD CONTROL SLICE PANEL -->
 <div id="fighter-posture-slice-tray" style="width: 100%; min-height: 48px; background: #050508; border-top: 1px solid #1c222e; display: none; align-items: center; justify-content: space-around; padding: 4px 8px; box-sizing: border-box; gap: 6px;">
@@ -139,46 +135,78 @@
         <!-- RIGHT PANEL CONTEXT CONSOLE -->
         <div class="console-hud">
           <div class="tab-menu">
-            <button class="tab-link active" onclick="switchTab('stats')">
+            <button class="tab-link active" onclick="switchTab('stats', event)">
               STATS
             </button>
-            <button class="tab-link" onclick="switchTab('inventory')">
+            <button class="tab-link" onclick="switchTab('inventory', event)">
               INVENTORY
             </button>
-            <button class="tab-link" onclick="switchTab('spells')">
-              MAGIC
+            <button class="tab-link" onclick="switchTab('spells', event)">
+              <span id="ability-tab-label">MAGIC</span>
             </button>
           </div>
 
-          <div id="tab-stats" class="tab-content">
+          <div id="tab-stats" class="tab-content active-content">
+            <div class="attribute-grid">
+              <div class="stat-row"><span>STR</span><output id="stat-str">2</output></div>
+              <div class="stat-row"><span>AGI</span><output id="stat-agil">2</output></div>
+              <div class="stat-row"><span>INT</span><output id="stat-int">2</output></div>
+              <div class="stat-row"><span>STA</span><output id="stat-sta">2</output></div>
+            </div>
+            <canvas id="attribute-radar" width="240" height="180" aria-label="Attribute radar chart"></canvas>
             <div class="stat-row">
-              <span>VIT:</span><span id="stat-vit">100/100</span>
+              <span>HP</span><output id="resource-hp">0/0</output>
             </div>
             <div class="stat-row">
-              <span>LVL:</span><span id="stat-lvl">1</span>
+              <span>MP</span><output id="resource-mp">0/0</output>
             </div>
             <div class="stat-row">
-              <span>XP:</span><span id="stat-xp">0</span>
+              <span>ST</span><output id="resource-stamina">0/0</output>
             </div>
-            <div class="stat-row">
-              <span>GOLD:</span><span id="stat-gold">0</span>
-            </div>
+            <div class="stat-row"><span>LVL</span><output id="stat-lvl">1</output></div>
+            <div class="stat-row"><span>XP</span><output id="stat-xp">0</output></div>
+            <div class="stat-row"><span>GOLD</span><output id="stat-gold">0</output></div>
           </div>
 
           <div id="tab-inventory" class="tab-content">
-            <ul class="item-list">
-              <li>⚔️ Rusted Spatha</li>
-              <li>🛡️ Iron Buckler</li>
-              <li>🎒 Empty Provision Bag</li>
-            </ul>
+            <ul id="inventory-items" class="item-list"></ul>
           </div>
 
-          <div id="tab-spells" class="tab-content active-content">
-            <ul class="item-list">
-              <li>🌀 Vector Distortion</li>
-              <li>🔥 Construct Ignite</li>
-            </ul>
-          </div>
+          <div id="tab-spells" class="tab-content"></div>
+
+          <section id="recruit-panel" class="recruit-panel" hidden>
+            <strong>PARTY SETUP</strong>
+            <span>Choose each companion's class and gender before embarking.</span>
+            <div class="recruit-row">
+              <label for="recruit-1-class">COMPANION 1</label>
+              <select id="recruit-1-class"></select>
+              <select id="recruit-1-gender">
+                <option value="male">MALE</option>
+                <option value="female">FEMALE</option>
+              </select>
+            </div>
+            <div class="recruit-row">
+              <label for="recruit-2-class">COMPANION 2</label>
+              <select id="recruit-2-class"></select>
+              <select id="recruit-2-gender">
+                <option value="male">MALE</option>
+                <option value="female">FEMALE</option>
+              </select>
+            </div>
+            <div class="recruit-row">
+              <label for="recruit-3-class">COMPANION 3</label>
+              <select id="recruit-3-class"></select>
+              <select id="recruit-3-gender">
+                <option value="male">MALE</option>
+                <option value="female">FEMALE</option>
+              </select>
+            </div>
+          </section>
+
+          <section class="event-log-panel" aria-live="polite">
+            <strong>EVENT LOG</strong>
+            <div id="event-log">Explore the town and investigate marked locations.</div>
+          </section>
         </div>
       </div>
 
@@ -241,62 +269,6 @@
           </div>
         </button>
       </div>
-
-      <section class="party-detail-panel" aria-live="polite" hidden>
-        <button id="close-detail-btn" class="panel-close-btn" type="button">
-          CLOSE
-        </button>
-        <div>
-          <strong id="party-detail-name">Select a party member</strong>
-          <span id="party-detail-class">Individual stats and abilities</span>
-        </div>
-        <div id="party-detail-stats" class="party-detail-stats"></div>
-        <div id="party-detail-abilities" class="party-detail-abilities"></div>
-        <div id="party-detail-equipment" class="equipment-map"></div>
-        <div id="shared-inventory" class="shared-inventory"></div>
-      </section>
-
-      <section class="event-log-panel" aria-live="polite">
-        <strong>EVENT LOG</strong>
-        <div id="event-log">
-          Explore the town and investigate marked locations.
-        </div>
-      </section>
-
-      <div class="utility-actions">
-        <button id="stats-btn" class="combat-btn" type="button">STATS</button>
-        <button id="inventory-btn" class="combat-btn" type="button">
-          INVENTORY
-        </button>
-      </div>
-      <section id="recruit-panel" class="recruit-panel" hidden>
-        <strong>PARTY SETUP</strong>
-        <span>Choose each companion's class and gender before embarking.</span>
-        <div class="recruit-row">
-          <label for="recruit-1-class">COMPANION 1</label
-          ><select id="recruit-1-class"></select
-          ><select id="recruit-1-gender">
-            <option value="male">MALE</option>
-            <option value="female">FEMALE</option>
-          </select>
-        </div>
-        <div class="recruit-row">
-          <label for="recruit-2-class">COMPANION 2</label
-          ><select id="recruit-2-class"></select
-          ><select id="recruit-2-gender">
-            <option value="male">MALE</option>
-            <option value="female">FEMALE</option>
-          </select>
-        </div>
-        <div class="recruit-row">
-          <label for="recruit-3-class">COMPANION 3</label
-          ><select id="recruit-3-class"></select
-          ><select id="recruit-3-gender">
-            <option value="male">MALE</option>
-            <option value="female">FEMALE</option>
-          </select>
-        </div>
-      </section>
 
       <!-- MOBILE CONTROL INTERACTION OVERLAY -->
       <div class="mobile-pad-container">
@@ -459,20 +431,6 @@
     <div class="spell-sprite" id="ironconstruct-sprite-1"></div>
     <div class="spell-sprite" id="extraplanarconstruct-sprite-1"></div>
     <div class="spell-sprite" id="spell-effect" aria-hidden="true"></div>
-
-    <input
-      type="text"
-      id="mobile-keyboard-proxy"
-      style="
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-        opacity: 0;
-        font-size: 16px;
-      "
-      autocomplete="off"
-      autocapitalize="words"
-    />
 
     <script type="module" src="src/engine/dungeon-core.js"></script>
   </body>
