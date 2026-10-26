@@ -28,19 +28,51 @@ function assertResponse(response, url) {
   return response;
 }
 
+function getLevelFieldValue(fields, identifier) {
+  return fields?.find((field) => field.__identifier === identifier)?.__value;
+}
+
+function getWorldLevelDescriptors(project, worldIdentifier, clusterIdentifier) {
+  const world = project.worlds?.find(
+    (candidate) => candidate.identifier === worldIdentifier,
+  );
+  if (!world || !Array.isArray(world.levels)) {
+    throw new TypeError(
+      `LDtk project is missing the ${worldIdentifier} world level index.`,
+    );
+  }
+
+  return world.levels.filter(
+    (level) =>
+      getLevelFieldValue(level.fieldInstances, "Transition_Cluster") ===
+      clusterIdentifier,
+  );
+}
+
+function resolveExternalLevelUrl(projectUrl, externalRelPath) {
+  const projectDirectory = projectUrl.slice(
+    0,
+    projectUrl.lastIndexOf("/") + 1,
+  );
+  return `${projectDirectory}${externalRelPath.replace(/\\/g, "/")}`;
+}
+
+async function fetchJson(url, fetchImpl) {
+  const response = await fetchImpl(url, { cache: "no-store" });
+  return assertResponse(response, url).json();
+}
+
 export function createLdtkRuntimeLevel(
   project,
   level,
-  { spawnIdentifier = "PLAYER_SPAWN" } = {},
+  {
+    spawnIdentifier = "ZONE_IN_LOCATION",
+    spawnFieldIdentifier = "Zone_In",
+    spawnFieldValue = "PLAYER_SPAWN",
+  } = {},
 ) {
   if (!project?.defs?.layers || !Array.isArray(project.defs.layers)) {
     throw new TypeError("LDtk project is missing layer definitions.");
-  }
-  const spawnDefinition = project.defs.entities?.find(
-    (entity) => entity.identifier === spawnIdentifier,
-  );
-  if (!spawnDefinition) {
-    throw new TypeError(`LDtk project is missing the ${spawnIdentifier} definition.`);
   }
   if (!Array.isArray(level?.layerInstances)) {
     throw new TypeError("LDtk level is missing layer instances.");
@@ -96,35 +128,60 @@ export function createLdtkRuntimeLevel(
     }),
   );
 
+  const spawnDefinition = project.defs.entities?.find(
+    (entity) => entity.identifier === spawnIdentifier,
+  );
   const spawnEntities = level.layerInstances.flatMap((layer) =>
     (layer.entityInstances ?? [])
-      .filter((entity) => entity.__identifier === spawnIdentifier)
+      .filter(
+        (entity) =>
+          entity.__identifier === spawnIdentifier &&
+          entity.fieldInstances?.some(
+            (field) =>
+              field.__identifier === spawnFieldIdentifier &&
+              field.__value === spawnFieldValue,
+          ),
+      )
       .map((entity) => ({ ...entity, layerIdentifier: layer.__identifier })),
   );
-  if (spawnEntities.length !== 1) {
+
+  const isWalkableCell = (x, y) =>
+    Number.isInteger(x) &&
+    Number.isInteger(y) &&
+    x >= 0 &&
+    x < width &&
+    y >= 0 &&
+    y < height &&
+    collisionGrid[y][x] === 0;
+  const markerIsUsable =
+    spawnEntities.length === 1 &&
+    spawnDefinition &&
+    spawnEntities[0].defUid === spawnDefinition.uid &&
+    isWalkableCell(...(spawnEntities[0].__grid ?? []));
+  const spawnMarker = markerIsUsable ? spawnEntities[0] : null;
+  const candidateAnchor =
+    spawnEntities.length === 1 ? spawnEntities[0].__grid : null;
+  const fallbackAnchor =
+    Array.isArray(candidateAnchor) &&
+    Number.isFinite(candidateAnchor[0]) &&
+    Number.isFinite(candidateAnchor[1])
+      ? candidateAnchor
+      : [Math.floor(width / 2), Math.floor(height / 2)];
+  const spawnCell = spawnMarker
+    ? spawnMarker.__grid
+    : findNearestWalkableCell(collisionGrid, fallbackAnchor);
+  if (!spawnCell) {
     throw new RangeError(
-      `LDtk level must contain exactly one ${spawnIdentifier} entity; found ${spawnEntities.length}.`,
+      `LDtk level "${level.identifier}" has no walkable cell for a player spawn.`,
     );
   }
-
-  const spawnEntity = spawnEntities[0];
-  if (spawnEntity.defUid !== spawnDefinition.uid) {
-    throw new RangeError(`${spawnIdentifier} instance has a mismatched definition uid.`);
-  }
-  const [spawnX, spawnY] = spawnEntity.__grid ?? [];
-  if (
-    !Number.isInteger(spawnX) ||
-    !Number.isInteger(spawnY) ||
-    spawnX < 0 ||
-    spawnX >= width ||
-    spawnY < 0 ||
-    spawnY >= height
-  ) {
-    throw new RangeError(`${spawnIdentifier} must be placed inside Structural_Grid.`);
-  }
-  if (terrainGrid[spawnY][spawnX] !== "COBBLESTONE_ROAD") {
-    throw new RangeError(`${spawnIdentifier} must be placed on COBBLESTONE_ROAD.`);
-  }
+  const spawnFallbackReason = spawnMarker
+    ? null
+    : spawnEntities.length !== 1
+      ? `expected exactly one ${spawnFieldValue} marker; found ${spawnEntities.length}`
+      : !spawnDefinition || spawnEntities[0].defUid !== spawnDefinition.uid
+        ? `${spawnIdentifier} marker definition is missing or mismatched`
+        : `${spawnFieldValue} marker is outside the grid or on blocked terrain`;
 
   const safeZoneField = level.fieldInstances?.find(
     (field) => field.__identifier === "Safe_Zone",
@@ -138,6 +195,16 @@ export function createLdtkRuntimeLevel(
 
   return {
     identifier: level.identifier,
+    iid: level.iid,
+    externalRelPath: level.externalRelPath,
+    worldX: level.worldX,
+    worldY: level.worldY,
+    gridSize: gridLayer.__gridSize,
+    transitionCluster: getLevelFieldValue(
+      level.fieldInstances,
+      "Transition_Cluster",
+    ),
+    neighbors: level.__neighbours ?? [],
     width,
     height,
     safeZone:
@@ -149,26 +216,122 @@ export function createLdtkRuntimeLevel(
     map: terrainGrid,
     collisionGrid,
     entities,
-    spawn: { x: spawnX + 0.5, y: spawnY + 0.5 },
+    spawn: { x: spawnCell[0] + 0.5, y: spawnCell[1] + 0.5 },
+    spawnSource: spawnMarker ? "ldtk" : "engine-fallback",
+    spawnFallbackReason,
   };
 }
 
-export async function loadLdtkRuntimeLevel({
+function findNearestWalkableCell(collisionGrid, [anchorX, anchorY]) {
+  let nearestCell = null;
+  let nearestDistance = Infinity;
+
+  for (let y = 0; y < collisionGrid.length; y += 1) {
+    for (let x = 0; x < collisionGrid[y].length; x += 1) {
+      if (collisionGrid[y][x] !== 0) continue;
+      const distance = Math.abs(x - anchorX) + Math.abs(y - anchorY);
+      if (distance < nearestDistance) {
+        nearestCell = [x, y];
+        nearestDistance = distance;
+      }
+    }
+  }
+
+  return nearestCell;
+}
+
+export async function loadLdtkRuntimeWorld({
   projectUrl = "src/data/world/realms_of_infinity.ldtk",
-  levelUrl = "src/data/world/realms_of_infinity/Oakhaven_1.ldtkl",
+  worldIdentifier = "Town_1",
+  clusterIdentifier = "Town_1",
+  initialLevelIdentifier = "Oakhaven_1",
   fetchImpl = fetch,
 } = {}) {
   if (typeof fetchImpl !== "function") {
     throw new TypeError("fetchImpl must be a function.");
   }
 
-  const [projectResponse, levelResponse] = await Promise.all([
-    fetchImpl(projectUrl).then((response) => assertResponse(response, projectUrl)),
-    fetchImpl(levelUrl).then((response) => assertResponse(response, levelUrl)),
-  ]);
-  const [project, level] = await Promise.all([
-    projectResponse.json(),
-    levelResponse.json(),
-  ]);
-  return createLdtkRuntimeLevel(project, level);
+  const project = await fetchJson(projectUrl, fetchImpl);
+  const descriptors = getWorldLevelDescriptors(
+    project,
+    worldIdentifier,
+    clusterIdentifier,
+  );
+  if (descriptors.length === 0) {
+    throw new RangeError(
+      `LDtk world "${worldIdentifier}" has no levels in the "${clusterIdentifier}" transition cluster.`,
+    );
+  }
+
+  const levels = await Promise.all(
+    descriptors.map(async (descriptor) => {
+      if (
+        typeof descriptor.externalRelPath !== "string" ||
+        descriptor.externalRelPath.length === 0
+      ) {
+        throw new TypeError(
+          `LDtk level "${descriptor.identifier}" has no external level path.`,
+        );
+      }
+
+      const levelUrl = resolveExternalLevelUrl(
+        projectUrl,
+        descriptor.externalRelPath,
+      );
+      const sourceLevel = await fetchJson(levelUrl, fetchImpl);
+      if (
+        sourceLevel.identifier !== descriptor.identifier ||
+        sourceLevel.iid !== descriptor.iid
+      ) {
+        throw new RangeError(
+          `LDtk level file "${levelUrl}" does not match its project descriptor.`,
+        );
+      }
+      if (
+        getLevelFieldValue(sourceLevel.fieldInstances, "Transition_Cluster") !==
+        clusterIdentifier
+      ) {
+        return null;
+      }
+      return createLdtkRuntimeLevel(project, sourceLevel);
+    }),
+  );
+  const runtimeLevels = levels.filter(Boolean);
+  const levelsByIdentifier = new Map(
+    runtimeLevels.map((level) => [level.identifier, level]),
+  );
+  const levelsByIid = new Map(
+    runtimeLevels.map((level) => [level.iid, level]),
+  );
+  const initialLevel = levelsByIdentifier.get(initialLevelIdentifier);
+  if (!initialLevel) {
+    throw new RangeError(
+      `Initial LDtk level "${initialLevelIdentifier}" is not available in the "${clusterIdentifier}" transition cluster.`,
+    );
+  }
+
+  return {
+    project,
+    levels: runtimeLevels,
+    levelsByIdentifier,
+    levelsByIid,
+    initialLevel,
+  };
+}
+
+export async function loadLdtkRuntimeLevel({
+  projectUrl,
+  worldIdentifier,
+  clusterIdentifier,
+  initialLevelIdentifier,
+  fetchImpl = fetch,
+} = {}) {
+  const world = await loadLdtkRuntimeWorld({
+    projectUrl,
+    worldIdentifier,
+    clusterIdentifier,
+    initialLevelIdentifier,
+    fetchImpl,
+  });
+  return world.initialLevel;
 }

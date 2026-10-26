@@ -123,7 +123,7 @@ export const CLASS_DATA = {
           {
             name: "Heal",
             skillType: ["magic", "spell"],
-            description: "restores a small ammount of hit points",
+            description: "restores a small amount of hit points",
             targetType: "single",
             damageType: "divine",
             damageSplit: { divine: 22, vs_undead: -22 },
@@ -421,7 +421,7 @@ export const CLASS_DATA = {
           {
             name: "Sandstorm",
             skillType: ["magic", "spell"],
-            description: "a swirling sandstorm engulfs the target area",
+            description: "A swirling sandstorm engulfs the target area.",
             targetType: "aoe",
             damageType: "elemental",
             damageSplit: { physical: 10, elemental: 12 },

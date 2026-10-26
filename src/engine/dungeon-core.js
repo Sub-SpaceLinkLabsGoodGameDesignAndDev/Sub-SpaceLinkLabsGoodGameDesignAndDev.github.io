@@ -1,7 +1,8 @@
 // ==========================================================
 // 1. MODULE IMPORTS
 // ==========================================================
-import { loadLdtkRuntimeLevel } from "../../js/ldtk-level-loader.js";
+import { loadLdtkRuntimeWorld } from "../../js/ldtk-level-loader.js";
+import { resolveAdjacentLevelTransition } from "./map-router.js";
 import { CombatFormulas } from "../systems/combat-formulas.js";
 import { entityFactory } from "../data/entities/BaseEntity.js";
 import { CLASS_DATA } from "../systems/character-creation.js";
@@ -18,6 +19,7 @@ const ctx = canvas.getContext("2d");
 let gameState = "CLASS_SELECT";
 const activeInputBuffer = {};
 let activeLevel = null;
+let activeLevelsByIid = new Map();
 const clearedEntityIids = new Set();
 let lastFrameTime = null;
 
@@ -1039,6 +1041,37 @@ function handlePlayerMovementPhysics(deltaSeconds) {
     if (!Number.isFinite(x) || !Number.isFinite(y)) return false;
     const tileX = Math.floor(x);
     const tileY = Math.floor(y);
+    const direction =
+      tileX < 0
+        ? "west"
+        : tileX >= activeLevel.width
+          ? "east"
+          : tileY < 0
+            ? "north"
+            : tileY >= activeLevel.height
+              ? "south"
+              : null;
+    if (direction) {
+      const transition = resolveAdjacentLevelTransition({
+        currentLevel: activeLevel,
+        levelsByIid: activeLevelsByIid,
+        direction,
+        x,
+        y,
+      });
+      if (!transition) return false;
+      activeLevel = transition.level;
+      player.x = transition.x;
+      player.y = transition.y;
+      player.dir = {
+        east: 0,
+        west: Math.PI,
+        north: (3 * Math.PI) / 2,
+        south: Math.PI / 2,
+      }[direction];
+      renderEngine();
+      return false;
+    }
     if (isBlockedCell(tileX, tileY)) return false;
 
     const currentTileX = Math.floor(player.x);
@@ -1988,11 +2021,17 @@ canvas.addEventListener("click", (e) => {
   }
 });
 
-loadLdtkRuntimeLevel()
-  .then((level) => {
-    activeLevel = level;
-    player.x = level.spawn.x;
-    player.y = level.spawn.y;
+loadLdtkRuntimeWorld()
+  .then((world) => {
+    activeLevelsByIid = world.levelsByIid;
+    activeLevel = world.initialLevel;
+    player.x = activeLevel.spawn.x;
+    player.y = activeLevel.spawn.y;
+    if (activeLevel.spawnSource === "engine-fallback") {
+      console.warn(
+        `Using an engine-selected spawn for ${activeLevel.identifier}: ${activeLevel.spawnFallbackReason}.`,
+      );
+    }
     renderEngine();
   })
   .catch((error) => {

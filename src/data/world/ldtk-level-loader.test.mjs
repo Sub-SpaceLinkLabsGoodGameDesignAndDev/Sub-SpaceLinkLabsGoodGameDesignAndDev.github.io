@@ -19,14 +19,16 @@ const oakhaven = JSON.parse(
   ),
 );
 
-test("Oakhaven loads its authored grid, safe-zone field, and cobblestone spawn", () => {
+test("Oakhaven loads its authored grid, safe-zone field, and marked spawn", () => {
   const level = createLdtkRuntimeLevel(project, oakhaven);
 
   assert.equal(level.identifier, "Oakhaven_1");
   assert.equal(level.safeZone, true);
-  assert.deepEqual(level.spawn, { x: 16.5, y: 29.5 });
-  assert.equal(level.terrainGrid[29][16], "COBBLESTONE_ROAD");
-  assert.equal(level.collisionGrid[29][16], 0);
+  assert.deepEqual(level.spawn, { x: 15.5, y: 30.5 });
+  assert.equal(level.terrainGrid[30][15], "COBBLESTONE_ROAD");
+  assert.equal(level.collisionGrid[30][15], 0);
+  assert.equal(level.spawnSource, "ldtk");
+  assert.equal(level.spawnFallbackReason, null);
 });
 
 test("IntGrid identifiers preserve blocking walls, closed doors, and passable terrain", () => {
@@ -57,11 +59,14 @@ test("IntGrid values 1 through 15 use the authored blocking and walkability rule
         __identifier: "Actors",
         entityInstances: [
           {
-            __identifier: "PLAYER_SPAWN",
+            __identifier: "ZONE_IN_LOCATION",
             __grid: [11, 0],
             defUid: project.defs.entities.find(
-              (entity) => entity.identifier === "PLAYER_SPAWN",
+              (entity) => entity.identifier === "ZONE_IN_LOCATION",
             ).uid,
+            fieldInstances: [
+              { __identifier: "Zone_In", __value: "PLAYER_SPAWN" },
+            ],
           },
         ],
       },
@@ -75,20 +80,60 @@ test("IntGrid values 1 through 15 use the authored blocking and walkability rule
   assert.equal(level.terrainGrid[0][3], "CAVE_WALL");
 });
 
-test("missing or duplicate player spawns are rejected", () => {
+test("missing or duplicate authored spawn markers use a walkable fallback", () => {
   const noSpawn = structuredClone(oakhaven);
-  noSpawn.layerInstances[0].entityInstances = [];
-  assert.throws(
-    () => createLdtkRuntimeLevel(project, noSpawn),
-    /exactly one PLAYER_SPAWN entity; found 0/,
+  for (const layer of noSpawn.layerInstances) {
+    layer.entityInstances = (layer.entityInstances ?? []).filter(
+      (entity) =>
+        !entity.fieldInstances?.some(
+          (field) =>
+            field.__identifier === "Zone_In" &&
+            field.__value === "PLAYER_SPAWN",
+        ),
+    );
+  }
+  const missingMarkerLevel = createLdtkRuntimeLevel(project, noSpawn);
+  assert.equal(missingMarkerLevel.spawnSource, "engine-fallback");
+  assert.match(missingMarkerLevel.spawnFallbackReason, /found 0/);
+  assert.equal(
+    missingMarkerLevel.collisionGrid
+      [Math.floor(missingMarkerLevel.spawn.y)]
+      [Math.floor(missingMarkerLevel.spawn.x)],
+    0,
   );
 
   const duplicateSpawn = structuredClone(oakhaven);
-  duplicateSpawn.layerInstances[0].entityInstances.push(
-    structuredClone(oakhaven.layerInstances[0].entityInstances[0]),
+  const markedSpawn = duplicateSpawn.layerInstances
+    .flatMap((layer) => layer.entityInstances ?? [])
+    .find((entity) =>
+      entity.fieldInstances?.some(
+        (field) =>
+          field.__identifier === "Zone_In" &&
+          field.__value === "PLAYER_SPAWN",
+      ),
+    );
+  const spawnLayer = duplicateSpawn.layerInstances.find(
+    (layer) => layer.__identifier === "Actors",
   );
-  assert.throws(
-    () => createLdtkRuntimeLevel(project, duplicateSpawn),
-    /exactly one PLAYER_SPAWN entity; found 2/,
+  spawnLayer.entityInstances.push(structuredClone(markedSpawn));
+  const duplicateMarkerLevel = createLdtkRuntimeLevel(project, duplicateSpawn);
+  assert.equal(duplicateMarkerLevel.spawnSource, "engine-fallback");
+  assert.match(duplicateMarkerLevel.spawnFallbackReason, /found 2/);
+});
+
+test("blocked authored spawn marker falls back to the nearest walkable cell", () => {
+  const blockedSpawn = structuredClone(oakhaven);
+  const gridLayer = blockedSpawn.layerInstances.find(
+    (layer) => layer.__identifier === "Structural_Grid",
+  );
+  gridLayer.intGridCsv[30 * gridLayer.__cWid + 15] = 1;
+
+  const level = createLdtkRuntimeLevel(project, blockedSpawn);
+
+  assert.equal(level.spawnSource, "engine-fallback");
+  assert.match(level.spawnFallbackReason, /blocked terrain/);
+  assert.equal(
+    level.collisionGrid[Math.floor(level.spawn.y)][Math.floor(level.spawn.x)],
+    0,
   );
 });

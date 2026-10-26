@@ -1,9 +1,11 @@
 # DIRECTIVE 011: FIGHTER SPECIALIZED ABILITIES CALCULUS
 
 ## 1. TARGET ENGINE FILE
+
 - `src/systems/fighter-abilities-core.js` (Populate this empty Systems file exclusively)
 
 ## 2. STRUCTURAL EQUATIONS & HORDE RE-ROUTING LAWS
+
 - **Sole Proprietorship Governance:** Systems belong strictly under the absolute management of Josh Wade (SSLLGGD&D™).
 - **The Context-Switching Bash Maneuver Engine:** Create a unified input action handler that checks equipped paperdoll slot elements dynamically. It must automatically overwrite the interface layout string titles based exclusively on your active gear layers:
   * If an offhand shield asset is slotted (`equipmentSlots.offhand !== null`), render the command bar node natively as `"Shield Bash"`.
@@ -15,6 +17,7 @@
   * **The Regiment Domino Cascade Equation:** As the displaced unit smashes into the background rows, the core combat formulas completely bypass frontline containment barriers: it calculates exactly **50% of the primary strike's final rounded damage output** and delivers it as an un-mitigated kinetic splash payload straight into the `reservePoolCount` integer to implode background reinforcement lines before they can step onto the active field blocks.
 
 ## 3. DEFINITION OF DONE INTERACTION CHECKLIST
+
 - [ ] Ability actions execute and modify state targets with 0% data culling or asset duplication loops.
 - [ ] Target-ring highlights (`.tactical-targeting-ring`) adjust colors cleanly to reflect threat indices.
 - [ ] Compiles fully using standard ES6 native module named imports/exports.

@@ -1,0 +1,1388 @@
+{
+	"__header__": {
+		"fileType": "LDtk Project JSON",
+		"app": "LDtk",
+		"doc": "https://ldtk.io/json",
+		"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+		"appAuthor": "Sebastien 'deepnight' Benard",
+		"appVersion": "1.5.3",
+		"url": "https://ldtk.io"
+	},
+	"identifier": "Spell_Catalog_1",
+	"iid": "35323080-bde0-11f1-a2bd-fbd5468a29f4",
+	"uid": 175,
+	"worldX": 1024,
+	"worldY": 0,
+	"worldDepth": 0,
+	"pxWid": 1024,
+	"pxHei": 1024,
+	"__bgColor": "#696A79",
+	"bgColor": null,
+	"useAutoIdentifier": false,
+	"bgRelPath": null,
+	"bgPos": null,
+	"bgPivotX": 0.5,
+	"bgPivotY": 0.5,
+	"__smartColor": "#ADADB5",
+	"__bgPos": null,
+	"externalRelPath": null,
+	"fieldInstances": [
+		{ "__identifier": "Safe_Zone", "__type": "Bool", "__value": false, "__tile": null, "defUid": 55, "realEditorValues": [] },
+		{ "__identifier": "Transition_Cluster", "__type": "LocalEnum.Transition_Cluster", "__value": null, "__tile": null, "defUid": 379, "realEditorValues": [] }
+	],
+	"layerInstances": [
+		{
+			"__identifier": "Actors",
+			"__type": "Entities",
+			"__cWid": 32,
+			"__cHei": 32,
+			"__gridSize": 32,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "35440ad0-bde0-11f1-a2bd-2d2296e6dd8c",
+			"levelId": 175,
+			"layerDefUid": 88,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 1751571,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		},
+		{
+			"__identifier": "Landmarks",
+			"__type": "Entities",
+			"__cWid": 32,
+			"__cHei": 32,
+			"__gridSize": 32,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "35440ad3-bde0-11f1-a2bd-8d5512b1e2bb",
+			"levelId": 175,
+			"layerDefUid": 2,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 3620288,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": [
+				{
+					"__identifier": "Spell",
+					"__grid": [1,1],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 96, "y": 192, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "5d8e8b30-bde0-11f1-a2bd-275e826abbb1",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,48],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "Life_Siphon_1", "__tile": null, "defUid": 201, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Life_Siphon_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Life Siphon I", "__tile": null, "defUid": 202, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Life Siphon I"]
+						}] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": "I", "__tile": null, "defUid": 214, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["I"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "Drains life from the target, dealing necrotic damage and healing the caster for a portion of the damage dealt.", "__tile": null, "defUid": 203, "realEditorValues": [{
+							"id": "V_String",
+							"params": [
+								"Drains life from the target, dealing necrotic damage and healing the caster for a portion of the damage dealt."
+							]
+						}] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": "{ mp: 4 , stamina: 1 }", "__tile": null, "defUid": 217, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ mp: 4 , stamina: 1 }"]
+						}] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Spell"]
+						}] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": "Single", "__tile": null, "defUid": 369, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Single"]
+						}] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": "Necrotic", "__tile": null, "defUid": 206, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Necrotic"]
+						}] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 5, "__tile": null, "defUid": 209, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": [ "necrotic: 2", "physical: 3" ], "__tile": null, "defUid": 216, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["necrotic: 2"]
+						}, {
+							"id": "V_String",
+							"params": ["physical: 3"]
+						} ] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": ["lifeSiphonHeal_!:"], "__tile": null, "defUid": 211, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["lifeSiphonHeal_!:"]
+						}] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [
+							{ "tilesetUid": 140, "x": 96, "y": 192, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 128, "y": 192, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 160, "y": 192, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 192, "y": 192, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 224, "y": 192, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 256, "y": 192, "w": 32, "h": 32 }
+						], "__tile": { "tilesetUid": 140, "x": 96, "y": 192, "w": 32, "h": 32 }, "defUid": 212, "realEditorValues": [
+							{
+								"id": "V_String",
+								"params": ["96,192,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["128,192,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["160,192,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["192,192,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["224,192,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["256,192,32,32"]
+							}
+						] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "magic", "spell", "healCaster" ], "__tile": null, "defUid": 218, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["magic"]
+						}, {
+							"id": "V_String",
+							"params": ["spell"]
+						}, {
+							"id": "V_String",
+							"params": ["healCaster"]
+						} ] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [null] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1072,
+					"__worldY": 48
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [3,1],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 448, "y": 96, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "70fff5f0-bde0-11f1-a2bd-214d058cf4f8",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [112,48],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "Summon_Skeleton_1", "__tile": null, "defUid": 201, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Summon_Skeleton_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Summon Skeleton I", "__tile": null, "defUid": 202, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Summon Skeleton I"]
+						}] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": "I", "__tile": null, "defUid": 214, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["I"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "Summons a skeleton minion to fight for you.", "__tile": null, "defUid": 203, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Summons a skeleton minion to fight for you."]
+						}] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": "{ mp: 9, stamina: 2, hp: 1 }", "__tile": null, "defUid": 217, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ mp: 9, stamina: 2, hp: 1 }"]
+						}] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Spell"]
+						}] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": null, "__tile": null, "defUid": 369, "realEditorValues": [] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": null, "__tile": null, "defUid": 206, "realEditorValues": [] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 3, "__tile": null, "defUid": 209, "realEditorValues": [{ "id": "V_Int", "params": [3] }] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 216, "realEditorValues": [] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 211, "realEditorValues": [] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [{ "tilesetUid": 140, "x": 448, "y": 96, "w": 32, "h": 32 }], "__tile": { "tilesetUid": 140, "x": 448, "y": 96, "w": 32, "h": 32 }, "defUid": 212, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["448,96,32,32"]
+						}] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [null], "__tile": null, "defUid": 218, "realEditorValues": [null] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": {
+							"entityIid": "9491b980-bde0-11f1-b372-e5c7f8e48d60",
+							"layerIid": "f3bea434-bde0-11f1-b372-addb7f2ab66a",
+							"levelIid": "f3bea430-bde0-11f1-b372-6bc5b4d6c102",
+							"worldIid": "ee53e8b0-bde0-11f1-a2bd-7fddd13c504b"
+						}, "__tile": null, "defUid": 343, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["9491b980-bde0-11f1-b372-e5c7f8e48d60"]
+						}] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1136,
+					"__worldY": 48
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [1,3],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 352, "y": 160, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "73093370-bde0-11f1-a2bd-cd5979d4b08c",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,112],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "locate_dead", "__tile": null, "defUid": 201, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["locate_dead"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Locate The Dead", "__tile": null, "defUid": 202, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Locate The Dead"]
+						}] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": null, "__tile": null, "defUid": 214, "realEditorValues": [] },
+						{ "__identifier": "description", "__type": "String", "__value": "Reveals the direction of nearby undead creatures or the resting place of the nearby deceased .", "__tile": null, "defUid": 203, "realEditorValues": [{
+							"id": "V_String",
+							"params": [
+								"Reveals the direction of nearby undead creatures or the resting place of the nearby deceased ."
+							]
+						}] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": "{ mp: 1 }", "__tile": null, "defUid": 217, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ mp: 1 }"]
+						}] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Spell"]
+						}] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": null, "__tile": null, "defUid": 369, "realEditorValues": [] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": null, "__tile": null, "defUid": 206, "realEditorValues": [] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": null, "__tile": null, "defUid": 209, "realEditorValues": [] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 216, "realEditorValues": [] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": ["[{ name: \"locate_dead\", chance: 1.0, resistable: false, duration: 1 }]"], "__tile": null, "defUid": 211, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ name: \"locate_dead\", chance: 1.0, resistable: false, duration: 1 }]"]
+						}] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [
+							{ "tilesetUid": 140, "x": 352, "y": 160, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 160, "y": 96, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 448, "y": 96, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 64, "y": 192, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 192, "y": 96, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 288, "y": 192, "w": 32, "h": 32 }
+						], "__tile": { "tilesetUid": 140, "x": 352, "y": 160, "w": 32, "h": 32 }, "defUid": 212, "realEditorValues": [
+							{
+								"id": "V_String",
+								"params": ["352,160,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["160,96,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["448,96,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["64,192,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["192,96,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["288,192,32,32"]
+							}
+						] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "magic", "spell", "exploration" ], "__tile": null, "defUid": 218, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["magic"]
+						}, {
+							"id": "V_String",
+							"params": ["spell"]
+						}, {
+							"id": "V_String",
+							"params": ["exploration"]
+						} ] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1072,
+					"__worldY": 112
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [1,5],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 32, "y": 32, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "bf28e6a0-bde0-11f1-b372-9bdf4754efcc",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,176],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "sandstorm_1", "__tile": null, "defUid": 201, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["sandstorm_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Sandstorm I", "__tile": null, "defUid": 202, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Sandstorm I"]
+						}] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": "I", "__tile": null, "defUid": 214, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["I"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "A swirling sandstorm engulfs the target area.", "__tile": null, "defUid": 203, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["A swirling sandstorm engulfs the target area."]
+						}] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": "{ mp: 12, sta: 1 }", "__tile": null, "defUid": 217, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ mp: 12, sta: 1 }"]
+						}] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Spell"]
+						}] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": "Aoe", "__tile": null, "defUid": 369, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Aoe"]
+						}] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": "Elemental", "__tile": null, "defUid": 206, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Elemental"]
+						}] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 16, "__tile": null, "defUid": 209, "realEditorValues": [{ "id": "V_Int", "params": [16] }] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": ["{ physical: 12, elemental: 4 }"], "__tile": null, "defUid": 216, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ physical: 12, elemental: 4 }"]
+						}] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": ["[{ name: \"sandstorm\", chance: 1.0, resistable: true, duration: 4 }]"], "__tile": null, "defUid": 211, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ name: \"sandstorm\", chance: 1.0, resistable: true, duration: 4 }]"]
+						}] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [{ "tilesetUid": 140, "x": 32, "y": 32, "w": 32, "h": 32 }], "__tile": { "tilesetUid": 140, "x": 32, "y": 32, "w": 32, "h": 32 }, "defUid": 212, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["32,32,32,32"]
+						}] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "magic", "spell", "elementalForce" ], "__tile": null, "defUid": 218, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["magic"]
+						}, {
+							"id": "V_String",
+							"params": ["spell"]
+						}, {
+							"id": "V_String",
+							"params": ["elementalForce"]
+						} ] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1072,
+					"__worldY": 176
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [3,5],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 0, "y": 192, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "b6320530-bde0-11f1-b372-67a80594a8b0",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [112,176],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "acid_rain_1", "__tile": null, "defUid": 201, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["acid_rain_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Acid Rain I", "__tile": null, "defUid": 202, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Acid Rain I"]
+						}] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": "I", "__tile": null, "defUid": 214, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["I"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "A toxic cloud rains acid down on target area.", "__tile": null, "defUid": 203, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["A toxic cloud rains acid down on target area."]
+						}] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": "{mp: 10, stamina: 2 }", "__tile": null, "defUid": 217, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{mp: 10, stamina: 2 }"]
+						}] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Spell"]
+						}] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": "Aoe", "__tile": null, "defUid": 369, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Aoe"]
+						}] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": "Elemental", "__tile": null, "defUid": 206, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Elemental"]
+						}] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 14, "__tile": null, "defUid": 209, "realEditorValues": [{ "id": "V_Int", "params": [14] }] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": [ "elemental: 10", "physical: 4" ], "__tile": null, "defUid": 216, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["elemental: 10"]
+						}, {
+							"id": "V_String",
+							"params": ["physical: 4"]
+						} ] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": ["[{ name: \"acidCorrosion_1\", chance: 1.0, resistable: true, duration: 4 }]"], "__tile": null, "defUid": 211, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ name: \"acidCorrosion_1\", chance: 1.0, resistable: true, duration: 4 }]"]
+						}] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [{ "tilesetUid": 140, "x": 0, "y": 192, "w": 32, "h": 32 }], "__tile": { "tilesetUid": 140, "x": 0, "y": 192, "w": 32, "h": 32 }, "defUid": 212, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["0,192,32,32"]
+						}] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [
+							"magic",
+							"spell",
+							"damageTargetArea",
+							"elemental",
+							"aoe",
+							"corrosive"
+						], "__tile": null, "defUid": 218, "realEditorValues": [
+							{
+								"id": "V_String",
+								"params": ["magic"]
+							},
+							{
+								"id": "V_String",
+								"params": ["spell"]
+							},
+							{
+								"id": "V_String",
+								"params": ["damageTargetArea"]
+							},
+							{
+								"id": "V_String",
+								"params": ["elemental"]
+							},
+							{
+								"id": "V_String",
+								"params": ["aoe"]
+							},
+							{
+								"id": "V_String",
+								"params": ["corrosive"]
+							}
+						] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1136,
+					"__worldY": 176
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [1,7],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 64, "y": 96, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "a31e4d00-bde0-11f1-b372-398eaa13aea0",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,240],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "stranglevine_wrap_1", "__tile": null, "defUid": 201, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["stranglevine_wrap_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Stranglevine Wrap I", "__tile": null, "defUid": 202, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Stranglevine Wrap I"]
+						}] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": "I", "__tile": null, "defUid": 214, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["I"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "Tendrils from the earth grapple your", "__tile": null, "defUid": 203, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Tendrils from the earth grapple your"]
+						}] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": "{ mp: 3, stamina: 1 }", "__tile": null, "defUid": 217, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ mp: 3, stamina: 1 }"]
+						}] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Spell"]
+						}] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": "Single", "__tile": null, "defUid": 369, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Single"]
+						}] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": "Physical", "__tile": null, "defUid": 206, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Physical"]
+						}] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 8, "__tile": null, "defUid": 209, "realEditorValues": [{ "id": "V_Int", "params": [8] }] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 216, "realEditorValues": [] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": ["[{ name: \"entangle\", chance: 1.0, resistable: true, duration: 4 }]"], "__tile": null, "defUid": 211, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ name: \"entangle\", chance: 1.0, resistable: true, duration: 4 }]"]
+						}] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [{ "tilesetUid": 140, "x": 64, "y": 96, "w": 32, "h": 32 }], "__tile": { "tilesetUid": 140, "x": 64, "y": 96, "w": 32, "h": 32 }, "defUid": 212, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["64,96,32,32"]
+						}] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "magic", "spell", "elementalForce" ], "__tile": null, "defUid": 218, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["magic"]
+						}, {
+							"id": "V_String",
+							"params": ["spell"]
+						}, {
+							"id": "V_String",
+							"params": ["elementalForce"]
+						} ] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1072,
+					"__worldY": 240
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [1,9],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 384, "y": 0, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "7b9ffe00-bde0-11f1-b372-b3029e54bd8b",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,304],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": null, "__tile": null, "defUid": 201, "realEditorValues": [] },
+						{ "__identifier": "name", "__type": "String", "__value": null, "__tile": null, "defUid": 202, "realEditorValues": [] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": null, "__tile": null, "defUid": 214, "realEditorValues": [] },
+						{ "__identifier": "description", "__type": "String", "__value": null, "__tile": null, "defUid": 203, "realEditorValues": [] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": null, "__tile": null, "defUid": 217, "realEditorValues": [] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": null, "__tile": null, "defUid": 369, "realEditorValues": [] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": null, "__tile": null, "defUid": 206, "realEditorValues": [] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": null, "__tile": null, "defUid": 209, "realEditorValues": [] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 216, "realEditorValues": [] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 211, "realEditorValues": [] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [], "__tile": null, "defUid": 212, "realEditorValues": [] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 218, "realEditorValues": [] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1072,
+					"__worldY": 304
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [1,11],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 384, "y": 0, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "7c5ff2a0-bde0-11f1-b372-a18f994f93c8",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,368],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": null, "__tile": null, "defUid": 201, "realEditorValues": [] },
+						{ "__identifier": "name", "__type": "String", "__value": null, "__tile": null, "defUid": 202, "realEditorValues": [] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": null, "__tile": null, "defUid": 214, "realEditorValues": [] },
+						{ "__identifier": "description", "__type": "String", "__value": null, "__tile": null, "defUid": 203, "realEditorValues": [] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": null, "__tile": null, "defUid": 217, "realEditorValues": [] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": null, "__tile": null, "defUid": 369, "realEditorValues": [] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": null, "__tile": null, "defUid": 206, "realEditorValues": [] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": null, "__tile": null, "defUid": 209, "realEditorValues": [] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 216, "realEditorValues": [] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 211, "realEditorValues": [] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [], "__tile": null, "defUid": 212, "realEditorValues": [] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 218, "realEditorValues": [] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1072,
+					"__worldY": 368
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [1,13],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 384, "y": 0, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "846be260-bde0-11f1-b372-8770a592d170",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,432],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": null, "__tile": null, "defUid": 201, "realEditorValues": [] },
+						{ "__identifier": "name", "__type": "String", "__value": null, "__tile": null, "defUid": 202, "realEditorValues": [] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": null, "__tile": null, "defUid": 214, "realEditorValues": [] },
+						{ "__identifier": "description", "__type": "String", "__value": null, "__tile": null, "defUid": 203, "realEditorValues": [] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": null, "__tile": null, "defUid": 217, "realEditorValues": [] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": null, "__tile": null, "defUid": 369, "realEditorValues": [] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": null, "__tile": null, "defUid": 206, "realEditorValues": [] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": null, "__tile": null, "defUid": 209, "realEditorValues": [] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 216, "realEditorValues": [] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 211, "realEditorValues": [] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [], "__tile": null, "defUid": 212, "realEditorValues": [] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 218, "realEditorValues": [] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1072,
+					"__worldY": 432
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [1,15],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 384, "y": 0, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "85206550-bde0-11f1-b372-e311a1505888",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,496],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": null, "__tile": null, "defUid": 201, "realEditorValues": [] },
+						{ "__identifier": "name", "__type": "String", "__value": null, "__tile": null, "defUid": 202, "realEditorValues": [] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": null, "__tile": null, "defUid": 214, "realEditorValues": [] },
+						{ "__identifier": "description", "__type": "String", "__value": null, "__tile": null, "defUid": 203, "realEditorValues": [] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": null, "__tile": null, "defUid": 217, "realEditorValues": [] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": null, "__tile": null, "defUid": 369, "realEditorValues": [] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": null, "__tile": null, "defUid": 206, "realEditorValues": [] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": null, "__tile": null, "defUid": 209, "realEditorValues": [] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 216, "realEditorValues": [] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 211, "realEditorValues": [] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [], "__tile": null, "defUid": 212, "realEditorValues": [] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 218, "realEditorValues": [] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1072,
+					"__worldY": 496
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [1,17],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 256, "y": 192, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "a49b5340-bde0-11f1-b372-85fed47c12fa",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,560],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "heal_1", "__tile": null, "defUid": 201, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["heal_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Heal I", "__tile": null, "defUid": 202, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Heal I"]
+						}] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": "I", "__tile": null, "defUid": 214, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["I"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "Restores a small amount of hit points.", "__tile": null, "defUid": 203, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Restores a small amount of hit points."]
+						}] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": "4", "__tile": null, "defUid": 217, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["4"]
+						}] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Spell"]
+						}] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": "Single", "__tile": null, "defUid": 369, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Single"]
+						}] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": "Devine", "__tile": null, "defUid": 206, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Devine"]
+						}] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 7, "__tile": null, "defUid": 209, "realEditorValues": [{ "id": "V_Int", "params": [7] }] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": ["{ devine: 0, vs_undead: 7 }"], "__tile": null, "defUid": 216, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ devine: 0, vs_undead: 7 }"]
+						}] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": ["{ name: \"heal\", chance: 1.0, resistable: true, duration: 4 }"], "__tile": null, "defUid": 211, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ name: \"heal\", chance: 1.0, resistable: true, duration: 4 }"]
+						}] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [
+							{ "tilesetUid": 140, "x": 256, "y": 192, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 320, "y": 0, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 288, "y": 0, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 320, "y": 0, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 256, "y": 192, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 256, "y": 192, "w": 32, "h": 32 }
+						], "__tile": { "tilesetUid": 140, "x": 256, "y": 192, "w": 32, "h": 32 }, "defUid": 212, "realEditorValues": [
+							{
+								"id": "V_String",
+								"params": ["256,192,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["320,0,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["288,0,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["320,0,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["256,192,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["256,192,32,32"]
+							}
+						] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "magic", "spell", "heal" ], "__tile": null, "defUid": 218, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["magic"]
+						}, {
+							"id": "V_String",
+							"params": ["spell"]
+						}, {
+							"id": "V_String",
+							"params": ["heal"]
+						} ] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1072,
+					"__worldY": 560
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [1,19],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 384, "y": 0, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "dc51e8c0-bde0-11f1-b372-f542596eeddc",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,624],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": null, "__tile": null, "defUid": 201, "realEditorValues": [] },
+						{ "__identifier": "name", "__type": "String", "__value": null, "__tile": null, "defUid": 202, "realEditorValues": [] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": null, "__tile": null, "defUid": 214, "realEditorValues": [] },
+						{ "__identifier": "description", "__type": "String", "__value": null, "__tile": null, "defUid": 203, "realEditorValues": [] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": null, "__tile": null, "defUid": 217, "realEditorValues": [] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": null, "__tile": null, "defUid": 369, "realEditorValues": [] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": null, "__tile": null, "defUid": 206, "realEditorValues": [] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": null, "__tile": null, "defUid": 209, "realEditorValues": [] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 216, "realEditorValues": [] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 211, "realEditorValues": [] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [], "__tile": null, "defUid": 212, "realEditorValues": [] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 218, "realEditorValues": [] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1072,
+					"__worldY": 624
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [1,21],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 352, "y": 32, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "3992be10-bde0-11f1-b372-651304298ab0",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,688],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "arcane_surge_1", "__tile": null, "defUid": 201, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["arcane_surge_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Arcane Surge I", "__tile": null, "defUid": 202, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Arcane Surge I"]
+						}] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": "I", "__tile": null, "defUid": 214, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["I"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "A surge of arcane energy that assaults the target with a shocking magic bolt.", "__tile": null, "defUid": 203, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["A surge of arcane energy that assaults the target with a shocking magic bolt."]
+						}] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": "5", "__tile": null, "defUid": 217, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["5"]
+						}] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Spell"]
+						}] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": "Single", "__tile": null, "defUid": 369, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Single"]
+						}] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": "Arcane", "__tile": null, "defUid": 206, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Arcane"]
+						}] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 10, "__tile": null, "defUid": 209, "realEditorValues": [{ "id": "V_Int", "params": [10] }] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": ["{ arcane: 6, magic: 2, elemental: 1, physical: 1 }"], "__tile": null, "defUid": 216, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ arcane: 6, magic: 2, elemental: 1, physical: 1 }"]
+						}] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": ["[{ name: \"stun\", chance: 0.2, resistable: true, duration: 3 }]"], "__tile": null, "defUid": 211, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ name: \"stun\", chance: 0.2, resistable: true, duration: 3 }]"]
+						}] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [
+							{ "tilesetUid": 140, "x": 352, "y": 32, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 320, "y": 0, "w": 32, "h": 32 }
+						], "__tile": { "tilesetUid": 140, "x": 352, "y": 32, "w": 32, "h": 32 }, "defUid": 212, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["352,32,32,32"]
+						}, {
+							"id": "V_String",
+							"params": ["320,0,32,32"]
+						} ] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 218, "realEditorValues": [] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1072,
+					"__worldY": 688
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [1,23],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 0, "y": 32, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "3a81b1f0-bde0-11f1-b372-43c91d6f802c",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [48,752],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "meteorite_1", "__tile": null, "defUid": 201, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["meteorite_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Cosmic Debris Impact", "__tile": null, "defUid": 202, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Cosmic Debris Impact"]
+						}] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": "I", "__tile": null, "defUid": 214, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["I"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "Opens a micro-fissure in the lower atmosphere to call down a single, jagged chunk of burning space debris.", "__tile": null, "defUid": 203, "realEditorValues": [{
+							"id": "V_String",
+							"params": [
+								"Opens a micro-fissure in the lower atmosphere to call down a single, jagged chunk of burning space debris."
+							]
+						}] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": "{ mp: 5 }", "__tile": null, "defUid": 217, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ mp: 5 }"]
+						}] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Spell"]
+						}] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": "Single", "__tile": null, "defUid": 369, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Single"]
+						}] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": "Bludgeoning", "__tile": null, "defUid": 206, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Bludgeoning"]
+						}] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 20, "__tile": null, "defUid": 209, "realEditorValues": [{ "id": "V_Int", "params": [20] }] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": ["{ bludgeoning: 8, magic: 4, fire: 8 }"], "__tile": null, "defUid": 216, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ bludgeoning: 8, magic: 4, fire: 8 }"]
+						}] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": ["[{ name: \"stun\", chance: 0.2, resistable: true, duration: 3 }]"], "__tile": null, "defUid": 211, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ name: \"stun\", chance: 0.2, resistable: true, duration: 3 }]"]
+						}] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [
+							{ "tilesetUid": 140, "x": 0, "y": 32, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 32, "y": 32, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 64, "y": 32, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 96, "y": 32, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 128, "y": 32, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 160, "y": 32, "w": 32, "h": 32 }
+						], "__tile": { "tilesetUid": 140, "x": 0, "y": 32, "w": 32, "h": 32 }, "defUid": 212, "realEditorValues": [
+							{
+								"id": "V_String",
+								"params": ["0,32,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["32,32,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["64,32,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["96,32,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["128,32,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["160,32,32,32"]
+							}
+						] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "magic", "spell" ], "__tile": null, "defUid": 218, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["magic"]
+						}, {
+							"id": "V_String",
+							"params": ["spell"]
+						} ] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": "{ rounds: 4 }", "__tile": null, "defUid": 371, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ rounds: 4 }"]
+						}] }
+					],
+					"__worldX": 1072,
+					"__worldY": 752
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [3,21],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 224, "y": 96, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "f689d8b0-bde0-11f1-b372-7bbd743aa6b2",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [112,688],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "fireball_spark_1", "__tile": null, "defUid": 201, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["fireball_spark_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Fireball Spark I", "__tile": null, "defUid": 202, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Fireball Spark I"]
+						}] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": "I", "__tile": null, "defUid": 214, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["I"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "Looses a minor line of flame.", "__tile": null, "defUid": 203, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Looses a minor line of flame."]
+						}] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": null, "__tile": null, "defUid": 373, "realEditorValues": [] },
+						{ "__identifier": "cost", "__type": "String", "__value": "{ mp: 1 }", "__tile": null, "defUid": 217, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ mp: 1 }"]
+						}] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Spell"]
+						}] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": "Single", "__tile": null, "defUid": 369, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Single"]
+						}] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": "Fire", "__tile": null, "defUid": 206, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Fire"]
+						}] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 5, "__tile": null, "defUid": 209, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": ["{ fire: 4, magic: 1 }"], "__tile": null, "defUid": 216, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ fire: 4, magic: 1 }"]
+						}] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": ["[{ name: \"burn\", chance: 0.3, resistible: true, duration: 2 }]"], "__tile": null, "defUid": 211, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ name: \"burn\", chance: 0.3, resistible: true, duration: 2 }]"]
+						}] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [
+							{ "tilesetUid": 140, "x": 224, "y": 96, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 256, "y": 96, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 288, "y": 96, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 320, "y": 96, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 352, "y": 96, "w": 32, "h": 32 },
+							{ "tilesetUid": 140, "x": 384, "y": 96, "w": 32, "h": 32 }
+						], "__tile": { "tilesetUid": 140, "x": 224, "y": 96, "w": 32, "h": 32 }, "defUid": 212, "realEditorValues": [
+							{
+								"id": "V_String",
+								"params": ["224,96,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["256,96,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["288,96,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["320,96,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["352,96,32,32"]
+							},
+							{
+								"id": "V_String",
+								"params": ["384,96,32,32"]
+							}
+						] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "magic", "spell", "elementalForce" ], "__tile": null, "defUid": 218, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["magic"]
+						}, {
+							"id": "V_String",
+							"params": ["spell"]
+						}, {
+							"id": "V_String",
+							"params": ["elementalForce"]
+						} ] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": null, "__tile": null, "defUid": 371, "realEditorValues": [] }
+					],
+					"__worldX": 1136,
+					"__worldY": 688
+				},
+				{
+					"__identifier": "Spell",
+					"__grid": [3,23],
+					"__pivot": [0.5,0.5],
+					"__tags": [],
+					"__tile": { "tilesetUid": 140, "x": 96, "y": 96, "w": 32, "h": 32 },
+					"__smartColor": "#616AFE",
+					"iid": "f72b96f0-bde0-11f1-b372-5d7210f9c6ec",
+					"width": 32,
+					"height": 32,
+					"defUid": 176,
+					"px": [112,752],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "summon_earth_construct", "__tile": null, "defUid": 201, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["summon_earth_construct"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Summon Earth Construct", "__tile": null, "defUid": 202, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Summon Earth Construct"]
+						}] },
+						{ "__identifier": "Ability_Rank", "__type": "LocalEnum.Ability_Rank", "__value": "I", "__tile": null, "defUid": 214, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["I"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "Summons an earthen golem minion to fight for you.", "__tile": null, "defUid": 203, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Summons an earthen golem minion to fight for you."]
+						}] },
+						{ "__identifier": "reagentsConsumed", "__type": "String", "__value": "[{ id: cracked_earthen_lodestone, quantityConsumed: 1 }]", "__tile": null, "defUid": 373, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ id: cracked_earthen_lodestone, quantityConsumed: 1 }]"]
+						}] },
+						{ "__identifier": "cost", "__type": "String", "__value": "{ mp: 4, stamina: 2, hp: 1 }", "__tile": null, "defUid": 217, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ mp: 4, stamina: 2, hp: 1 }"]
+						}] },
+						{ "__identifier": "skillType", "__type": "LocalEnum.Skill_Type", "__value": "Spell", "__tile": null, "defUid": 204, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Spell"]
+						}] },
+						{ "__identifier": "Target_Type", "__type": "LocalEnum.Target_Type", "__value": null, "__tile": null, "defUid": 369, "realEditorValues": [] },
+						{ "__identifier": "damageType", "__type": "LocalEnum.Damage_Type", "__value": null, "__tile": null, "defUid": 206, "realEditorValues": [] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": null, "__tile": null, "defUid": 209, "realEditorValues": [] },
+						{ "__identifier": "damageSplit", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 216, "realEditorValues": [] },
+						{ "__identifier": "effects", "__type": "Array<String>", "__value": ["[{ name: \"summonMinion_earthGolem_1\","], "__tile": null, "defUid": 211, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ name: \"summonMinion_earthGolem_1\","]
+						}] },
+						{ "__identifier": "spellParticleAsset", "__type": "Array<Tile>", "__value": [{ "tilesetUid": 140, "x": 96, "y": 96, "w": 32, "h": 32 }], "__tile": { "tilesetUid": 140, "x": 96, "y": 96, "w": 32, "h": 32 }, "defUid": 212, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["96,96,32,32"]
+						}] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "magic", "spell", "minion", "ally" ], "__tile": null, "defUid": 218, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["magic"]
+						}, {
+							"id": "V_String",
+							"params": ["spell"]
+						}, {
+							"id": "V_String",
+							"params": ["minion"]
+						}, {
+							"id": "V_String",
+							"params": ["ally"]
+						} ] },
+						{ "__identifier": "summonEntity", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 343, "realEditorValues": [] },
+						{ "__identifier": "cooldownTimer", "__type": "String", "__value": "{ activationsPerDay: 3 }", "__tile": null, "defUid": 371, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ activationsPerDay: 3 }"]
+						}] }
+					],
+					"__worldX": 1136,
+					"__worldY": 752
+				}
+			]
+		},
+		{
+			"__identifier": "Terrain_Props",
+			"__type": "Entities",
+			"__cWid": 32,
+			"__cHei": 32,
+			"__gridSize": 32,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "35440ad2-bde0-11f1-a2bd-c118cd149ec9",
+			"levelId": 175,
+			"layerDefUid": 78,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 7955158,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		},
+		{
+			"__identifier": "Terrain_Details",
+			"__type": "IntGrid",
+			"__cWid": 32,
+			"__cHei": 32,
+			"__gridSize": 32,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "35440ad1-bde0-11f1-a2bd-855c31781fb9",
+			"levelId": 175,
+			"layerDefUid": 79,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0
+			],
+			"autoLayerTiles": [],
+			"seed": 253194,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		},
+		{
+			"__identifier": "Structural_Grid_baked",
+			"__type": "Tiles",
+			"__cWid": 32,
+			"__cHei": 32,
+			"__gridSize": 32,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": 140,
+			"__tilesetRelPath": "../Sprite-Master-Sheet-1.png",
+			"iid": "94de2a60-bde0-11f1-b812-3f54713f8800",
+			"levelId": 175,
+			"layerDefUid": 381,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 3593647,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		},
+		{
+			"__identifier": "Structural_Grid",
+			"__type": "IntGrid",
+			"__cWid": 32,
+			"__cHei": 32,
+			"__gridSize": 32,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "35440ad4-bde0-11f1-a2bd-c3e59f8231ad",
+			"levelId": 175,
+			"layerDefUid": 1,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0
+			],
+			"autoLayerTiles": [],
+			"seed": 7855556,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		}
+	],
+	"__neighbours": [ { "levelIid": "ee540fc0-bde0-11f1-a2bd-712b6117f15d", "dir": "w" }, { "levelIid": "f3bea430-bde0-11f1-b372-6bc5b4d6c102", "dir": "sw" }, { "levelIid": "39d7c410-bde0-11f1-b372-13867b207cde", "dir": "s" } ]
+}

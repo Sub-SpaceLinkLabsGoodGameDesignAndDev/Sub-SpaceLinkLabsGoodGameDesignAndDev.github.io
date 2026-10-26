@@ -24,11 +24,10 @@ Enforce shared initiative rolling formulas across heroes and monsters, implement
    - Wire the engine collision loops to actively identify the **`FLOOR_LOOT`** entity layer placed within your map area.
    - Stepping onto a coordinate containing a `FLOOR_LOOT` entity must prompt an interactive container ledger tab, allowing items to be transferred directly to your active inventory trunk array.
 
-5. **Strict Oakhaven & Sewer Testing Zoning Restraints:**
-   - Restrict the level router configuration bounds strictly to the **Oakhaven Town hub (Safe Zone)** and its immediate connecting **Sewer system maps (Danger Zone)**. Disable all outer world exits leading beyond these clusters.
-   - **Active Field Instance Transits:** Hardwire active scene-transition event hooks exclusively onto the following two LDtk point entities:
-     - **`OakhavenToSewer_Down`** (located inside map layer `Oakhaven_3`) must dynamically unbind the surface layout and execute a downward load function straight into the `Oakhaven_SewerSystem_1` matrix.
-     - **`SewerToOakhaven_Up`** (located inside map layer `Oakhaven_SewerSystem_1`) must execute the inverse upward transition back to the Oakhaven surface grid.
-   - **Horizontal Butted Border Openings:** Allow seamless, tile-to-tile map stitching thresholds *only* for direct edge-sharing connections (e.g., surface town map directly to surface town map, or sewer network map directly to sewer network map). 
-   - **Void Boundary Protection Matrix:** Freeze or block player movement tracking at any border perimeter opening that does not feature a corresponding, explicitly active butted map file or field entity instance. This completely forbids the player from stepping off the constructed world grid into unrendered emptiness.
+5. **LDtk-Authored Level Connections and Zoning:**
+   - Treat LDtk project, level, layer, entity, field-instance, reference, and point data as the authoritative source for level layout, transition destinations, and landing positions. Do not hardcode level identifiers, transition entity names, or coordinates in the engine.
+   - Resolve transitions from exported LDtk connection data. Support authored adjacency and open paths between butted levels, as well as entity, field-instance, reference, or point-based connection metadata as the LDtk design evolves.
+   - Trigger a butted-level transition only when the player reaches an authored traversable connection at the adjoining level boundary and the destination level/landing location resolves to valid walkable data.
+   - **Void Boundary Protection Matrix:** Block movement through any boundary opening that has no valid corresponding LDtk connection or loaded adjoining level, preventing entry into unrendered space.
+   - Any temporary testing limits on active levels must be driven by LDtk metadata rather than a hardcoded list of map names.
    - **Dynamic Tile Terrain Attrition System:** Refactor the engine movement loop to dynamically query tile archetype layers directly from the active parsed LDtk cell data. Moving across cells painted with environmental hazard metadata (such as swamp, toxic sludge, or custom terrain types configured inside the LDtk workspace) must instantly map and trigger class-appropriate status attrition counters, resource damage calculations, and localized random monster group encounter weights to verify the party's survival loops.

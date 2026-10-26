@@ -306,6 +306,129 @@ function fieldValue(entity, fieldName) {
   )?.__value;
 }
 
+export function resolveAdjacentLevelTransition({
+  currentLevel,
+  levelsByIid,
+  direction,
+  x,
+  y,
+} = {}) {
+  if (
+    !currentLevel ||
+    !(levelsByIid instanceof Map) ||
+    !DIRECTIONS[direction] ||
+    !Number.isFinite(x) ||
+    !Number.isFinite(y) ||
+    typeof currentLevel.transitionCluster !== "string"
+  ) {
+    return null;
+  }
+
+  const neighbors =
+    currentLevel.neighbors?.filter((entry) => entry?.dir === direction[0]) ?? [];
+  for (const neighbor of neighbors) {
+    const destination = levelsByIid.get(neighbor.levelIid);
+    if (
+      !destination ||
+      destination.transitionCluster !== currentLevel.transitionCluster
+    ) {
+      continue;
+    }
+
+    const sourceGrid = currentLevel.collisionGrid;
+    const destinationGrid = destination.collisionGrid;
+    const sourceHeight = sourceGrid?.length ?? 0;
+    const sourceWidth = sourceGrid?.[0]?.length ?? 0;
+    const destinationHeight = destinationGrid?.length ?? 0;
+    const destinationWidth = destinationGrid?.[0]?.length ?? 0;
+    const sourceGridSize = currentLevel.gridSize;
+    const destinationGridSize = destination.gridSize;
+    if (
+      sourceWidth === 0 ||
+      sourceHeight === 0 ||
+      destinationWidth === 0 ||
+      destinationHeight === 0 ||
+      !Number.isFinite(currentLevel.worldX) ||
+      !Number.isFinite(currentLevel.worldY) ||
+      !Number.isFinite(destination.worldX) ||
+      !Number.isFinite(destination.worldY) ||
+      !Number.isFinite(sourceGridSize) ||
+      !Number.isFinite(destinationGridSize) ||
+      sourceGridSize <= 0 ||
+      destinationGridSize <= 0
+    ) {
+      continue;
+    }
+
+    const horizontalEdge = direction === "east" || direction === "west";
+    const sourceSecondary = Math.floor(horizontalEdge ? y : x);
+    const sourceLimit = horizontalEdge ? sourceHeight : sourceWidth;
+    const destinationLimit = horizontalEdge
+      ? destinationHeight
+      : destinationWidth;
+    const sourceOrigin = horizontalEdge
+      ? currentLevel.worldY
+      : currentLevel.worldX;
+    const destinationOrigin = horizontalEdge
+      ? destination.worldY
+      : destination.worldX;
+    const sourceWorldPosition =
+      sourceOrigin + (sourceSecondary + 0.5) * sourceGridSize;
+    const destinationSecondary = Math.floor(
+      (sourceWorldPosition - destinationOrigin) / destinationGridSize,
+    );
+    if (
+      sourceSecondary < 0 ||
+      sourceSecondary >= sourceLimit ||
+      destinationSecondary < 0 ||
+      destinationSecondary >= destinationLimit
+    ) {
+      continue;
+    }
+
+    const sourceX =
+      direction === "east"
+        ? sourceWidth - 1
+        : direction === "west"
+          ? 0
+          : sourceSecondary;
+    const sourceY =
+      direction === "south"
+        ? sourceHeight - 1
+        : direction === "north"
+          ? 0
+          : sourceSecondary;
+    const destinationX =
+      direction === "east"
+        ? 0
+        : direction === "west"
+          ? destinationWidth - 1
+          : destinationSecondary;
+    const destinationY =
+      direction === "south"
+        ? 0
+        : direction === "north"
+          ? destinationHeight - 1
+          : destinationSecondary;
+
+    if (
+      sourceGrid[sourceY]?.[sourceX] !== 0 ||
+      destinationGrid[destinationY]?.[destinationX] !== 0
+    ) {
+      continue;
+    }
+
+    return {
+      level: destination,
+      x: destinationX + 0.5,
+      y: destinationY + 0.5,
+      direction,
+    };
+  }
+
+  return null;
+}
+
 function findBoundaryPortal(levelData, direction, secondaryCoordinate, gridSize) {
   const { width, height } = extractMapDimensions(levelData);
   const position = DIRECTIONS[direction];

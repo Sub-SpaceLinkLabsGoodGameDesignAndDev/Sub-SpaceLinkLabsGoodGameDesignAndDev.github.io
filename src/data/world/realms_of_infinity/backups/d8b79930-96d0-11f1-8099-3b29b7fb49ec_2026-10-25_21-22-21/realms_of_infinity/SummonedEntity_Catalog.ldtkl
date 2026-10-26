@@ -1,0 +1,631 @@
+{
+	"__header__": {
+		"fileType": "LDtk Project JSON",
+		"app": "LDtk",
+		"doc": "https://ldtk.io/json",
+		"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+		"appAuthor": "Sebastien 'deepnight' Benard",
+		"appVersion": "1.5.3",
+		"url": "https://ldtk.io"
+	},
+	"identifier": "SummonedEntity_Catalog",
+	"iid": "f3bea430-bde0-11f1-b372-6bc5b4d6c102",
+	"uid": 344,
+	"worldX": 0,
+	"worldY": 1024,
+	"worldDepth": 0,
+	"pxWid": 1024,
+	"pxHei": 1024,
+	"__bgColor": "#696A79",
+	"bgColor": null,
+	"useAutoIdentifier": false,
+	"bgRelPath": null,
+	"bgPos": null,
+	"bgPivotX": 0.5,
+	"bgPivotY": 0.5,
+	"__smartColor": "#ADADB5",
+	"__bgPos": null,
+	"externalRelPath": null,
+	"fieldInstances": [
+		{ "__identifier": "Safe_Zone", "__type": "Bool", "__value": false, "__tile": null, "defUid": 55, "realEditorValues": [] },
+		{ "__identifier": "Transition_Cluster", "__type": "LocalEnum.Transition_Cluster", "__value": null, "__tile": null, "defUid": 379, "realEditorValues": [] }
+	],
+	"layerInstances": [
+		{
+			"__identifier": "Actors",
+			"__type": "Entities",
+			"__cWid": 32,
+			"__cHei": 32,
+			"__gridSize": 32,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "f3bea431-bde0-11f1-b372-59d43c26dfb2",
+			"levelId": 344,
+			"layerDefUid": 88,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 6357497,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		},
+		{
+			"__identifier": "Terrain_Details",
+			"__type": "IntGrid",
+			"__cWid": 32,
+			"__cHei": 32,
+			"__gridSize": 32,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "f3bea432-bde0-11f1-b372-b777d4af8d9a",
+			"levelId": 344,
+			"layerDefUid": 79,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0
+			],
+			"autoLayerTiles": [],
+			"seed": 2880614,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		},
+		{
+			"__identifier": "Terrain_Props",
+			"__type": "Entities",
+			"__cWid": 32,
+			"__cHei": 32,
+			"__gridSize": 32,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "f3bea433-bde0-11f1-b372-a74c49711842",
+			"levelId": 344,
+			"layerDefUid": 78,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 2487000,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		},
+		{
+			"__identifier": "Landmarks",
+			"__type": "Entities",
+			"__cWid": 32,
+			"__cHei": 32,
+			"__gridSize": 32,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "f3bea434-bde0-11f1-b372-addb7f2ab66a",
+			"levelId": 344,
+			"layerDefUid": 2,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 538068,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": [
+				{
+					"__identifier": "Summoned_Entity",
+					"__grid": [1,1],
+					"__pivot": [0.5,0.5],
+					"__tags": ["Actors"],
+					"__tile": { "tilesetUid": 141, "x": 256, "y": 0, "w": 64, "h": 64 },
+					"__smartColor": "#EAD4AA",
+					"iid": "9491b980-bde0-11f1-b372-e5c7f8e48d60",
+					"width": 64,
+					"height": 64,
+					"defUid": 345,
+					"px": [48,48],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "summoned_minion_skeleton_1", "__tile": null, "defUid": 346, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["summoned_minion_skeleton_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": null, "__tile": null, "defUid": 347, "realEditorValues": [] },
+						{ "__identifier": "stats", "__type": "String", "__value": "{ str: 3, dex: 4, int: 2, wis: 2, agil: 2, char: 2, ac: 1 }", "__tile": null, "defUid": 348, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ str: 3, dex: 4, int: 2, wis: 2, agil: 2, char: 2, ac: 1 }"]
+						}] },
+						{ "__identifier": "ClassKey", "__type": "LocalEnum.ClassKey", "__value": "Fighter", "__tile": null, "defUid": 349, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Fighter"]
+						}] },
+						{ "__identifier": "specialAbilities", "__type": "Array<EntityRef>", "__value": [], "__tile": null, "defUid": 365, "realEditorValues": [] },
+						{ "__identifier": "Personality", "__type": "LocalEnum.Personality", "__value": "AGGRESSIVE", "__tile": null, "defUid": 350, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["AGGRESSIVE"]
+						}] },
+						{ "__identifier": "level", "__type": "Int", "__value": 1, "__tile": null, "defUid": 351, "realEditorValues": [] },
+						{ "__identifier": "baseHp", "__type": "Int", "__value": 10, "__tile": null, "defUid": 352, "realEditorValues": [] },
+						{ "__identifier": "message_when_summoned", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 357, "realEditorValues": [] },
+						{ "__identifier": "message_on_death", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 358, "realEditorValues": [] },
+						{ "__identifier": "StaticDropTable", "__type": "LocalEnum.StaticDropTable", "__value": null, "__tile": null, "defUid": 359, "realEditorValues": [] },
+						{ "__identifier": "isQuestMob", "__type": "Bool", "__value": false, "__tile": null, "defUid": 360, "realEditorValues": [] },
+						{ "__identifier": "equipmentSlots", "__type": "Array<EntityRef>", "__value": [{
+							"entityIid": "d4aaa3e0-bde0-11f1-b372-a390ab860ad2",
+							"layerIid": "f3bea434-bde0-11f1-b372-addb7f2ab66a",
+							"levelIid": "f3bea430-bde0-11f1-b372-6bc5b4d6c102",
+							"worldIid": "ee53e8b0-bde0-11f1-a2bd-7fddd13c504b"
+						}], "__tile": null, "defUid": 362, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["d4aaa3e0-bde0-11f1-b372-a390ab860ad2"]
+						}] },
+						{ "__identifier": "resistances", "__type": "Array<String>", "__value": [null], "__tile": null, "defUid": 363, "realEditorValues": [null] },
+						{ "__identifier": "immunities", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 364, "realEditorValues": [] },
+						{ "__identifier": "tileArtwork", "__type": "Array<Tile>", "__value": [{ "tilesetUid": 141, "x": 256, "y": 0, "w": 64, "h": 64 }], "__tile": { "tilesetUid": 141, "x": 256, "y": 0, "w": 64, "h": 64 }, "defUid": 361, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["256,0,64,64"]
+						}] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "minion", "summoned", "undead", "skeleton", "ally" ], "__tile": null, "defUid": 355, "realEditorValues": [
+							{
+								"id": "V_String",
+								"params": ["minion"]
+							},
+							{
+								"id": "V_String",
+								"params": ["summoned"]
+							},
+							{
+								"id": "V_String",
+								"params": ["undead"]
+							},
+							{
+								"id": "V_String",
+								"params": ["skeleton"]
+							},
+							{
+								"id": "V_String",
+								"params": ["ally"]
+							}
+						] }
+					],
+					"__worldX": 48,
+					"__worldY": 1072
+				},
+				{
+					"__identifier": "Summoned_Entity",
+					"__grid": [1,4],
+					"__pivot": [0.5,0.5],
+					"__tags": ["Actors"],
+					"__tile": { "tilesetUid": 140, "x": 448, "y": 96, "w": 32, "h": 32 },
+					"__smartColor": "#EAD4AA",
+					"iid": "245eeb60-bde0-11f1-b372-efcae8595f99",
+					"width": 64,
+					"height": 64,
+					"defUid": 345,
+					"px": [48,144],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "summoned_minion_earth_1", "__tile": null, "defUid": 346, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["summoned_minion_earth_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": null, "__tile": null, "defUid": 347, "realEditorValues": [] },
+						{ "__identifier": "stats", "__type": "String", "__value": "{ str: 4, sta: 5, dex: 4, int: 2, wis: 2, agil: 2, char: 2, ac: 4 }", "__tile": null, "defUid": 348, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ str: 4, sta: 5, dex: 4, int: 2, wis: 2, agil: 2, char: 2, ac: 4 }"]
+						}] },
+						{ "__identifier": "ClassKey", "__type": "LocalEnum.ClassKey", "__value": "Fighter", "__tile": null, "defUid": 349, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Fighter"]
+						}] },
+						{ "__identifier": "specialAbilities", "__type": "Array<EntityRef>", "__value": [], "__tile": null, "defUid": 365, "realEditorValues": [] },
+						{ "__identifier": "Personality", "__type": "LocalEnum.Personality", "__value": "AGGRESSIVE", "__tile": null, "defUid": 350, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["AGGRESSIVE"]
+						}] },
+						{ "__identifier": "level", "__type": "Int", "__value": 1, "__tile": null, "defUid": 351, "realEditorValues": [] },
+						{ "__identifier": "baseHp", "__type": "Int", "__value": 10, "__tile": null, "defUid": 352, "realEditorValues": [] },
+						{ "__identifier": "message_when_summoned", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 357, "realEditorValues": [] },
+						{ "__identifier": "message_on_death", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 358, "realEditorValues": [] },
+						{ "__identifier": "StaticDropTable", "__type": "LocalEnum.StaticDropTable", "__value": null, "__tile": null, "defUid": 359, "realEditorValues": [] },
+						{ "__identifier": "isQuestMob", "__type": "Bool", "__value": false, "__tile": null, "defUid": 360, "realEditorValues": [] },
+						{ "__identifier": "equipmentSlots", "__type": "Array<EntityRef>", "__value": [ {
+							"entityIid": "416f4fb0-bde0-11f1-b372-87e6e18390d1",
+							"layerIid": "f3bea434-bde0-11f1-b372-addb7f2ab66a",
+							"levelIid": "f3bea430-bde0-11f1-b372-6bc5b4d6c102",
+							"worldIid": "ee53e8b0-bde0-11f1-a2bd-7fddd13c504b"
+						}, {
+							"entityIid": "4e2d78b0-bde0-11f1-b372-e37542db2b60",
+							"layerIid": "f3bea434-bde0-11f1-b372-addb7f2ab66a",
+							"levelIid": "f3bea430-bde0-11f1-b372-6bc5b4d6c102",
+							"worldIid": "ee53e8b0-bde0-11f1-a2bd-7fddd13c504b"
+						} ], "__tile": null, "defUid": 362, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["416f4fb0-bde0-11f1-b372-87e6e18390d1"]
+						}, {
+							"id": "V_String",
+							"params": ["4e2d78b0-bde0-11f1-b372-e37542db2b60"]
+						} ] },
+						{ "__identifier": "resistances", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 363, "realEditorValues": [] },
+						{ "__identifier": "immunities", "__type": "Array<String>", "__value": [], "__tile": null, "defUid": 364, "realEditorValues": [] },
+						{ "__identifier": "tileArtwork", "__type": "Array<Tile>", "__value": [], "__tile": null, "defUid": 361, "realEditorValues": [] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "minion", "summoned", "elementalBeing", "ally" ], "__tile": null, "defUid": 355, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["minion"]
+						}, {
+							"id": "V_String",
+							"params": ["summoned"]
+						}, {
+							"id": "V_String",
+							"params": ["elementalBeing"]
+						}, {
+							"id": "V_String",
+							"params": ["ally"]
+						} ] }
+					],
+					"__worldX": 48,
+					"__worldY": 1168
+				},
+				{
+					"__identifier": "WEAPON",
+					"__grid": [2,4],
+					"__pivot": [0.5,0.5],
+					"__tags": [ "Item", "Weapon" ],
+					"__tile": { "tilesetUid": 140, "x": 32, "y": 64, "w": 32, "h": 32 },
+					"__smartColor": "#FEAE34",
+					"iid": "416f4fb0-bde0-11f1-b372-87e6e18390d1",
+					"width": 32,
+					"height": 32,
+					"defUid": 127,
+					"px": [80,144],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "minion_hands_earth", "__tile": null, "defUid": 128, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["minion_hands_earth"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Earth Punch", "__tile": null, "defUid": 129, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Earth Punch"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "Earth Golem's rocky fists.", "__tile": null, "defUid": 137, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Earth Golem's rocky fists."]
+						}] },
+						{ "__identifier": "slotType", "__type": "Array<String>", "__value": [ "weapon", "offHand" ], "__tile": null, "defUid": 130, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["weapon"]
+						}, {
+							"id": "V_String",
+							"params": ["offHand"]
+						} ] },
+						{ "__identifier": "allowedClasses", "__type": "Array<String>", "__value": ["minion_only"], "__tile": null, "defUid": 131, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["minion_only"]
+						}] },
+						{ "__identifier": "qualityTier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 132, "realEditorValues": [{ "id": "V_Int", "params": [0] }] },
+						{ "__identifier": "accuracy", "__type": "Float", "__value": 0.8, "__tile": null, "defUid": 133, "realEditorValues": [{ "id": "V_Float", "params": [0.8] }] },
+						{ "__identifier": "handsRequired", "__type": "Int", "__value": 1, "__tile": null, "defUid": 184, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
+						{ "__identifier": "Weapon_Type", "__type": "LocalEnum.Weapon_Type", "__value": "Melee", "__tile": null, "defUid": 186, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Melee"]
+						}] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 5, "__tile": null, "defUid": 290, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+						{ "__identifier": "Damage_Type", "__type": "LocalEnum.Damage_Type", "__value": "Bludgeoning", "__tile": null, "defUid": 185, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Bludgeoning"]
+						}] },
+						{ "__identifier": "damageSplit", "__type": "String", "__value": "{ bludgeoning: 4, elemental: 1 }", "__tile": null, "defUid": 134, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ bludgeoning: 4, elemental: 1 }"]
+						}] },
+						{ "__identifier": "statModifiers", "__type": "String", "__value": null, "__tile": null, "defUid": 135, "realEditorValues": [] },
+						{ "__identifier": "spellProc", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 298, "realEditorValues": [] },
+						{ "__identifier": "spellProcChance", "__type": "Float", "__value": null, "__tile": null, "defUid": 299, "realEditorValues": [] },
+						{ "__identifier": "maxDurability", "__type": "Int", "__value": null, "__tile": null, "defUid": 136, "realEditorValues": [] },
+						{ "__identifier": "onHitEffects", "__type": "Array<String>", "__value": ["[{ name: \"stun\", chance: 0.15, duration: 2 }]"], "__tile": null, "defUid": 162, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ name: \"stun\", chance: 0.15, duration: 2 }]"]
+						}] },
+						{ "__identifier": "Item_Rarity", "__type": "LocalEnum.Item_Rarity", "__value": null, "__tile": null, "defUid": 187, "realEditorValues": [] },
+						{ "__identifier": "value_In_Copper", "__type": "Int", "__value": null, "__tile": null, "defUid": 188, "realEditorValues": [] },
+						{ "__identifier": "isQuestItem", "__type": "Bool", "__value": false, "__tile": null, "defUid": 253, "realEditorValues": [] },
+						{ "__identifier": "itemArtwork", "__type": "Tile", "__value": null, "__tile": null, "defUid": 189, "realEditorValues": [] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "NO_LOOT", "minionOnly", "temporary", "weapon" ], "__tile": null, "defUid": 307, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["NO_LOOT"]
+						}, {
+							"id": "V_String",
+							"params": ["minionOnly"]
+						}, {
+							"id": "V_String",
+							"params": ["temporary"]
+						}, {
+							"id": "V_String",
+							"params": ["weapon"]
+						} ] }
+					],
+					"__worldX": 80,
+					"__worldY": 1168
+				},
+				{
+					"__identifier": "WEAPON",
+					"__grid": [3,4],
+					"__pivot": [0.5,0.5],
+					"__tags": [ "Item", "Weapon" ],
+					"__tile": { "tilesetUid": 140, "x": 32, "y": 64, "w": 32, "h": 32 },
+					"__smartColor": "#FEAE34",
+					"iid": "4e2d78b0-bde0-11f1-b372-e37542db2b60",
+					"width": 32,
+					"height": 32,
+					"defUid": 127,
+					"px": [112,144],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "minion_hands_earth", "__tile": null, "defUid": 128, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["minion_hands_earth"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Earth Punch", "__tile": null, "defUid": 129, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Earth Punch"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "Earth Golem's rocky fists.", "__tile": null, "defUid": 137, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Earth Golem's rocky fists."]
+						}] },
+						{ "__identifier": "slotType", "__type": "Array<String>", "__value": [ "weapon", "offHand" ], "__tile": null, "defUid": 130, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["weapon"]
+						}, {
+							"id": "V_String",
+							"params": ["offHand"]
+						} ] },
+						{ "__identifier": "allowedClasses", "__type": "Array<String>", "__value": ["minion_only"], "__tile": null, "defUid": 131, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["minion_only"]
+						}] },
+						{ "__identifier": "qualityTier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 132, "realEditorValues": [{ "id": "V_Int", "params": [0] }] },
+						{ "__identifier": "accuracy", "__type": "Float", "__value": 0.8, "__tile": null, "defUid": 133, "realEditorValues": [{ "id": "V_Float", "params": [0.8] }] },
+						{ "__identifier": "handsRequired", "__type": "Int", "__value": 1, "__tile": null, "defUid": 184, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
+						{ "__identifier": "Weapon_Type", "__type": "LocalEnum.Weapon_Type", "__value": "Melee", "__tile": null, "defUid": 186, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Melee"]
+						}] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 5, "__tile": null, "defUid": 290, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+						{ "__identifier": "Damage_Type", "__type": "LocalEnum.Damage_Type", "__value": "Bludgeoning", "__tile": null, "defUid": 185, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Bludgeoning"]
+						}] },
+						{ "__identifier": "damageSplit", "__type": "String", "__value": "{ bludgeoning: 4, elemental: 1 }", "__tile": null, "defUid": 134, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ bludgeoning: 4, elemental: 1 }"]
+						}] },
+						{ "__identifier": "statModifiers", "__type": "String", "__value": null, "__tile": null, "defUid": 135, "realEditorValues": [] },
+						{ "__identifier": "spellProc", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 298, "realEditorValues": [] },
+						{ "__identifier": "spellProcChance", "__type": "Float", "__value": null, "__tile": null, "defUid": 299, "realEditorValues": [] },
+						{ "__identifier": "maxDurability", "__type": "Int", "__value": null, "__tile": null, "defUid": 136, "realEditorValues": [] },
+						{ "__identifier": "onHitEffects", "__type": "Array<String>", "__value": ["[{ name: \"stun\", chance: 0.15, duration: 2 }]"], "__tile": null, "defUid": 162, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ name: \"stun\", chance: 0.15, duration: 2 }]"]
+						}] },
+						{ "__identifier": "Item_Rarity", "__type": "LocalEnum.Item_Rarity", "__value": null, "__tile": null, "defUid": 187, "realEditorValues": [] },
+						{ "__identifier": "value_In_Copper", "__type": "Int", "__value": null, "__tile": null, "defUid": 188, "realEditorValues": [] },
+						{ "__identifier": "isQuestItem", "__type": "Bool", "__value": false, "__tile": null, "defUid": 253, "realEditorValues": [] },
+						{ "__identifier": "itemArtwork", "__type": "Tile", "__value": null, "__tile": null, "defUid": 189, "realEditorValues": [] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "NO_LOOT", "minionOnly", "temporary", "weapon" ], "__tile": null, "defUid": 307, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["NO_LOOT"]
+						}, {
+							"id": "V_String",
+							"params": ["minionOnly"]
+						}, {
+							"id": "V_String",
+							"params": ["temporary"]
+						}, {
+							"id": "V_String",
+							"params": ["weapon"]
+						} ] }
+					],
+					"__worldX": 112,
+					"__worldY": 1168
+				},
+				{
+					"__identifier": "WEAPON",
+					"__grid": [2,1],
+					"__pivot": [0.5,0.5],
+					"__tags": [ "Item", "Weapon" ],
+					"__tile": { "tilesetUid": 140, "x": 416, "y": 128, "w": 32, "h": 32 },
+					"__smartColor": "#FEAE34",
+					"iid": "d4aaa3e0-bde0-11f1-b372-a390ab860ad2",
+					"width": 32,
+					"height": 32,
+					"defUid": 127,
+					"px": [80,48],
+					"fieldInstances": [
+						{ "__identifier": "id", "__type": "String", "__value": "minion_dagger_1", "__tile": null, "defUid": 128, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["minion_dagger_1"]
+						}] },
+						{ "__identifier": "name", "__type": "String", "__value": "Minion's Ethereal Dagger", "__tile": null, "defUid": 129, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Minion's Ethereal Dagger"]
+						}] },
+						{ "__identifier": "description", "__type": "String", "__value": "Ethereal dagger materialized with your minion.", "__tile": null, "defUid": 137, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Ethereal dagger materialized with your minion."]
+						}] },
+						{ "__identifier": "slotType", "__type": "Array<String>", "__value": [ "weapon", "offHand" ], "__tile": null, "defUid": 130, "realEditorValues": [ {
+							"id": "V_String",
+							"params": ["weapon"]
+						}, {
+							"id": "V_String",
+							"params": ["offHand"]
+						} ] },
+						{ "__identifier": "allowedClasses", "__type": "Array<String>", "__value": ["minion_only"], "__tile": null, "defUid": 131, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["minion_only"]
+						}] },
+						{ "__identifier": "qualityTier", "__type": "Int", "__value": 0, "__tile": null, "defUid": 132, "realEditorValues": [{ "id": "V_Int", "params": [0] }] },
+						{ "__identifier": "accuracy", "__type": "Float", "__value": 0.8, "__tile": null, "defUid": 133, "realEditorValues": [{ "id": "V_Float", "params": [0.8] }] },
+						{ "__identifier": "handsRequired", "__type": "Int", "__value": 1, "__tile": null, "defUid": 184, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
+						{ "__identifier": "Weapon_Type", "__type": "LocalEnum.Weapon_Type", "__value": "Melee", "__tile": null, "defUid": 186, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Melee"]
+						}] },
+						{ "__identifier": "basePower", "__type": "Int", "__value": 5, "__tile": null, "defUid": 290, "realEditorValues": [{ "id": "V_Int", "params": [5] }] },
+						{ "__identifier": "Damage_Type", "__type": "LocalEnum.Damage_Type", "__value": "Piercing", "__tile": null, "defUid": 185, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["Piercing"]
+						}] },
+						{ "__identifier": "damageSplit", "__type": "String", "__value": "{ piercing: 4, magic: 1 }", "__tile": null, "defUid": 134, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["{ piercing: 4, magic: 1 }"]
+						}] },
+						{ "__identifier": "statModifiers", "__type": "String", "__value": null, "__tile": null, "defUid": 135, "realEditorValues": [] },
+						{ "__identifier": "spellProc", "__type": "EntityRef", "__value": null, "__tile": null, "defUid": 298, "realEditorValues": [] },
+						{ "__identifier": "spellProcChance", "__type": "Float", "__value": null, "__tile": null, "defUid": 299, "realEditorValues": [] },
+						{ "__identifier": "maxDurability", "__type": "Int", "__value": null, "__tile": null, "defUid": 136, "realEditorValues": [] },
+						{ "__identifier": "onHitEffects", "__type": "Array<String>", "__value": ["[{ name: \"bleed_1\", chance: 0.15, duration: 2 }]"], "__tile": null, "defUid": 162, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["[{ name: \"bleed_1\", chance: 0.15, duration: 2 }]"]
+						}] },
+						{ "__identifier": "Item_Rarity", "__type": "LocalEnum.Item_Rarity", "__value": null, "__tile": null, "defUid": 187, "realEditorValues": [] },
+						{ "__identifier": "value_In_Copper", "__type": "Int", "__value": null, "__tile": null, "defUid": 188, "realEditorValues": [] },
+						{ "__identifier": "isQuestItem", "__type": "Bool", "__value": false, "__tile": null, "defUid": 253, "realEditorValues": [] },
+						{ "__identifier": "itemArtwork", "__type": "Tile", "__value": { "tilesetUid": 140, "x": 416, "y": 128, "w": 32, "h": 32 }, "__tile": { "tilesetUid": 140, "x": 416, "y": 128, "w": 32, "h": 32 }, "defUid": 189, "realEditorValues": [{
+							"id": "V_String",
+							"params": ["416,128,32,32"]
+						}] },
+						{ "__identifier": "tags", "__type": "Array<String>", "__value": [ "NO_LOOT", "minionOnly", "temporary", "weapon", "magic" ], "__tile": null, "defUid": 307, "realEditorValues": [
+							{
+								"id": "V_String",
+								"params": ["NO_LOOT"]
+							},
+							{
+								"id": "V_String",
+								"params": ["minionOnly"]
+							},
+							{
+								"id": "V_String",
+								"params": ["temporary"]
+							},
+							{
+								"id": "V_String",
+								"params": ["weapon"]
+							},
+							{
+								"id": "V_String",
+								"params": ["magic"]
+							}
+						] }
+					],
+					"__worldX": 80,
+					"__worldY": 1072
+				}
+			]
+		},
+		{
+			"__identifier": "Structural_Grid",
+			"__type": "IntGrid",
+			"__cWid": 32,
+			"__cHei": 32,
+			"__gridSize": 32,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "f3bea435-bde0-11f1-b372-6767aabb0e71",
+			"levelId": 344,
+			"layerDefUid": 1,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0
+			],
+			"autoLayerTiles": [],
+			"seed": 6367002,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		}
+	],
+	"__neighbours": [ { "levelIid": "ee540fc0-bde0-11f1-a2bd-712b6117f15d", "dir": "n" }, { "levelIid": "35323080-bde0-11f1-a2bd-fbd5468a29f4", "dir": "ne" }, { "levelIid": "39d7c410-bde0-11f1-b372-13867b207cde", "dir": "e" } ]
+}

@@ -122,7 +122,7 @@ export const STARTER_CLASS_KEYS = Object.freeze([
   "rogue",
   "necromancer",
   "geomancer",
-  "doppleganger",
+  "doppelganger",
   "enchanter",
 ]);
 
@@ -277,7 +277,7 @@ export const CLASS_DATA = Object.freeze({
     stats: { str: 2, dex: 4, int: 2, wis: 2, agil: 4, char: 2, sta: 5, ac: 0 },
     portraits: {
       male: FALLBACK_PORTRAIT,
-      female: "dungeon-img/Sprite-DopplegangerFemaleStatusOK.png",
+      female: "dungeon-img/Sprite-DoppelgangerFemaleStatusOK.png",
     },
     baseHp: 8,
     maxStamina: 16,
@@ -328,15 +328,15 @@ export const CLASS_DATA = Object.freeze({
     ],
     classAnchorStat: "int",
   }),
-  doppleganger: createClassProfile({
-    key: "doppleganger",
-    name: "Doppleganger",
+  doppelganger: createClassProfile({
+    key: "doppelganger",
+    name: "Doppelganger",
     color: "#35e512",
     description: "A versatile mimic capable of adapting to other combatants.",
     stats: { str: 3, dex: 3, int: 3, wis: 2, agil: 4, char: 1, sta: 5, ac: 0 },
     portraits: {
       male: FALLBACK_PORTRAIT,
-      female: "dungeon-img/Sprite-DopplegangerFemaleStatusOK.png",
+      female: "dungeon-img/Sprite-DoppelgangerFemaleStatusOK.png",
     },
     abilities: ["Melee Attack", "Mimicry Lifecycle I", "Defend"],
     classAnchorStat: "char",
